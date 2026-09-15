@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+
+#Role	Email	Password
+#Staff / Admin	admin@pinassociate.com	PINadmin2026!
+#Demo Student	student@pinassociate.com	PINstudent2026!
+#Demo Client    client@pinassociate.com	PINclient2026!
