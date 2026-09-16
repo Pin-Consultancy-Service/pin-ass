@@ -2,8 +2,19 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useState, useEffect, useCallback, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { SITE_CONFIG } from "@/lib/config";
+
+/* ─── Background carousel slides ──────────────────────── */
+const bgSlides = [
+  { id: 1, src: "https://res.cloudinary.com/yaovkmpi/image/upload/v1784613464/Blue_Futuristic_Technology_LinkedIn_Background_Photo_3_l4mhqd.png", alt: "Professional success and graduation" },
+  { id: 2, src: "https://res.cloudinary.com/yaovkmpi/image/upload/v1784557870/Purple_Abstract_Graphic_Design_LinkedIn_Article_Cover_Image_1_lle3mb.png", alt: "Professional accounting training" },
+  { id: 3, src: "https://res.cloudinary.com/yaovkmpi/image/upload/v1784484978/wmremove-transformed_1_1_el1lye.jpg", alt: "Corporate learning environment" },
+  { id: 4, src: "https://res.cloudinary.com/yaovkmpi/image/upload/v1784613463/7_czosms.png", alt: "Academic achievement" },
+  { id: 5, src: "https://res.cloudinary.com/yaovkmpi/image/upload/v1789493220/Blue_Futuristic_Technology_zbrcih.png", alt: "Professional development" },
+];
 
 /* ─── Social SVG icons ───────────────────────────────── */
 const FacebookIcon  = () => <svg viewBox="0 0 24 24" style={{ width: "0.875rem", height: "0.875rem", fill: "currentColor" }} aria-hidden="true"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>;
@@ -64,7 +75,7 @@ function Col({ heading, links }: { heading: string; links: { label: string; href
           fontWeight: 500,
           letterSpacing: "0.12em",
           textTransform: "uppercase",
-          color: "rgba(255,255,255,0.35)",
+          color: "rgba(255,255,255,0.6)",
           marginBottom: "1.25rem",
         }}
       >
@@ -75,9 +86,9 @@ function Col({ heading, links }: { heading: string; links: { label: string; href
           <li key={l.href + l.label}>
             <Link
               href={l.href}
-              style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.55)", transition: "color 0.2s ease" }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.9)")}
-              onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.55)")}
+              style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.9)", transition: "color 0.2s ease" }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "#ffffff")}
+              onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.9)")}
             >
               {l.label}
             </Link>
@@ -89,8 +100,67 @@ function Col({ heading, links }: { heading: string; links: { label: string; href
 }
 
 export default function Footer() {
+  // Carousel state
+  const [bgIdx, setBgIdx] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const timer = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const goTo = useCallback((i: number) => setBgIdx(((i % bgSlides.length) + bgSlides.length) % bgSlides.length), []);
+  const bgNext = useCallback(() => goTo(bgIdx + 1), [bgIdx, goTo]);
+
+  // Auto-advance carousel
+  useEffect(() => {
+    if (paused) return;
+    timer.current = setInterval(bgNext, 5000);
+    return () => { if (timer.current) clearInterval(timer.current); };
+  }, [paused, bgNext]);
+
   return (
-    <footer style={{ backgroundColor: "var(--ink)", color: "rgba(255,255,255,0.6)" }}>
+    <footer 
+      className="relative overflow-hidden"
+      style={{ color: "rgba(255,255,255,0.9)" }}
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
+      {/* ── Background carousel ──────────────────── */}
+      <div className="absolute inset-0" aria-hidden="true">
+        <AnimatePresence initial={false}>
+          <motion.div
+            key={bgSlides[bgIdx].id}
+            className="absolute inset-0"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.2, ease: "easeInOut" }}
+          >
+            <img
+              src={bgSlides[bgIdx].src}
+              alt={bgSlides[bgIdx].alt}
+              style={{
+                position: "absolute", inset: 0,
+                width: "100%", height: "100%",
+                objectFit: "cover", objectPosition: "center",
+              }}
+              loading="lazy"
+            />
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Navy blue overlay for text readability */}
+        <div
+          className="absolute inset-0"
+          style={{ background: "rgba(44, 69, 139, 0.75)" }}
+        />
+        
+        {/* Additional gradient for better text contrast */}
+        <div
+          className="absolute inset-0"
+          style={{ background: "linear-gradient(135deg, rgba(15, 30, 70, 0.3) 0%, rgba(30, 58, 138, 0.2) 100%)" }}
+        />
+      </div>
+
+      {/* ── Content (positioned over background) ──── */}
+      <div className="relative z-10">
 
       {/* ── CTA band ──────────────────────────── */}
       <div style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
@@ -102,14 +172,14 @@ export default function Footer() {
                   fontFamily: "var(--font-display)",
                   fontWeight: 500,
                   fontSize: "clamp(1.5rem, 2.5vw, 2.25rem)",
-                  color: "rgba(255,255,255,0.9)",
+                  color: "rgba(255,255,255,0.95)",
                   lineHeight: 1.2,
                   marginBottom: "0.5rem",
                 }}
               >
                 Ready to start your journey with PIN?
               </h3>
-              <p style={{ fontSize: "0.9375rem", color: "rgba(255,255,255,0.45)" }}>
+              <p style={{ fontSize: "0.9375rem", color: "rgba(255,255,255,0.75)" }}>
                 5,000+ professionals qualified with our help since 2009.
               </p>
             </div>
@@ -156,14 +226,14 @@ export default function Footer() {
                   fontFamily: "var(--font-display)",
                   fontWeight: 500,
                   fontSize: "1rem",
-                  color: "rgba(255,255,255,0.7)",
+                  color: "rgba(255,255,255,0.9)",
                   letterSpacing: "0.01em",
                 }}
               >
                 PIN Associate
               </span>
             </Link>
-            <p style={{ fontSize: "0.875rem", lineHeight: 1.65, color: "rgba(255,255,255,0.4)", marginBottom: "1.5rem" }}>
+            <p style={{ fontSize: "0.875rem", lineHeight: 1.65, color: "rgba(255,255,255,0.8)", marginBottom: "1.5rem" }}>
               Nigeria&apos;s trusted professional exam tutoring and business consultancy firm.
               ICAN · ACCA · CITN · ATS · CISA · IFRS since 2009.
             </p>
@@ -178,11 +248,11 @@ export default function Footer() {
                   style={{
                     display: "flex", alignItems: "center", justifyContent: "center",
                     width: "2rem", height: "2rem",
-                    color: "rgba(255,255,255,0.35)",
+                    color: "rgba(255,255,255,0.6)",
                     transition: "color 0.2s ease",
                   }}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.8)")}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.35)")}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = "#ffffff")}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.6)")}
                 >
                   <Icon />
                 </a>
@@ -203,7 +273,7 @@ export default function Footer() {
                   style={{
                     fontSize: "0.6875rem", fontWeight: 500,
                     letterSpacing: "0.1em", textTransform: "uppercase",
-                    color: "rgba(255,255,255,0.25)",
+                    color: "rgba(255,255,255,0.6)",
                     marginBottom: "0.2rem",
                   }}
                 >
@@ -212,14 +282,14 @@ export default function Footer() {
                 {href ? (
                   <a
                     href={href}
-                    style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.5)", transition: "color 0.2s ease" }}
-                    onMouseEnter={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.85)")}
-                    onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.5)")}
+                    style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.9)", transition: "color 0.2s ease" }}
+                    onMouseEnter={(e) => (e.currentTarget.style.color = "#ffffff")}
+                    onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.9)")}
                   >
                     {value}
                   </a>
                 ) : (
-                  <p style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.5)" }}>{value}</p>
+                  <p style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.9)" }}>{value}</p>
                 )}
               </div>
             ))}
@@ -238,7 +308,7 @@ export default function Footer() {
       {/* ── Legal bar ────────────────────────── */}
       <div style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}>
         <div className="content-container py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.25)" }}>
+          <p style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.7)" }}>
             © {new Date().getFullYear()} PIN Associate (Pass It Now Associates). All rights reserved.
           </p>
           <div className="flex items-center gap-5">
@@ -249,9 +319,9 @@ export default function Footer() {
               <Link
                 key={href}
                 href={href}
-                style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.25)", transition: "color 0.2s ease" }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.55)")}
-                onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.25)")}
+                style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.7)", transition: "color 0.2s ease" }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "#ffffff")}
+                onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.7)")}
               >
                 {label}
               </Link>
@@ -259,6 +329,8 @@ export default function Footer() {
           </div>
         </div>
       </div>
+      
+      </div> {/* End content wrapper */}
     </footer>
   );
 }
