@@ -422,32 +422,6 @@ export default function LoginPageContent() {
           <div className="space-y-3">
             <GoogleAuthButton action="signin" />
           </div>
-
-          {/* Development Credentials Notice */}
-          <div 
-            className="mt-8 p-4"
-            style={{
-              backgroundColor: "#FFFBEB",
-              border: "1px solid #FDE68A",
-              borderRadius: "8px",
-            }}
-          >
-            <p 
-              className="uppercase tracking-wider mb-2"
-              style={{
-                fontSize: "0.625rem",
-                fontWeight: 600,
-                color: "#92600A",
-              }}
-            >
-              Development — Default Credentials
-            </p>
-            <div className="space-y-1 font-mono text-xs" style={{ color: "#92600A" }}>
-              <p><strong>Staff:</strong> admin@pinassociate.com / PINadmin2026!</p>
-              <p><strong>Student:</strong> student@pinassociate.com / PINstudent2026!</p>
-              <p><strong>Client:</strong> client@pinassociate.com / PINclient2026!</p>
-            </div>
-          </div>
         </div>
       </div>
     </div>
