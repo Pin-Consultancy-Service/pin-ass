@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import PaymentPageContent from "@/components/payment/PaymentPageContent";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "Payment | Pay for Tutoring, Consultancy or Training",
@@ -14,7 +15,9 @@ export default function PaymentPage() {
     <div className="w-full overflow-x-hidden">
       <Navbar />
       <main>
-        <PaymentPageContent />
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading payment options...</div>}>
+          <PaymentPageContent />
+        </Suspense>
       </main>
       <Footer />
     </div>

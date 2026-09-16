@@ -1,6 +1,6 @@
 import LoginPageContent from "@/components/portal/LoginPageContent";
 import type { Metadata } from "next";
-
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "Portal Login | PIN Associate",
@@ -8,5 +8,9 @@ export const metadata: Metadata = {
 };
 
 export default function LoginPage() {
-  return <LoginPageContent />;
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+      <LoginPageContent />
+    </Suspense>
+  );
 }

@@ -109,10 +109,10 @@ function generateSimpleReceipt(paymentData: any): string {
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const receiptId = params.id;
+    const { id: receiptId } = await params;
     
     // TODO: Fetch payment record from database
     // For now, use mock data
