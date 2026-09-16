@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { 
   TrendingUp, CheckCircle2, Clock, ChevronDown, Plus
 } from "lucide-react";
-import { apiFetch, getStoredUser } from "@/lib/auth";
+import { apiFetch, getStoredUser, DEMO_MODE } from "@/lib/auth";
 
 interface Balance { total_fees_due: string; total_paid: string; balance_due: string; updated_at: string; }
 interface Profile { registration_number: string; programme_display: string; diet: string; study_mode_display: string; date_enrolled: string; }
@@ -56,6 +56,12 @@ export default function StudentDashboardContent() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Skip auth check in demo mode
+    if (DEMO_MODE) {
+      setLoading(false);
+      return;
+    }
+
     if (!user) { 
       router.replace("/portal/login?redirect=/portal/student"); 
       return; 

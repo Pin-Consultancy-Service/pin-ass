@@ -7,7 +7,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import { Eye, EyeOff, LogIn, AlertCircle, ArrowLeft } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { login, getStoredUser, portalHomeForRole } from "@/lib/auth";
+import { login, getStoredUser, portalHomeForRole, DEMO_MODE } from "@/lib/auth";
 import GoogleAuthButton from "@/components/ui/GoogleAuthButton";
 
 /* ── Background slide data from hero section ──────────────────────────── */
@@ -40,6 +40,12 @@ export default function LoginPageContent() {
 
   /* If already logged in, redirect straight to their portal */
   useEffect(() => {
+    // In demo mode, always redirect to student dashboard 
+    if (DEMO_MODE) {
+      router.replace(redirectTo || "/portal/student");
+      return;
+    }
+
     const user = getStoredUser();
     if (user) router.replace(redirectTo || portalHomeForRole(user.role));
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -56,7 +62,16 @@ export default function LoginPageContent() {
     e.preventDefault();
     setError("");
     setLoading(true);
+    
     try {
+      // In demo mode, just redirect without actual authentication
+      if (DEMO_MODE) {
+        // Simulate a brief loading state for realism
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        router.replace(redirectTo || "/portal/student");
+        return;
+      }
+
       const { user } = await login(email, password);
       router.replace(redirectTo || portalHomeForRole(user.role));
     } catch (err) {

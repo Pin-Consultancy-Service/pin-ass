@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { CheckCircle2, Save } from "lucide-react";
-import { apiFetch, getStoredUser } from "@/lib/auth";
+import { apiFetch, getStoredUser, DEMO_MODE } from "@/lib/auth";
 
 interface StudentProfile {
   id: string;
@@ -54,6 +54,30 @@ export default function StudentProfilePage() {
   const [error,     setError]     = useState("");
 
   useEffect(() => {
+    // Skip auth check in demo mode
+    if (DEMO_MODE) {
+      // Set mock profile data for demo
+      const mockProfile: StudentProfile = {
+        id: "demo-student-123",
+        full_name: "Demo Student",
+        email: "demo@pinassociate.com",
+        phone: "+234 800 000 0000",
+        registration_number: "PIN/DEMO/2024/001",
+        programme: "ICAN_PRO",
+        programme_display: "ICAN Professional",
+        study_mode: "HYBRID",
+        study_mode_display: "Hybrid (Online + Physical)",
+        diet: "NOV",
+        date_enrolled: "2024-01-15",
+        is_active_student: true,
+      };
+      setProfile(mockProfile);
+      setProgramme(mockProfile.programme);
+      setMode(mockProfile.study_mode);
+      setLoading(false);
+      return;
+    }
+
     if (!user) { router.replace("/portal/login?redirect=/portal/student/profile"); return; }
     apiFetch<StudentProfile>("/api/students/me/profile/")
       .then((p) => { setProfile(p); setProgramme(p.programme); setMode(p.study_mode); })

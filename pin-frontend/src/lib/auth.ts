@@ -7,6 +7,9 @@
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
+// ⚠️ DEMO MODE: Set to true to disable authentication for demo/testing
+export const DEMO_MODE = true;
+
 export interface AuthTokens {
   access: string;
   refresh: string;
@@ -49,6 +52,19 @@ export function saveUser(user: AuthUser) {
 }
 
 export function getStoredUser(): AuthUser | null {
+  // Demo mode: return a mock user
+  if (DEMO_MODE) {
+    return {
+      id: "demo-user-123",
+      email: "demo@pinassociate.com",
+      first_name: "Demo",
+      last_name: "User",
+      phone_number: "+234 800 000 0000",
+      role: "STUDENT",
+      date_joined: new Date().toISOString(),
+    };
+  }
+
   if (typeof window === "undefined") return null;
   const raw = localStorage.getItem("pin_user");
   if (!raw) return null;

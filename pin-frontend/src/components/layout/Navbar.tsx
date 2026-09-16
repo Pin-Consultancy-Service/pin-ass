@@ -275,12 +275,12 @@ export default function Navbar() {
 
             {/* Primary CTA green fill when scrolled, white ghost over hero */}
             {scrolled ? (
-              <Link href="/apply" className="btn btn-primary" style={{ height: "2.375rem", fontSize: "0.8125rem" }}>
+              <Link href="/portal/login" className="btn btn-primary" style={{ height: "2.375rem", fontSize: "0.8125rem" }}>
                 Apply Now
               </Link>
             ) : (
               <Link
-                href="/portal/register"
+                href="/portal/login"
                 className="btn"
                 style={{
                   height: "2.375rem",
