@@ -404,14 +404,14 @@ export default function Navbar() {
 
             {/* Drawer footer */}
             <div className="p-4 space-y-2.5" style={{ borderTop: "1px solid var(--rule)" }}>
-              <Link href="/apply" className="btn btn-primary w-full justify-center">
+              <Link href="/portal/register" className="btn btn-primary w-full justify-center">
                 Apply Now
               </Link>
               <Link
-                href="/portal/register"
+                href="/portal/login"
                 className="btn btn-outline w-full justify-center"
               >
-                Create an Account
+                Sign In to Portal
               </Link>
             </div>
           </div>

@@ -41,10 +41,17 @@ Authentication has been temporarily disabled for demo/testing purposes. All port
 
 ## How to Use
 
-### **Access Dashboards**
-1. **Student Portal**: Visit `/portal/student` directly (no login required)
-2. **Login Page**: Any credentials will work and redirect to student dashboard
-3. **All Features**: Full dashboard functionality available
+### **Perfect Demo Flow** 🎯
+1. **Click "Apply Now"** anywhere on the website
+2. **Fill Registration Form** with any random details
+3. **Submit Form** → Shows success message  
+4. **Automatic Redirect** → Opens Student Dashboard
+5. **Full Portal Access** → Explore all features freely
+
+### **Alternative Access**
+- **Direct Dashboard**: Visit `/portal/student` directly (no steps required)
+- **Login Page**: Use any credentials → instant redirect to dashboard
+- **All Portal URLs**: Work without authentication
 
 ### **Portal URLs**
 - Student Dashboard: `http://localhost:3000/portal/student`

@@ -6,7 +6,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff, UserPlus, AlertCircle, CheckCircle2, ArrowLeft } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { register, portalHomeForRole } from "@/lib/auth";
+import { register, portalHomeForRole, DEMO_MODE } from "@/lib/auth";
 import GoogleAuthButton from "@/components/ui/GoogleAuthButton";
 
 /* ── Background slide data from hero section ──────────────────────────── */
@@ -61,7 +61,20 @@ export default function RegisterPageContent() {
     setError("");
     if (password !== password2) { setError("Passwords do not match."); return; }
     setLoading(true);
+    
     try {
+      // In demo mode, just redirect without actual registration
+      if (DEMO_MODE) {
+        // Simulate a brief loading state for realism
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        setDone(true);
+        // Redirect to student dashboard after showing success message
+        setTimeout(() => {
+          router.replace("/portal/student");
+        }, 2000);
+        return;
+      }
+
       await register({
         email, password, password2,
         first_name: firstName,
