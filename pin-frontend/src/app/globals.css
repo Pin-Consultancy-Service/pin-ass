@@ -53,6 +53,18 @@
   --font-display: 'Cormorant Garamond', 'Cormorant', Georgia, serif;
   --font-body:    'Inter', system-ui, sans-serif;
 
+  /* ── Dark Mode Variables ─────────────────────── */
+  &[data-theme="dark"] {
+    --bg:         #0F172A;
+    --surface:    #1E293B;
+    --ink:        #F8FAFC;
+    --ink-muted:  #CBD5E1;
+    --ink-faint:  #94A3B8;
+    --rule:       #334155;
+    --navy-50:    #1E293B;
+    --navy-100:   #334155;
+  }
+
   /* ── Portal / form backward-compat aliases ── */
   --pin-blue:      #1E3A8A;
   --pin-blue-dark: #152D6E;
@@ -453,4 +465,15 @@ img { max-width: 100%; height: auto; display: block; }
 @media print {
   .no-print { display: none !important; }
   body { background: white; color: black; }
+}
+/* ── Dashboard Animations ─────────────────────── */
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Learning Progress Card Enhancements */
+.progress-glow {
+  animation: spin 20s linear infinite;
 }

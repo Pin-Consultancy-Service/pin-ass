@@ -129,7 +129,7 @@ function PaystackButton({ email, amountKobo, reference, onSuccess, disabled, lab
 
 export default function PaymentPageContent() {
   const searchParams  = useSearchParams();
-  const initialCat    = (searchParams.get("category") as Category) ?? "student";
+  const initialCat    = (searchParams?.get("category") as Category) ?? "student";
   const [activeCat,   setActiveCat]    = useState<Category>(["student","client","training"].includes(initialCat) ? initialCat : "student");
   const [selected,    setSelected]     = useState("");
   const [customAmt,   setCustomAmt]    = useState("");
