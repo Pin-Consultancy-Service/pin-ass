@@ -280,7 +280,7 @@ export default function Navbar() {
               </Link>
             ) : (
               <Link
-                href="/apply"
+                href="/portal/register"
                 className="btn"
                 style={{
                   height: "2.375rem",

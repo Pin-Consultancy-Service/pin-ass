@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { 
   BarChart3, BookOpen, User, CreditCard, Settings, BookOpenCheck, Target,
-  Sun, Moon, Bell, Search, Home, LogOut, ChevronDown, Users, FileQuestion, ClipboardList
+  Sun, Moon, Bell, Search, Home, LogOut, ChevronDown, Users, FileQuestion, ClipboardList, Menu, X
 } from "lucide-react";
 import { getStoredUser, clearTokens } from "@/lib/auth";
 import { useRouter } from "next/navigation";
@@ -32,6 +32,7 @@ export default function DashboardLayout({ children, activeTab = 'dashboard' }: D
   const user = getStoredUser();
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     // Check for saved theme
@@ -60,10 +61,96 @@ export default function DashboardLayout({ children, activeTab = 'dashboard' }: D
   };
 
   return (
-    <div className="min-h-screen flex" style={{ backgroundColor: 'var(--bg)' }}>
-      {/* Top Navigation */}
+    <div className="min-h-screen flex flex-col lg:flex-row" style={{ backgroundColor: 'var(--bg)' }}>
+      {/* Mobile Header */}
       <header 
-        className="fixed top-0 left-0 right-0 z-50 border-b"
+        className="fixed top-0 left-0 right-0 z-50 lg:hidden border-b"
+        style={{ borderColor: 'var(--rule)', backgroundColor: 'var(--bg)' }}
+      >
+        <div className="flex items-center justify-between px-4 py-3">
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setMobileMenuOpen(true)}
+            className="p-2 rounded-lg"
+            style={{ color: 'var(--ink)' }}
+          >
+            <Menu className="w-6 h-6" />
+          </button>
+
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-2">
+            <Image 
+              src="/images/pin-logo.png" 
+              alt="PIN Associate" 
+              width={24} 
+              height={24} 
+              className="object-contain" 
+            />
+            <span 
+              className="font-bold text-sm"
+              style={{ color: 'var(--navy)', fontFamily: 'var(--font-display)' }}
+            >
+              PIN Associate
+            </span>
+          </Link>
+
+          {/* Mobile User Menu */}
+          <div className="relative">
+            <button
+              onClick={() => setUserMenuOpen(!userMenuOpen)}
+              className="flex items-center gap-2 p-1"
+            >
+              <div 
+                className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold"
+                style={{ backgroundColor: 'var(--navy)' }}
+              >
+                {user?.first_name?.charAt(0) || 'U'}
+              </div>
+            </button>
+
+            {/* Mobile User Dropdown */}
+            {userMenuOpen && (
+              <div 
+                className="absolute right-0 top-full mt-2 w-48 rounded-xl border shadow-lg z-50"
+                style={{ backgroundColor: 'var(--bg)', borderColor: 'var(--rule)' }}
+              >
+                <div className="p-2">
+                  <Link
+                    href="/portal/student/profile"
+                    className="flex items-center gap-3 p-3 rounded-lg transition-colors"
+                    style={{ color: 'var(--ink-muted)' }}
+                    onClick={() => setUserMenuOpen(false)}
+                  >
+                    <User className="w-4 h-4" />
+                    <span className="text-sm">My Profile</span>
+                  </Link>
+                  <Link
+                    href="/"
+                    className="flex items-center gap-3 p-3 rounded-lg transition-colors"
+                    style={{ color: 'var(--ink-muted)' }}
+                    onClick={() => setUserMenuOpen(false)}
+                  >
+                    <Home className="w-4 h-4" />
+                    <span className="text-sm">Back to Website</span>
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="w-full flex items-center gap-3 p-3 rounded-lg transition-colors text-left"
+                    style={{ color: 'var(--ink-muted)' }}
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span className="text-sm">Sign Out</span>
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </header>
+
+      {/* Desktop Header */}
+      <header 
+        className="fixed top-0 left-0 right-0 z-50 hidden lg:block border-b"
         style={{ borderColor: 'var(--rule)', backgroundColor: 'var(--bg)' }}
       >
         <div className="flex items-center justify-between px-6 py-4">
@@ -87,10 +174,8 @@ export default function DashboardLayout({ children, activeTab = 'dashboard' }: D
           </div>
 
           {/* Search Bar */}
-          <div className="flex-1 max-w-md mx-8 hidden md:block">
-            <div 
-              className="relative flex items-center"
-            >
+          <div className="flex-1 max-w-md mx-8">
+            <div className="relative flex items-center">
               <Search className="absolute left-3 w-4 h-4" style={{ color: 'var(--ink-muted)' }} />
               <input
                 type="text"
@@ -135,7 +220,7 @@ export default function DashboardLayout({ children, activeTab = 'dashboard' }: D
               />
             </button>
 
-            {/* User Menu */}
+            {/* Desktop User Menu */}
             <div className="relative">
               <button
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
@@ -148,7 +233,7 @@ export default function DashboardLayout({ children, activeTab = 'dashboard' }: D
                 >
                   {user?.first_name?.charAt(0) || 'U'}
                 </div>
-                <div className="hidden sm:block text-left">
+                <div className="text-left">
                   <p className="font-semibold text-sm" style={{ color: 'var(--ink)' }}>
                     {user?.first_name || 'User'} {user?.last_name || ''}
                   </p>
@@ -156,10 +241,10 @@ export default function DashboardLayout({ children, activeTab = 'dashboard' }: D
                     Student
                   </p>
                 </div>
-                <ChevronDown className="w-4 h-4 hidden sm:block" style={{ color: 'var(--ink-muted)' }} />
+                <ChevronDown className="w-4 h-4" style={{ color: 'var(--ink-muted)' }} />
               </button>
 
-              {/* Dropdown Menu */}
+              {/* Desktop User Dropdown */}
               {userMenuOpen && (
                 <div 
                   className="absolute right-0 top-full mt-2 w-48 rounded-xl border shadow-lg z-50"
@@ -200,46 +285,103 @@ export default function DashboardLayout({ children, activeTab = 'dashboard' }: D
         </div>
       </header>
 
-      {/* Layout Container */}
-      <div className="flex w-full" style={{ paddingTop: '80px' }}>
-        {/* Fixed Sidebar */}
-        <aside 
-          className="fixed left-0 w-64 h-screen border-r overflow-y-auto"
-          style={{ 
-            borderColor: 'var(--rule)', 
-            backgroundColor: 'var(--bg)',
-            top: '80px',
-            bottom: 0
-          }}
-        >
-          <div className="p-4">
-            <nav className="space-y-2">
-              {sidebarItems.map((item) => (
-                <Link
-                  key={item.key}
-                  href={item.href}
-                  className="flex items-center gap-3 p-3 rounded-xl transition-all hover:bg-opacity-10"
-                  style={{
-                    backgroundColor: activeTab === item.key ? 'var(--navy)' : 'transparent',
-                    color: activeTab === item.key ? 'white' : 'var(--ink-muted)',
-                  }}
+      {/* Mobile Sidebar Overlay */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden">
+          <div 
+            className="absolute inset-0"
+            onClick={() => setMobileMenuOpen(false)}
+          />
+          <div 
+            className="absolute left-0 top-0 h-full w-64 border-r overflow-y-auto"
+            style={{ backgroundColor: 'var(--bg)', borderColor: 'var(--rule)' }}
+          >
+            {/* Mobile Sidebar Header */}
+            <div className="flex items-center justify-between p-4 border-b" style={{ borderColor: 'var(--rule)' }}>
+              <Link href="/" className="flex items-center gap-2">
+                <Image 
+                  src="/images/pin-logo.png" 
+                  alt="PIN Associate" 
+                  width={24} 
+                  height={24} 
+                  className="object-contain" 
+                />
+                <span 
+                  className="font-bold text-sm"
+                  style={{ color: 'var(--navy)', fontFamily: 'var(--font-display)' }}
                 >
-                  <item.icon className="w-5 h-5 flex-shrink-0" />
-                  <span className="font-medium">{item.label}</span>
-                </Link>
-              ))}
-            </nav>
+                  PIN Associate
+                </span>
+              </Link>
+              <button
+                onClick={() => setMobileMenuOpen(false)}
+                className="p-2 rounded-lg"
+                style={{ color: 'var(--ink-muted)' }}
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
 
+            {/* Mobile Navigation */}
+            <div className="p-4">
+              <nav className="space-y-2">
+                {sidebarItems.map((item) => (
+                  <Link
+                    key={item.key}
+                    href={item.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-3 p-3 rounded-xl transition-all"
+                    style={{
+                      backgroundColor: activeTab === item.key ? 'var(--navy)' : 'transparent',
+                      color: activeTab === item.key ? 'white' : 'var(--ink-muted)',
+                    }}
+                  >
+                    <item.icon className="w-5 h-5 flex-shrink-0" />
+                    <span className="font-medium">{item.label}</span>
+                  </Link>
+                ))}
+              </nav>
+            </div>
           </div>
-        </aside>
+        </div>
+      )}
 
-        {/* Main Content Area */}
-        <main className="flex-1 overflow-y-auto" style={{ marginLeft: '256px', height: 'calc(100vh - 80px)' }}>
-          <div className="p-6">
-            {children}
-          </div>
-        </main>
-      </div>
+      {/* Desktop Sidebar */}
+      <aside 
+        className="fixed left-0 w-64 h-screen border-r overflow-y-auto hidden lg:block"
+        style={{ 
+          borderColor: 'var(--rule)', 
+          backgroundColor: 'var(--bg)',
+          top: '80px',
+          bottom: 0
+        }}
+      >
+        <div className="p-4">
+          <nav className="space-y-2">
+            {sidebarItems.map((item) => (
+              <Link
+                key={item.key}
+                href={item.href}
+                className="flex items-center gap-3 p-3 rounded-xl transition-all hover:bg-opacity-10"
+                style={{
+                  backgroundColor: activeTab === item.key ? 'var(--navy)' : 'transparent',
+                  color: activeTab === item.key ? 'white' : 'var(--ink-muted)',
+                }}
+              >
+                <item.icon className="w-5 h-5 flex-shrink-0" />
+                <span className="font-medium">{item.label}</span>
+              </Link>
+            ))}
+          </nav>
+        </div>
+      </aside>
+
+      {/* Main Content Area */}
+      <main className="flex-1 overflow-y-auto pt-16 lg:pt-20 lg:ml-64 min-h-screen lg:min-h-0 lg:h-screen">
+        <div className="p-4 lg:p-6">
+          {children}
+        </div>
+      </main>
 
       {/* AI Support Chatbot */}
       <AISupportChatbot />

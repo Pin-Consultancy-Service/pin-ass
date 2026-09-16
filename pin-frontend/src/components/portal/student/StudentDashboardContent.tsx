@@ -76,24 +76,24 @@ export default function StudentDashboardContent() {
   return (
     <div>
       {/* Welcome Section */}
-      <div className="mb-8">
+      <div className="mb-6 md:mb-8">
         <h1 
-          className="text-2xl font-bold mb-2"
+          className="text-xl md:text-2xl font-bold mb-2"
           style={{ color: 'var(--ink)', fontFamily: 'var(--font-display)' }}
         >
           Welcome back, {user?.first_name || 'Michael'}!
         </h1>
-        <p style={{ color: 'var(--ink-muted)' }}>
+        <p className="text-sm md:text-base" style={{ color: 'var(--ink-muted)' }}>
           Here's what's happening with your studies today
         </p>
       </div>
 
       {/* Dashboard Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6">
         
         {/* Learning Progress Card */}
         <div 
-          className="lg:col-span-1 p-6 rounded-3xl transition-all hover:shadow-2xl border relative overflow-hidden group"
+          className="md:col-span-2 xl:col-span-1 p-4 md:p-6 rounded-2xl md:rounded-3xl transition-all hover:shadow-2xl border relative overflow-hidden group"
           style={{ 
             backgroundColor: 'var(--surface)', 
             borderColor: 'var(--rule)',
@@ -129,8 +129,8 @@ export default function StudentDashboardContent() {
           </div>
           
           {/* Enhanced Circular Progress */}
-          <div className="flex items-center justify-center mb-8 relative">
-            <div className="relative w-40 h-40 group-hover:scale-105 transition-transform duration-500">
+          <div className="flex items-center justify-center mb-6 md:mb-8 relative">
+            <div className="relative w-28 h-28 md:w-40 md:h-40 group-hover:scale-105 transition-transform duration-500">
               {/* Outer Ring with Glow */}
               <div 
                 className="absolute inset-0 rounded-full opacity-20 group-hover:opacity-40 transition-opacity duration-500"
@@ -141,7 +141,7 @@ export default function StudentDashboardContent() {
                 }}
               />
               
-              <svg className="w-40 h-40 transform -rotate-90 relative z-10" viewBox="0 0 120 120">
+              <svg className="w-28 h-28 md:w-40 md:h-40 transform -rotate-90 relative z-10" viewBox="0 0 120 120">
                 {/* Background Circle */}
                 <circle
                   cx="60"
@@ -180,7 +180,7 @@ export default function StudentDashboardContent() {
               {/* Center Content */}
               <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <div 
-                  className="text-3xl font-bold mb-1 transition-all duration-500 group-hover:scale-110"
+                  className="text-2xl md:text-3xl font-bold mb-1 transition-all duration-500 group-hover:scale-110"
                   style={{ 
                     color: 'var(--ink)', 
                     fontFamily: 'var(--font-display)',
@@ -249,7 +249,7 @@ export default function StudentDashboardContent() {
 
         {/* Finances Card */}
         <div 
-          className="lg:col-span-1 p-6 rounded-2xl transition-all hover:shadow-lg border"
+          className="p-4 md:p-6 rounded-2xl transition-all hover:shadow-lg border"
           style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--rule)' }}
         >
           <h3 className="font-semibold mb-4" style={{ color: 'var(--ink)' }}>
@@ -269,28 +269,28 @@ export default function StudentDashboardContent() {
             CURRENT BALANCE
           </p>
           
-          <div className="grid grid-cols-2 gap-4 mb-6">
+          <div className="grid grid-cols-2 gap-3 md:gap-4 mb-4 md:mb-6">
             <div 
-              className="p-4 rounded-xl transition-all hover:shadow-md"
+              className="p-3 md:p-4 rounded-lg md:rounded-xl transition-all hover:shadow-md"
               style={{ backgroundColor: 'var(--navy)' }}
             >
-              <div className="text-white text-sm font-bold mb-1">
+              <div className="text-white text-xs md:text-sm font-bold mb-1">
                 NEXT
               </div>
               <div className="text-white/80 text-xs mb-1">PAYMENT</div>
-              <div className="text-white font-bold">₦150.00</div>
+              <div className="text-white font-bold text-sm md:text-base">₦150.00</div>
               <div className="text-white/70 text-xs">August 30,2021</div>
             </div>
             
             <div 
-              className="p-4 rounded-xl transition-all hover:shadow-md"
+              className="p-3 md:p-4 rounded-lg md:rounded-xl transition-all hover:shadow-md"
               style={{ backgroundColor: 'var(--ink-faint)' }}
             >
-              <div className="text-white text-sm font-bold mb-1">
+              <div className="text-white text-xs md:text-sm font-bold mb-1">
                 LAST
               </div>
               <div className="text-white/80 text-xs mb-1">PAYMENT</div>
-              <div className="text-white font-bold">₦200.00</div>
+              <div className="text-white font-bold text-sm md:text-base">₦200.00</div>
               <div className="text-white/70 text-xs">July 20,2021</div>
             </div>
           </div>
@@ -305,7 +305,7 @@ export default function StudentDashboardContent() {
 
         {/* Weekly Schedule Card */}
         <div 
-          className="lg:col-span-1 p-6 rounded-2xl transition-all hover:shadow-lg border"
+          className="p-4 md:p-6 rounded-2xl transition-all hover:shadow-lg border"
           style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--rule)' }}
         >
           <h3 className="font-semibold mb-2" style={{ color: 'var(--ink)' }}>
@@ -323,7 +323,7 @@ export default function StudentDashboardContent() {
                   {day}
                 </div>
                 <div 
-                  className="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-semibold transition-all hover:scale-105"
+                  className="w-6 h-6 md:w-8 md:h-8 rounded-lg flex items-center justify-center text-xs md:text-sm font-semibold transition-all hover:scale-105"
                   style={{
                     backgroundColor: index === 3 ? 'var(--navy)' : 'transparent',
                     color: index === 3 ? 'white' : 'var(--ink)',
@@ -361,7 +361,7 @@ export default function StudentDashboardContent() {
         </div>
         {/* Learning Activity Card */}
         <div 
-          className="lg:col-span-2 p-6 rounded-2xl relative transition-all hover:shadow-lg border"
+          className="md:col-span-2 xl:col-span-2 p-4 md:p-6 rounded-2xl relative transition-all hover:shadow-lg border"
           style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--rule)' }}
         >
           <div className="flex items-center justify-between mb-6">
@@ -376,47 +376,47 @@ export default function StudentDashboardContent() {
             </div>
           </div>
           
-          <div className="grid grid-cols-3 gap-8 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-8 mb-6 md:mb-8">
             <div>
               <div 
-                className="text-4xl font-bold mb-2"
+                className="text-2xl md:text-4xl font-bold mb-2"
                 style={{ color: 'var(--ink)', fontFamily: 'var(--font-display)' }}
               >
                 {mockLearningActivity.hoursThisWeek}
               </div>
-              <div className="text-sm font-semibold tracking-wider" style={{ color: 'var(--ink-muted)' }}>
+              <div className="text-xs md:text-sm font-semibold tracking-wider" style={{ color: 'var(--ink-muted)' }}>
                 HOURS
               </div>
             </div>
             
             <div>
               <div 
-                className="text-4xl font-bold mb-2"
+                className="text-2xl md:text-4xl font-bold mb-2"
                 style={{ color: 'var(--ink)', fontFamily: 'var(--font-display)' }}
               >
                 {mockLearningActivity.coursesActive}
               </div>
-              <div className="text-sm font-semibold tracking-wider" style={{ color: 'var(--ink-muted)' }}>
+              <div className="text-xs md:text-sm font-semibold tracking-wider" style={{ color: 'var(--ink-muted)' }}>
                 COURSES
               </div>
             </div>
             
             <div>
               <div 
-                className="text-4xl font-bold mb-2 flex items-center gap-2"
+                className="text-2xl md:text-4xl font-bold mb-2 flex items-center gap-2"
                 style={{ color: 'var(--ink)', fontFamily: 'var(--font-display)' }}
               >
                 {mockLearningActivity.weeklyIncrease}%
-                <TrendingUp className="w-6 h-6 animate-bounce" style={{ color: 'var(--gold)' }} />
+                <TrendingUp className="w-4 h-4 md:w-6 md:h-6 animate-bounce" style={{ color: 'var(--gold)' }} />
               </div>
-              <div className="text-sm font-semibold tracking-wider" style={{ color: 'var(--ink-muted)' }}>
+              <div className="text-xs md:text-sm font-semibold tracking-wider" style={{ color: 'var(--ink-muted)' }}>
                 Since Last week
               </div>
             </div>
           </div>
           
           {/* Activity Chart */}
-          <div className="h-32 flex items-end gap-2">
+          <div className="h-24 md:h-32 flex items-end gap-1 md:gap-2">
             {mockLearningActivity.activityData.map((value, index) => (
               <div key={index} className="flex-1 flex flex-col items-center group">
                 <div 
@@ -427,8 +427,11 @@ export default function StudentDashboardContent() {
                     boxShadow: index === 5 ? '0 4px 12px rgba(30, 58, 138, 0.3)' : 'none'
                   }}
                 />
-                <div className="text-xs mt-2 font-medium transition-colors group-hover:text-gray-900" style={{ color: 'var(--ink-muted)' }}>
+                <div className="text-xs mt-1 md:mt-2 font-medium transition-colors group-hover:text-gray-900 hidden sm:block" style={{ color: 'var(--ink-muted)' }}>
                   {['Mon 01', 'Tue 02', 'Wed 03', 'Thu 04', 'Fri 05', 'Sat 06', 'Sun 07'][index]}
+                </div>
+                <div className="text-xs mt-1 font-medium transition-colors group-hover:text-gray-900 sm:hidden" style={{ color: 'var(--ink-muted)' }}>
+                  {['M', 'T', 'W', 'T', 'F', 'S', 'S'][index]}
                 </div>
               </div>
             ))}
@@ -447,7 +450,7 @@ export default function StudentDashboardContent() {
 
         {/* Today's Workplan */}
         <div 
-          className="lg:col-span-1 p-6 rounded-2xl"
+          className="p-4 md:p-6 rounded-2xl"
           style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--rule)' }}
         >
           <div className="flex items-center justify-between mb-2">
@@ -496,25 +499,25 @@ export default function StudentDashboardContent() {
 
         {/* Classmates Card */}
         <div 
-          className="lg:col-span-3 p-6 rounded-2xl transition-all hover:shadow-lg border"
+          className="md:col-span-2 xl:col-span-3 p-4 md:p-6 rounded-2xl transition-all hover:shadow-lg border"
           style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--rule)' }}
         >
-          <h3 className="font-semibold mb-6" style={{ color: 'var(--ink)' }}>
+          <h3 className="font-semibold mb-4 md:mb-6" style={{ color: 'var(--ink)' }}>
             Your Coursemates
           </h3>
           
-          <div className="flex items-center gap-4 overflow-x-auto pb-2">
+          <div className="flex items-center gap-3 md:gap-4 overflow-x-auto pb-2">
            
             
             {mockClassmates.map((classmate, index) => (
               <div key={index} className="flex flex-col items-center gap-2 flex-shrink-0 group">
                 <div 
-                  className="w-16 h-16 rounded-full flex items-center justify-center text-2xl border-2 relative transition-all hover:scale-110 group-hover:shadow-lg"
+                  className="w-12 h-12 md:w-16 md:h-16 rounded-full flex items-center justify-center text-lg md:text-2xl border-2 relative transition-all hover:scale-110 group-hover:shadow-lg"
                   style={{ borderColor: 'var(--navy)', backgroundColor: 'var(--surface)' }}
                 >
                   <span className="transition-transform group-hover:scale-110">{classmate.avatar}</span>
                   <div 
-                    className="absolute -top-1 -right-1 w-4 h-4 rounded-full border-2 border-white animate-pulse"
+                    className="absolute -top-1 -right-1 w-3 h-3 md:w-4 md:h-4 rounded-full border-2 border-white animate-pulse"
                     style={{ backgroundColor: '#10B981' }}
                   />
                 </div>

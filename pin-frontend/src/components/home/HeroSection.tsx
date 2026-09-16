@@ -207,7 +207,7 @@ export default function HeroSection() {
             className="flex flex-wrap gap-3"
           >
             <Link
-              href="/apply"
+              href="/portal/register"
               className="btn btn-primary"
               style={{ height: "3.125rem", padding: "0 2.25rem", fontSize: "0.9375rem" }}
             >
@@ -215,7 +215,7 @@ export default function HeroSection() {
               <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
-              href="/courses"
+              href="/portal/register"
               className="btn"
               style={{
                 height: "3.125rem", padding: "0 2rem", fontSize: "0.9375rem",
