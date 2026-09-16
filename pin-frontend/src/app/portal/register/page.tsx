@@ -1,5 +1,6 @@
-import type { Metadata } from "next";
 import RegisterPageContent from "@/components/portal/RegisterPageContent";
+import type { Metadata } from "next";
+
 
 export const metadata: Metadata = {
   title: "Create an Account | PIN Associate",

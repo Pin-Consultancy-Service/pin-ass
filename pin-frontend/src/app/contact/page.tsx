@@ -3,6 +3,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import ContactPageContent from "@/components/contact/ContactPageContent";
 
+
 export const metadata: Metadata = {
   title: "Contact PIN Associate | Get in Touch",
   description:

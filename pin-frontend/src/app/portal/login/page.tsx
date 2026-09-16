@@ -1,5 +1,6 @@
-import type { Metadata } from "next";
 import LoginPageContent from "@/components/portal/LoginPageContent";
+import type { Metadata } from "next";
+
 
 export const metadata: Metadata = {
   title: "Portal Login | PIN Associate",
