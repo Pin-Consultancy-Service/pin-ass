@@ -2,86 +2,190 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Play, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 
-/* ── Slide data — unchanged ──────────────────────────── */
-const bgSlides = [
-  { id: 1, src: "https://res.cloudinary.com/yaovkmpi/image/upload/v1784613464/Blue_Futuristic_Technology_LinkedIn_Background_Photo_3_l4mhqd.png", alt: "Graduation and professional success" },
-  { id: 2, src: "https://res.cloudinary.com/yaovkmpi/image/upload/v1784557870/Purple_Abstract_Graphic_Design_LinkedIn_Article_Cover_Image_1_lle3mb.png", alt: "Professional accounting class" },
-  // { id: 3, src: "https://res.cloudinary.com/yaovkmpi/image/upload/v1784484978/wmremove-transformed_1_1_el1lye.jpg", alt: "Corporate learning session" },
-  { id: 4, src: "https://res.cloudinary.com/yaovkmpi/image/upload/v1784613463/7_czosms.png", alt: "Graduation and professional success" },
-  { id: 5, src: "https://res.cloudinary.com/yaovkmpi/image/upload/v1789493220/Blue_Futuristic_Technology_zbrcih.png", alt: "Professionals reviewing documents" },
-];
-
-const stats = [
-  { value: "5,000+", label: "Students Trained" },
-  { value: "87%",    label: "First-Attempt Pass Rate" },
-  { value: "15+",    label: "Expert Tutors" },
-  { value: "2009",   label: "Established" },
+/* ── Service Lines Slide Data ────────────────────────── */
+const serviceSlides = [
+  {
+    id: 1,
+    label: "PROFESSIONAL EXAMINATION TUTORING",
+    headline: {
+      regular: "Pass Your Professional",
+      emphasis: "Exams With Confidence."
+    },
+    description: "PIN Associate helps students and professionals pass ICAN, ACCA, CITN, CISA, and ATS exams on their first attempt with expert tutors and structured programmes.",
+    cta: {
+      primary: { text: "Apply Now", href: "/portal/register" },
+      secondary: { text: "Explore Courses", href: "/#programs" }
+    },
+    background: {
+      src: "https://res.cloudinary.com/yaovkmpi/image/upload/v1784613464/Blue_Futuristic_Technology_LinkedIn_Background_Photo_3_l4mhqd.png",
+      alt: "Professional examination preparation"
+    }
+  },
+  {
+    id: 2,
+    label: "BUSINESS & FINANCIAL CONSULTING", 
+    headline: {
+      regular: "Expert Guidance For Every",
+      emphasis: "Business Decision."
+    },
+    description: "PIN Associate provides businesses with expert advisory, taxation, financial statement preparation, audits, and asset review helping you make confident, well-informed decisions.", // TODO: Refine wording with client
+    cta: {
+      primary: { text: "Get Started", href: "/contact?service=consultancy" },
+      secondary: { text: "Explore Consulting", href: "/corporate" }
+    },
+    background: {
+      // TODO: Needs business/consulting-appropriate image (office setting, financial documents, professional meeting)
+      src: "https://res.cloudinary.com/yaovkmpi/image/upload/v1784557870/Purple_Abstract_Graphic_Design_LinkedIn_Article_Cover_Image_1_lle3mb.png", // Placeholder
+      alt: "Business and financial consulting"
+    }
+  },
+  {
+    id: 3,
+    label: "CORPORATE TRAINING PROGRAMMES",
+    headline: {
+      regular: "Building Stronger Teams",
+      emphasis: "Through Practical Training."
+    },
+    description: "Our corporate training programmes are designed to sharpen skills and drive real, measurable results for your organization.", // TODO: Refine wording with client
+    cta: {
+      primary: { text: "Get Started", href: "/contact?service=training" },
+      secondary: { text: "Explore Training", href: "/corporate#training" }
+    },
+    background: {
+      // TODO: Needs training/workshop-appropriate image
+      src: "https://res.cloudinary.com/yaovkmpi/image/upload/v1789493220/Blue_Futuristic_Technology_zbrcih.png", // Placeholder
+      alt: "Corporate training programmes"
+    }
+  }
 ];
 
 export default function HeroSection() {
-  const [bgIdx,  setBgIdx]  = useState(0);
+  const [currentSlide, setCurrentSlide] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [direction, setDirection] = useState(1); // 1 = forward, -1 = backward
   const timer = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const goTo   = useCallback((i: number) => setBgIdx(((i % bgSlides.length) + bgSlides.length) % bgSlides.length), []);
-  const bgNext = useCallback(() => goTo(bgIdx + 1), [bgIdx, goTo]);
-  const bgPrev = useCallback(() => goTo(bgIdx - 1), [bgIdx, goTo]);
-
+  // Preload all images to prevent transition jank
   useEffect(() => {
-    if (paused) return;
-    timer.current = setInterval(bgNext, 6000);
-    return () => { if (timer.current) clearInterval(timer.current); };
-  }, [paused, bgNext]);
+    serviceSlides.forEach((slide) => {
+      // Use Next.js Image component preloading
+      const link = document.createElement('link');
+      link.rel = 'preload';
+      link.as = 'image';
+      link.href = slide.background.src;
+      document.head.appendChild(link);
+    });
+  }, []);
+
+  const goToSlide = useCallback((index: number, slideDirection: number = 1) => {
+    const newIndex = ((index % serviceSlides.length) + serviceSlides.length) % serviceSlides.length;
+    setDirection(slideDirection);
+    setCurrentSlide(newIndex);
+    
+    // Reset auto-advance timer when manually navigating
+    if (timer.current) {
+      clearInterval(timer.current);
+    }
+    if (!paused) {
+      timer.current = setInterval(() => {
+        setDirection(1); // Auto-advance always goes forward
+        setCurrentSlide(prev => (prev + 1) % serviceSlides.length);
+      }, 4000);
+    }
+  }, [paused]);
+
+  const nextSlide = useCallback(() => goToSlide(currentSlide + 1, 1), [currentSlide, goToSlide]);
+  const prevSlide = useCallback(() => goToSlide(currentSlide - 1, -1), [currentSlide, goToSlide]);
+
+  // Auto-advance functionality
+  useEffect(() => {
+    if (paused) {
+      if (timer.current) clearInterval(timer.current);
+      return;
+    }
+
+    timer.current = setInterval(() => {
+      setDirection(1); // Auto-advance always goes forward
+      setCurrentSlide(prev => (prev + 1) % serviceSlides.length);
+    }, 4000); // 4 seconds for smooth experience
+
+    return () => {
+      if (timer.current) clearInterval(timer.current);
+    };
+  }, [paused]);
+
+  // Pause/resume on hover
+  const handleMouseEnter = useCallback(() => setPaused(true), []);
+  const handleMouseLeave = useCallback(() => setPaused(false), []);
 
   return (
     <section
       className="relative w-full overflow-hidden"
       style={{ minHeight: "100svh" }}
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
-      {/* ── Background carousel ──────────────────── */}
-      <div className="absolute inset-0" aria-hidden="true">
+      {/* ── Horizontal sliding carousel ──────────────────── */}
+      <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
         <AnimatePresence initial={false}>
           <motion.div
-            key={bgSlides[bgIdx].id}
-            className="absolute inset-0"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 1.4, ease: "easeInOut" }}
+            key={currentSlide}
+            className="absolute inset-0 flex"
+            initial={{
+              x: direction > 0 ? "100%" : "-100%"
+            }}
+            animate={{
+              x: "0%"
+            }}
+            exit={{
+              x: direction > 0 ? "-100%" : "100%"
+            }}
+            transition={{ 
+              type: "tween",
+              ease: [0.4, 0, 0.2, 1],
+              duration: 0.65
+            }}
+            style={{
+              willChange: 'transform'
+            }}
           >
-            <img
-              src={bgSlides[bgIdx].src}
-              alt={bgSlides[bgIdx].alt}
-              style={{
-                position: "absolute", inset: 0,
-                width: "100%", height: "100%",
-                objectFit: "cover", objectPosition: "center",
-              }}
-              loading="eager"
+            {/* Background Image */}
+            <div className="absolute inset-0">
+              <Image
+                src={serviceSlides[currentSlide].background.src}
+                alt={serviceSlides[currentSlide].background.alt}
+                fill
+                priority
+                quality={85}
+                sizes="100vw"
+                style={{
+                  objectFit: "cover",
+                  objectPosition: "center",
+                }}
+              />
+            </div>
+
+            {/* Navy brand overlay for text readability */}
+            <div
+              className="absolute inset-0"
+              style={{ background: "rgba(30, 58, 138, 0.45)" }}
+            />
+            {/* Bottom vignette - navy fade */}
+            <div
+              className="absolute bottom-0 left-0 right-0 h-40 pointer-events-none"
+              style={{ background: "linear-gradient(to top, rgba(30,58,138,0.3), transparent)" }}
             />
           </motion.div>
         </AnimatePresence>
-
-        {/* Navy brand overlay for text readability */}
-        <div
-          className="absolute inset-0"
-          style={{ background: "rgba(30, 58, 138, 0.45)" }}
-        />
-        {/* Bottom vignette - navy fade */}
-        <div
-          className="absolute bottom-0 left-0 right-0 h-40 pointer-events-none"
-          style={{ background: "linear-gradient(to top, rgba(30,58,138,0.3), transparent)" }}
-        />
       </div>
 
       {/* ── Carousel arrows — desktop only ───────── */}
       <button
-        onClick={bgPrev}
+        onClick={prevSlide}
         aria-label="Previous slide"
         className="absolute hidden lg:flex left-8 top-1/2 -translate-y-1/2 z-20
                    w-9 h-9 items-center justify-center
@@ -91,7 +195,7 @@ export default function HeroSection() {
         <ChevronLeft className="w-4 h-4" />
       </button>
       <button
-        onClick={bgNext}
+        onClick={nextSlide}
         aria-label="Next slide"
         className="absolute hidden lg:flex right-8 top-1/2 -translate-y-1/2 z-20
                    w-9 h-9 items-center justify-center
@@ -101,144 +205,118 @@ export default function HeroSection() {
         <ChevronRight className="w-4 h-4" />
       </button>
 
+      {/* ── Fixed text content layer with smooth transitions ── */}
+      <div className="content-container relative z-10 flex items-center" style={{ minHeight: "100svh" }}>
+        <div className="w-full py-32 lg:py-23" style={{ maxWidth: "42rem" }}>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={`text-${currentSlide}`}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ 
+                duration: 0.5,
+                ease: [0.4, 0, 0.2, 1]
+              }}
+              className="flex flex-col"
+            >
+              {/* Eyebrow Label */}
+              <div className="mb-6 flex items-center gap-3">
+                <span
+                  style={{ display: "block", width: "2.5rem", height: "1px", backgroundColor: "var(--gold-light)" }}
+                />
+                <span
+                  style={{
+                    fontFamily: "var(--font-body)",
+                    fontSize: "0.6875rem",
+                    fontWeight: 500,
+                    letterSpacing: "0.14em",
+                    textTransform: "uppercase",
+                    color: "var(--gold-light)",
+                  }}
+                >
+                  {serviceSlides[currentSlide].label}
+                </span>
+              </div>
+
+              {/* Headline */}
+             <h1
+              style={{
+                fontFamily: "var(--font-display)",
+                fontWeight: 500,
+                fontSize: "clamp(3.25rem, 7vw, 6.5rem)",
+                lineHeight: "clamp(0.73, 0.1, 0.30)", // <--- Responsive Line Height
+                letterSpacing: "-0.015em",
+                color: "#fff",
+                marginBottom: "1.75rem",
+              }}
+              >
+              {serviceSlides[currentSlide].headline.regular}<br />
+              <em style={{ color: "var(--gold-light)", fontStyle: "italic" }}>
+                {serviceSlides[currentSlide].headline.emphasis}
+              </em>
+            </h1>
+
+              {/* Description */}
+              <p
+                style={{
+                  fontFamily: "var(--font-body)",
+                  fontSize: "1.0625rem",
+                  lineHeight: 1.65,
+                  color: "rgba(255,255,255,0.70)",
+                  maxWidth: "36rem",
+                  marginBottom: "2.75rem",
+                }}
+              >
+                {serviceSlides[currentSlide].description}
+              </p>
+
+              {/* CTAs */}
+              <div className="flex flex-wrap gap-3">
+                <Link
+                  href={serviceSlides[currentSlide].cta.primary.href}
+                  className="btn btn-primary"
+                  style={{ height: "3.125rem", padding: "0 2.25rem", fontSize: "0.9375rem" }}
+                >
+                  {serviceSlides[currentSlide].cta.primary.text}
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+                <Link
+                  href={serviceSlides[currentSlide].cta.secondary.href}
+                  className="btn"
+                  style={{
+                    height: "3.125rem", padding: "0 2rem", fontSize: "0.9375rem",
+                    backgroundColor: "transparent",
+                    border: "1px solid rgba(255,255,255,0.3)",
+                    color: "#fff",
+                    borderRadius: "2px",
+                  }}
+                >
+                  {serviceSlides[currentSlide].cta.secondary.text}
+                </Link>
+              </div>
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      </div>
+
       {/* Pagination dots */}
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
-        {bgSlides.map((s, i) => (
+        {serviceSlides.map((slide, i) => (
           <button
-            key={s.id}
-            onClick={() => goTo(i)}
+            key={slide.id}
+            onClick={() => goToSlide(i, i > currentSlide ? 1 : -1)}
             aria-label={`Go to slide ${i + 1}`}
             className="transition-all duration-300"
             style={{
-              width: i === bgIdx ? "2rem" : "0.375rem",
+              width: i === currentSlide ? "2rem" : "0.375rem",
               height: "2px",
-              backgroundColor: i === bgIdx ? "var(--gold-light)" : "rgba(255,255,255,0.35)",
+              backgroundColor: i === currentSlide ? "var(--gold-light)" : "rgba(255,255,255,0.35)",
               border: "none",
               cursor: "pointer",
             }}
           />
         ))}
-      </div>
-
-      {/* ── Content — full-width, centred on desktop ── */}
-      <div
-        className="content-container relative z-10 flex items-center"
-        style={{ minHeight: "100svh" }}
-      >
-        {/*
-          Single-column layout now that the video card is removed.
-          Max-width cap keeps the text from stretching uncomfortably wide
-          on very large screens — 680px feels editorial and readable.
-          Left-aligned on all sizes; centred copy would weaken the serif feel.
-        */}
-        <div className="w-full py-32 lg:py-28" style={{ maxWidth: "42rem" }}>
-
-          {/* Eyebrow */}
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, delay: 0.05 }}
-            className="mb-6 flex items-center gap-3"
-          >
-            <span
-              style={{ display: "block", width: "2.5rem", height: "1px", backgroundColor: "var(--gold-light)" }}
-            />
-            <span
-              style={{
-                fontFamily: "var(--font-body)",
-                fontSize: "0.6875rem",
-                fontWeight: 500,
-                letterSpacing: "0.14em",
-                textTransform: "uppercase",
-                color: "var(--gold-light)",
-              }}
-            >
-              Professional Examination Tutoring
-            </span>
-          </motion.div>
-
-          {/* Headline */}
-          <motion.h1
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, delay: 0.12 }}
-            style={{
-              fontFamily: "var(--font-display)",
-              fontWeight: 500,
-              fontSize: "clamp(3.25rem, 7vw, 6.5rem)",
-              lineHeight: 0.98,
-              letterSpacing: "-0.015em",
-              color: "#fff",
-              marginBottom: "1.75rem",
-            }}
-          >
-            Pass Your<br />
-            Professional<br />
-            <em style={{ color: "var(--gold-light)", fontStyle: "italic" }}>
-              Exams With Confidence.
-            </em>
-          </motion.h1>
-
-          {/* Sub-heading */}
-          <motion.p
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, delay: 0.2 }}
-            style={{
-              fontFamily: "var(--font-body)",
-              fontSize: "1.0625rem",
-              lineHeight: 1.65,
-              color: "rgba(255,255,255,0.70)",
-              maxWidth: "36rem",
-              marginBottom: "2.75rem",
-            }}
-          >
-            PIN Associate prepares students and working professionals to pass
-            ICAN, ACCA, CITN, CISA, ATS, and IFRS exams on their{" "}
-            <span style={{ color: "rgba(255,255,255,0.92)", fontWeight: 500 }}>first attempt</span>{" "}
-           with expert tutors, structured programmes, and exam-focused resources.
-          </motion.p>
-
-          {/* CTAs */}
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, delay: 0.28 }}
-            className="flex flex-wrap gap-3"
-          >
-            <Link
-              href="/portal/login"
-              className="btn btn-primary"
-              style={{ height: "3.125rem", padding: "0 2.25rem", fontSize: "0.9375rem" }}
-            >
-              Apply Now
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-            <Link
-              href="/portal/login"
-              className="btn"
-              style={{
-                height: "3.125rem", padding: "0 2rem", fontSize: "0.9375rem",
-                backgroundColor: "transparent",
-                border: "1px solid rgba(255,255,255,0.3)",
-                color: "#fff",
-                borderRadius: "2px",
-              }}
-            >
-              Explore Courses
-            </Link>
-            <button
-              className="flex items-center gap-2.5 transition-opacity hover:opacity-70"
-              style={{
-                background: "none", border: "none",
-                color: "rgba(255,255,255,0.72)",
-                cursor: "pointer", fontSize: "0.875rem",
-              }}
-            >
-            </button>
-          </motion.div>
-
-        </div>
       </div>
     </section>
   );
