@@ -21,7 +21,7 @@ const serviceSlides = [
       secondary: { text: "Explore Courses", href: "/#programs" }
     },
     background: {
-      src: "https://res.cloudinary.com/yaovkmpi/image/upload/v1784613464/Blue_Futuristic_Technology_LinkedIn_Background_Photo_3_l4mhqd.png",
+      src: "https://res.cloudinary.com/yaovkmpi/image/upload/v1784488319/pexels-rdne-7821702_1_1_xq4cuh.jpg",
       alt: "Professional examination preparation"
     }
   },
@@ -39,7 +39,7 @@ const serviceSlides = [
     },
     background: {
       // TODO: Needs business/consulting-appropriate image (office setting, financial documents, professional meeting)
-      src: "https://res.cloudinary.com/yaovkmpi/image/upload/v1784557870/Purple_Abstract_Graphic_Design_LinkedIn_Article_Cover_Image_1_lle3mb.png", // Placeholder
+      src: "https://res.cloudinary.com/yaovkmpi/image/upload/v1784822717/media/blog/covers/building_business-compressed_xhrtaf.jpg", // Placeholder
       alt: "Business and financial consulting"
     }
   },
@@ -57,7 +57,7 @@ const serviceSlides = [
     },
     background: {
       // TODO: Needs training/workshop-appropriate image
-      src: "https://res.cloudinary.com/yaovkmpi/image/upload/v1789493220/Blue_Futuristic_Technology_zbrcih.png", // Placeholder
+      src: "https://res.cloudinary.com/yaovkmpi/image/upload/v1784822273/media/blog/covers/vision-to-reality-comp_pqn71i.jpg", // Placeholder
       alt: "Corporate training programmes"
     }
   }
