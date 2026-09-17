@@ -20,7 +20,7 @@ const programmes = [
 const navLinks = [
   { label: "About",    href: "/about" },
   { label: "Students", href: "/courses",           dropdown: true },
-  { label: "Clients",  href: "/corporate" },
+  { label: "Consulting",  href: "/corporate" },
   { label: "Training", href: "/corporate#training" },
   { label: "Payment",  href: "/payment" },
   { label: "Contact",  href: "/contact" },
