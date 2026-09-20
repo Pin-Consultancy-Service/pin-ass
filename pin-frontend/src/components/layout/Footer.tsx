@@ -117,6 +117,7 @@ export default function Footer() {
 
   return (
     <footer 
+      id="footer"
       className="relative overflow-hidden"
       style={{ color: "rgba(255,255,255,0.9)" }}
       onMouseEnter={() => setPaused(true)}

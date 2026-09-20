@@ -124,8 +124,14 @@ export default function HeroSection() {
 
   return (
     <section
+      id="hero"
       className="relative w-full overflow-hidden"
-      style={{ minHeight: "100svh" }}
+      style={{ 
+        minHeight: "100svh",
+        willChange: 'transform',
+        backfaceVisibility: 'hidden',
+        WebkitBackfaceVisibility: 'hidden'
+      }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
@@ -136,13 +142,13 @@ export default function HeroSection() {
             key={currentSlide}
             className="absolute inset-0 flex"
             initial={{
-              x: direction > 0 ? "100%" : "-100%"
+              transform: direction > 0 ? "translate3d(100%, 0, 0)" : "translate3d(-100%, 0, 0)"
             }}
             animate={{
-              x: "0%"
+              transform: "translate3d(0%, 0, 0)"
             }}
             exit={{
-              x: direction > 0 ? "-100%" : "100%"
+              transform: direction > 0 ? "translate3d(-100%, 0, 0)" : "translate3d(100%, 0, 0)"
             }}
             transition={{ 
               type: "tween",
@@ -150,11 +156,22 @@ export default function HeroSection() {
               duration: 0.65
             }}
             style={{
-              willChange: 'transform'
+              willChange: 'transform',
+              backfaceVisibility: 'hidden',
+              WebkitBackfaceVisibility: 'hidden',
+              height: '100%',
+              width: '100%'
             }}
           >
             {/* Background Image */}
-            <div className="absolute inset-0">
+            <div 
+              className="absolute inset-0"
+              style={{
+                willChange: 'transform',
+                backfaceVisibility: 'hidden',
+                WebkitBackfaceVisibility: 'hidden'
+              }}
+            >
               <Image
                 src={serviceSlides[currentSlide].background.src}
                 alt={serviceSlides[currentSlide].background.alt}
@@ -172,12 +189,22 @@ export default function HeroSection() {
             {/* Navy brand overlay for text readability */}
             <div
               className="absolute inset-0"
-              style={{ background: "rgba(30, 58, 138, 0.45)" }}
+              style={{ 
+                background: "rgba(30, 58, 138, 0.45)",
+                willChange: 'transform',
+                backfaceVisibility: 'hidden',
+                WebkitBackfaceVisibility: 'hidden'
+              }}
             />
             {/* Bottom vignette - navy fade */}
             <div
               className="absolute bottom-0 left-0 right-0 h-40 pointer-events-none"
-              style={{ background: "linear-gradient(to top, rgba(30,58,138,0.3), transparent)" }}
+              style={{ 
+                background: "linear-gradient(to top, rgba(30,58,138,0.3), transparent)",
+                willChange: 'transform',
+                backfaceVisibility: 'hidden',
+                WebkitBackfaceVisibility: 'hidden'
+              }}
             />
           </motion.div>
         </AnimatePresence>
@@ -206,17 +233,39 @@ export default function HeroSection() {
       </button>
 
       {/* ── Fixed text content layer with smooth transitions ── */}
-      <div className="content-container relative z-10 flex items-center" style={{ minHeight: "100svh" }}>
+      <div 
+        className="content-container relative z-10 flex items-center" 
+        style={{ 
+          minHeight: "100svh",
+          willChange: 'transform',
+          backfaceVisibility: 'hidden',
+          WebkitBackfaceVisibility: 'hidden'
+        }}
+      >
         <div className="w-full py-32 lg:py-23" style={{ maxWidth: "42rem" }}>
           <AnimatePresence mode="wait">
             <motion.div
               key={`text-${currentSlide}`}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
+              initial={{ 
+                opacity: 0, 
+                transform: "translate3d(0, 20px, 0)"
+              }}
+              animate={{ 
+                opacity: 1, 
+                transform: "translate3d(0, 0, 0)"
+              }}
+              exit={{ 
+                opacity: 0, 
+                transform: "translate3d(0, -20px, 0)"
+              }}
               transition={{ 
                 duration: 0.5,
                 ease: [0.4, 0, 0.2, 1]
+              }}
+              style={{
+                willChange: 'transform, opacity',
+                backfaceVisibility: 'hidden',
+                WebkitBackfaceVisibility: 'hidden'
               }}
               className="flex flex-col"
             >
