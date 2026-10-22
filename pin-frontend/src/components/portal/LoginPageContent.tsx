@@ -7,7 +7,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import { Eye, EyeOff, LogIn, AlertCircle, ArrowLeft } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { login, getStoredUser, portalHomeForRole, DEMO_MODE } from "@/lib/auth";
+import { login, getStoredUser, portalHomeForRole, DEMO_MODE, TEST_MODE } from "@/lib/auth";
 import GoogleAuthButton from "@/components/ui/GoogleAuthButton";
 
 /* ── Background slide data from hero section ──────────────────────────── */
@@ -40,6 +40,9 @@ export default function LoginPageContent() {
 
   /* If already logged in, redirect straight to their portal */
   useEffect(() => {
+    // Skip redirect check in TEST mode - always show login page
+    if (TEST_MODE) return;
+    
     // In demo mode, always redirect to student dashboard 
     if (DEMO_MODE) {
       router.replace(redirectTo || "/portal/student");
@@ -64,10 +67,27 @@ export default function LoginPageContent() {
     setLoading(true);
     
     try {
-      // In demo mode, just redirect without actual authentication
-      if (DEMO_MODE) {
+      // In TEST mode, accept any input and create a mock login
+      if (TEST_MODE) {
         // Simulate a brief loading state for realism
         await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        // Create and save a mock user based on the email entered
+        const mockUser = {
+          id: `test-user-${Date.now()}`,
+          email: email || "test@pinassociate.com",
+          first_name: email.split('@')[0] || "Test",
+          last_name: "User",
+          phone_number: "+234 800 000 0000",
+          role: "STUDENT" as const,
+          date_joined: new Date().toISOString(),
+        };
+        
+        // Save to localStorage so dashboard can access it
+        localStorage.setItem("pin_user", JSON.stringify(mockUser));
+        localStorage.setItem("pin_access", "test-access-token");
+        localStorage.setItem("pin_refresh", "test-refresh-token");
+        
         router.replace(redirectTo || "/portal/student");
         return;
       }

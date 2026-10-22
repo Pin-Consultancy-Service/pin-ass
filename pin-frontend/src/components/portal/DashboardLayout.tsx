@@ -10,6 +10,7 @@ import {
 import { getStoredUser, clearTokens } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 import AISupportChatbot from "@/components/ui/AISupportChatbot";
+import ClassNotifications from "@/components/portal/ClassNotifications";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -33,8 +34,10 @@ export default function DashboardLayout({ children, activeTab = 'dashboard' }: D
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     // Check for saved theme
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
@@ -94,19 +97,37 @@ export default function DashboardLayout({ children, activeTab = 'dashboard' }: D
             </span>
           </Link>
 
-          {/* Mobile User Menu */}
-          <div className="relative">
+          {/* Mobile Actions */}
+          <div className="flex items-center gap-2">
+            {/* Theme Toggle - Mobile */}
             <button
-              onClick={() => setUserMenuOpen(!userMenuOpen)}
-              className="flex items-center gap-2 p-1"
+              onClick={toggleTheme}
+              className="p-2 rounded-lg transition-colors"
+              style={{ color: 'var(--ink-muted)' }}
             >
-              <div 
-                className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold"
-                style={{ backgroundColor: 'var(--navy)' }}
-              >
-                {user?.first_name?.charAt(0) || 'U'}
-              </div>
+              {isDarkMode ? 
+                <Sun className="w-5 h-5" /> : 
+                <Moon className="w-5 h-5" />
+              }
             </button>
+
+            {/* Notifications - Mobile */}
+            <ClassNotifications />
+
+            {/* Mobile User Menu */}
+            <div className="relative">
+              <button
+                onClick={() => setUserMenuOpen(!userMenuOpen)}
+                className="flex items-center gap-2 p-1"
+              >
+                <div 
+                  className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold"
+                  style={{ backgroundColor: 'var(--navy)' }}
+                  suppressHydrationWarning
+                >
+                  {mounted ? (user?.first_name?.charAt(0) || 'U') : 'U'}
+                </div>
+              </button>
 
             {/* Mobile User Dropdown */}
             {userMenuOpen && (
@@ -144,6 +165,7 @@ export default function DashboardLayout({ children, activeTab = 'dashboard' }: D
                 </div>
               </div>
             )}
+            </div>
           </div>
         </div>
       </header>
@@ -206,19 +228,7 @@ export default function DashboardLayout({ children, activeTab = 'dashboard' }: D
               }
             </button>
             
-            <button
-              className="p-2 rounded-xl transition-colors relative"
-              style={{ 
-                backgroundColor: 'var(--surface)',
-                border: '1px solid var(--rule)'
-              }}
-            >
-              <Bell className="w-5 h-5" style={{ color: 'var(--ink-muted)' }} />
-              <div 
-                className="absolute -top-1 -right-1 w-3 h-3 rounded-full"
-                style={{ backgroundColor: 'var(--gold)' }}
-              />
-            </button>
+            <ClassNotifications />
 
             {/* Desktop User Menu */}
             <div className="relative">
@@ -230,12 +240,13 @@ export default function DashboardLayout({ children, activeTab = 'dashboard' }: D
                 <div 
                   className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold"
                   style={{ backgroundColor: 'var(--navy)' }}
+                  suppressHydrationWarning
                 >
-                  {user?.first_name?.charAt(0) || 'U'}
+                  {mounted ? (user?.first_name?.charAt(0) || 'U') : 'U'}
                 </div>
                 <div className="text-left">
-                  <p className="font-semibold text-sm" style={{ color: 'var(--ink)' }}>
-                    {user?.first_name || 'User'} {user?.last_name || ''}
+                  <p className="font-semibold text-sm" style={{ color: 'var(--ink)' }} suppressHydrationWarning>
+                    {mounted ? `${user?.first_name || 'User'} ${user?.last_name || ''}` : 'User'}
                   </p>
                   <p className="text-xs" style={{ color: 'var(--ink-muted)' }}>
                     Student

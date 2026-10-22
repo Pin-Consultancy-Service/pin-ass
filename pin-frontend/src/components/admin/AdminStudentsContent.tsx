@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { Search, Download, Eye, Edit, ChevronDown, ChevronUp } from "lucide-react";
+import { Search, Download, Eye, Edit, ChevronDown, ChevronUp, Plus } from "lucide-react";
 import { mockSystemUsers, mockEnrollments, formatNaira } from "@/lib/mockAdminData";
+import AddStudentModal from "@/components/admin/modals/AddStudentModal";
 
 export default function AdminStudentsContent() {
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedRow, setExpandedRow] = useState<string | null>(null);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   const students = mockSystemUsers.filter(u => u.role === 'student');
   const filteredStudents = students.filter(student =>
@@ -36,13 +38,23 @@ export default function AdminStudentsContent() {
             Manage student enrollments and track progress
           </p>
         </div>
-        <button
-          className="px-4 py-2 rounded-xl font-semibold text-sm flex items-center gap-2"
-          style={{ backgroundColor: 'var(--gold)', color: 'var(--navy-dark)' }}
-        >
-          <Download className="w-4 h-4" />
-          Export
-        </button>
+        <div className="flex gap-3">
+          <button
+            onClick={() => setIsAddModalOpen(true)}
+            className="px-4 py-2 rounded-xl font-semibold text-sm flex items-center gap-2 transition-all hover:scale-105"
+            style={{ backgroundColor: 'var(--gold)', color: 'var(--navy-dark)' }}
+          >
+            <Plus className="w-4 h-4" />
+            Add Student
+          </button>
+          <button
+            className="px-4 py-2 rounded-xl font-semibold text-sm flex items-center gap-2"
+            style={{ backgroundColor: 'var(--surface)', color: 'var(--ink)', border: '1px solid var(--rule)' }}
+          >
+            <Download className="w-4 h-4" />
+            Export
+          </button>
+        </div>
       </div>
 
       {/* Stats Cards */}
@@ -260,6 +272,16 @@ export default function AdminStudentsContent() {
           );
         })}
       </div>
+
+      {/* Add Student Modal */}
+      <AddStudentModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onSuccess={() => {
+          // In a real app, refresh the student list
+          console.log('Student added successfully');
+        }}
+      />
     </div>
   );
 }

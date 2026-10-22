@@ -288,3 +288,58 @@ export const getUsersByRole = (role: 'student' | 'instructor' | 'admin'): System
 export const formatNaira = (amount: number): string => {
   return `₦${amount.toLocaleString('en-NG')}`;
 };
+
+// Chart Data Generators
+export const getRevenueChartData = () => {
+  return [
+    { label: 'Jan', value: 450000 },
+    { label: 'Feb', value: 520000 },
+    { label: 'Mar', value: 480000 },
+    { label: 'Apr', value: 650000 },
+    { label: 'May', value: 720000 },
+    { label: 'Jun', value: 680000 },
+    { label: 'Jul', value: 795000 },
+  ];
+};
+
+export const getEnrollmentChartData = () => {
+  return [
+    { label: 'Week 1', value: 8 },
+    { label: 'Week 2', value: 12 },
+    { label: 'Week 3', value: 15 },
+    { label: 'Week 4', value: 11 },
+    { label: 'Week 5', value: 18 },
+    { label: 'Week 6', value: 22 },
+    { label: 'Week 7', value: 25 },
+    { label: 'Week 8', value: 20 },
+  ];
+};
+
+export const getProgrammeBreakdown = () => {
+  return [
+    { label: 'ICAN Foundation', value: 8, color: 'var(--navy)' },
+    { label: 'ICAN Professional', value: 6, color: 'var(--gold)' },
+    { label: 'Corporate Training', value: 4, color: '#16A34A' },
+  ];
+};
+
+export const getPaymentMethodBreakdown = () => {
+  return [
+    { label: 'Transfer', value: 12, color: 'var(--navy)' },
+    { label: 'Card', value: 5, color: 'var(--gold)' },
+    { label: 'Cash', value: 2, color: '#16A34A' },
+    { label: 'Cheque', value: 1, color: '#2563EB' },
+  ];
+};
+
+export const getExpenseData = () => {
+  return [
+    { label: 'Jan', revenue: 450000, expenses: 280000 },
+    { label: 'Feb', revenue: 520000, expenses: 310000 },
+    { label: 'Mar', revenue: 480000, expenses: 290000 },
+    { label: 'Apr', revenue: 650000, expenses: 380000 },
+    { label: 'May', revenue: 720000, expenses: 420000 },
+    { label: 'Jun', revenue: 680000, expenses: 390000 },
+    { label: 'Jul', revenue: 795000, expenses: 450000 },
+  ];
+};

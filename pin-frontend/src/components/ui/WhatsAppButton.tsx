@@ -27,7 +27,7 @@ export default function WhatsAppButton() {
         
         // Show tooltip when Hero OR Footer is in view
         const shouldShow = (heroEntry?.isIntersecting) || (footerEntry?.isIntersecting);
-        setShowTooltip(shouldShow);
+        setShowTooltip(shouldShow || false);
       },
       {
         threshold: 0.1, // Trigger when 10% of element is visible
@@ -54,64 +54,52 @@ export default function WhatsAppButton() {
 
   return (
     <div className="fixed z-50" style={{ right: "1.25rem", bottom: "1.25rem" }}>
+
       {/* Tooltip */}
       <AnimatePresence>
         {showTooltip && !tooltipDismissed && (
           <motion.div
-            initial={{ opacity: 0, x: 10, y: 5 }}
-            animate={{ opacity: 1, x: 0, y: 0 }}
-            exit={{ opacity: 0, x: 10, y: 5 }}
-            transition={{ 
+            initial={{ opacity: 0, y: 8, scale: 0.92 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 8, scale: 0.92 }}
+            transition={{
               type: "tween",
               ease: [0.4, 0, 0.2, 1],
-              duration: 0.3
+              duration: 0.3,
             }}
-            className="absolute right-16 bottom-2 flex items-center"
+            className="absolute bottom-full right-0 mb-8 origin-bottom-right"
             style={{
-              willChange: 'transform, opacity',
-              backfaceVisibility: 'hidden',
-              WebkitBackfaceVisibility: 'hidden'
+              willChange: "transform, opacity",
+              backfaceVisibility: "hidden",
+              WebkitBackfaceVisibility: "hidden",
+              filter: "drop-shadow(0 4px 12px rgba(0,0,0,0.15))",
             }}
           >
-            {/* Speech bubble */}
-            <div
-              className="relative flex items-center gap-2 px-4 py-3 text-sm font-medium text-gray-700 bg-white rounded-lg shadow-lg"
-              style={{
-                maxWidth: "200px",
-                filter: "drop-shadow(0 4px 12px rgba(0,0,0,0.15))"
-              }}
-            >
-              Chat with our team
-              
-              {/* Dismiss button */}
+            {/* Bubble body */}
+            <div className="relative w-max max-w-[150px] rounded-[14px] bg-white px-4 py-3 text-center text-[13px] font-medium italic leading-snug text-gray-700 [text-wrap:balance]">
+              Chat live with our team now!
+
+              {/* Dismiss button (sits on the top-right corner) */}
               <button
                 onClick={handleDismissTooltip}
-                className="ml-1 text-gray-400 hover:text-gray-600 transition-colors"
                 aria-label="Dismiss tooltip"
-                style={{
-                  width: "16px",
-                  height: "16px",
-                  padding: 0,
-                  border: "none",
-                  background: "none",
-                  cursor: "pointer"
-                }}
+                className="absolute -right-2 -top-2 grid h-5 w-5 place-items-center rounded-full bg-gray-800 text-white transition-transform hover:scale-110 focus-visible:outline-none"
               >
-                <X size={14} />
+                <X size={11} strokeWidth={3} />
               </button>
 
-              {/* Pointer tail */}
-              <div
-                className="absolute top-1/2 -translate-y-1/2 -right-1"
-                style={{
-                  width: 0,
-                  height: 0,
-                  borderTop: "6px solid transparent",
-                  borderBottom: "6px solid transparent",
-                  borderLeft: "8px solid white"
-                }}
+              {/* Round tail bump, merged into the bubble's bottom edge */}
+              <span
+                aria-hidden="true"
+                className="absolute -bottom-2 right-8 h-4 w-4 rounded-full bg-white"
               />
             </div>
+
+            {/* Small detached dot, down and to the right of the tail */}
+            <span
+              aria-hidden="true"
+              className="absolute -bottom-6 right-5 h-2.5 w-2.5 rounded-full bg-white"
+            />
           </motion.div>
         )}
       </AnimatePresence>

@@ -107,13 +107,13 @@ export default function StudentProfilePage() {
   return (
     <div className="max-w-2xl">
       <div className="mb-7">
-        <h1 className="font-heading font-extrabold text-[var(--navy)] text-2xl">My Profile</h1>
+        <h1 className="font-heading font-extrabold text-2xl" style={{ color: 'var(--ink)', fontFamily: 'var(--font-display)' }}>My Profile</h1>
         <p className="text-[var(--ink-muted)] text-sm mt-1">Your registration details and programme information.</p>
       </div>
 
       {/* Read-only account info */}
-      <div className="bg-white rounded-2xl border border-[var(--rule)] p-6 mb-5">
-        <h2 className="font-heading font-bold text-[var(--navy)] text-sm uppercase tracking-wider mb-5">Account Details</h2>
+      <div className="rounded-2xl border p-6 mb-5" style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--rule)' }}>
+        <h2 className="font-heading font-bold text-sm uppercase tracking-wider mb-5" style={{ color: 'var(--ink)' }}>Account Details</h2>
         <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {[
             { dt: "Full Name",        dd: profile?.full_name        || user?.first_name + " " + user?.last_name },
@@ -123,7 +123,7 @@ export default function StudentProfilePage() {
             { dt: "Date Enrolled",    dd: profile?.date_enrolled    || "—" },
             { dt: "Account Status",   dd: profile?.is_active_student ? "Active" : "Inactive" },
           ].map(({ dt, dd }) => (
-            <div key={dt} className="p-4 bg-[var(--surface)] rounded-xl">
+            <div key={dt} className="p-4 rounded-xl" style={{ backgroundColor: 'var(--bg)' }}>
               <dt className="text-[10px] font-bold text-[var(--ink-faint)] uppercase tracking-wider mb-1">{dt}</dt>
               <dd className="text-sm font-semibold text-[var(--ink)]">{dd}</dd>
             </div>
@@ -131,15 +131,15 @@ export default function StudentProfilePage() {
         </dl>
         <p className="text-xs text-[var(--ink-faint)] mt-4">
           To update your name, email, or phone number, contact{" "}
-          <a href="mailto:info@pinassociates.com.ng" className="text-[var(--navy)] hover:underline">
+          <a href="mailto:info@pinassociates.com.ng" className="hover:underline" style={{ color: 'var(--navy)' }}>
             info@pinassociates.com.ng
           </a>.
         </p>
       </div>
 
       {/* Editable programme info */}
-      <form onSubmit={handleSave} className="bg-white rounded-2xl border border-[var(--rule)] p-6">
-        <h2 className="font-heading font-bold text-[var(--navy)] text-sm uppercase tracking-wider mb-5">Programme Details</h2>
+      <form onSubmit={handleSave} className="rounded-2xl border p-6" style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--rule)' }}>
+        <h2 className="font-heading font-bold text-sm uppercase tracking-wider mb-5" style={{ color: 'var(--ink)' }}>Programme Details</h2>
 
         {error && (
           <div className="text-sm text-[#DC2626] bg-[#FEF2F2] border border-[#FECACA] rounded-xl p-4 mb-5">{error}</div>
@@ -169,9 +169,10 @@ export default function StudentProfilePage() {
           <button
             type="submit"
             disabled={saving}
-            className="inline-flex items-center gap-2 bg-[var(--navy)] text-white font-semibold
-                       text-sm px-6 py-3 rounded-xl hover:bg-[var(--navy-dark)] transition-colors
+            className="inline-flex items-center gap-2 font-semibold
+                       text-sm px-6 py-3 rounded-xl transition-colors
                        shadow-sm disabled:opacity-60"
+            style={{ backgroundColor: 'var(--navy)', color: 'white' }}
           >
             {saving
               ? <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -179,7 +180,7 @@ export default function StudentProfilePage() {
             {saving ? "Saving…" : "Save Changes"}
           </button>
           {saved && (
-            <span className="flex items-center gap-1.5 text-sm font-semibold text-[var(--navy)]">
+            <span className="flex items-center gap-1.5 text-sm font-semibold" style={{ color: 'var(--ink)' }}>
               <CheckCircle2 className="w-4 h-4" /> Saved
             </span>
           )}

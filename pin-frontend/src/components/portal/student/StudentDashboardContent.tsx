@@ -7,46 +7,12 @@ import {
   TrendingUp, CheckCircle2, Clock, ChevronDown, Plus
 } from "lucide-react";
 import { apiFetch, getStoredUser, DEMO_MODE } from "@/lib/auth";
+import { mockClasses } from "@/lib/mockClassData";
+import { mockAssignments as allAssignments } from "@/lib/mockAssignmentsData";
+import { mockFinances } from "@/lib/mockFinanceData";
 
 interface Balance { total_fees_due: string; total_paid: string; balance_due: string; updated_at: string; }
 interface Profile { registration_number: string; programme_display: string; diet: string; study_mode_display: string; date_enrolled: string; }
-
-// Mock data for the demo - replace with real data later
-const mockLearningProgress = {
-  currentProgram: "ICAN PROFESSIONAL LEVEL", // TODO: Confirm exact program naming convention PIN Associate uses
-  papersCompleted: 8, // TODO: Confirm if progress is tracked by papers, subjects, levels, or another unit
-  totalPapers: 15, // TODO: Get actual structure from PIN Associate
-  progressPercentage: 53, // Calculated from papers completed
-};
-
-const mockLearningActivity = {
-  hoursThisWeek: 45,
-  coursesActive: 3,
-  weeklyIncrease: 25,
-  activityData: [40, 35, 48, 42, 38, 45, 40],
-};
-
-const mockUpcomingClasses = [
-  { course: "MBA 610", title: "Leading Organizations", time: "9:00 AM - 9:00 AM", day: "Today" },
-  { course: "ITEC 626", title: "Information Systems Structure", time: "10:00 AM - 11:00 AM", day: "Today" },
-  { course: "PMAN 635", title: "Projects Quantitative Methods", time: "01:00 PM - 02:00 PM", day: "Today" },
-];
-
-const mockAssignments = [
-  { id: 1, course: "PMAN 635", title: "Assignment # 2", due: "Due Today at 11:00 PM" },
-  { id: 2, course: "ITEC 626", title: "Assignment # 3", due: "Due Tomorrow at 11:00 PM" },
-  { id: 3, course: "MBA 610", title: "Evaluation # 3", due: "Next Week" },
-];
-
-const mockClassmates = [
-  { name: "John", avatar: "👨‍💼" },
-  { name: "Kelly", avatar: "👩‍💼" },
-  { name: "Julie", avatar: "👩‍🎓" },
-  { name: "Rachel", avatar: "👩‍💻" },
-  { name: "Richard", avatar: "👨‍🏫" },
-  { name: "Jenny", avatar: "👩‍🔬" },
-  { name: "George", avatar: "👨‍💻" },
-];
 
 export default function StudentDashboardContent() {
   const router = useRouter();
@@ -54,6 +20,11 @@ export default function StudentDashboardContent() {
   const [balance, setBalance] = useState<Balance | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     // Skip auth check in demo mode
@@ -78,6 +49,85 @@ export default function StudentDashboardContent() {
 
   const fmt = (v: string | undefined) =>
     v ? `₦${Number(v).toLocaleString()}` : "—";
+
+  // Calculate real learning progress from mock classes
+  const completedClasses = mockClasses.filter(c => c.status === 'completed').length;
+  const totalClasses = mockClasses.length;
+  const progressPercentage = totalClasses > 0 ? Math.round((completedClasses / totalClasses) * 100) : 0;
+  
+  const learningProgress = {
+    currentProgram: "ICAN PROFESSIONAL LEVEL",
+    papersCompleted: completedClasses,
+    totalPapers: totalClasses,
+    progressPercentage,
+  };
+
+  // Get upcoming classes (scheduled or live) sorted by date
+  // Only compute on client to avoid hydration issues
+  const upcomingClasses = mounted ? mockClasses
+    .filter(c => c.status === 'scheduled' || c.status === 'live')
+    .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())
+    .slice(0, 3)
+    .map(cls => {
+      const now = new Date();
+      const startTime = new Date(cls.startTime);
+      const endTime = new Date(cls.endTime);
+      const isToday = startTime.toDateString() === now.toDateString();
+      const isTomorrow = startTime.toDateString() === new Date(now.getTime() + 86400000).toDateString();
+      
+      return {
+        course: cls.course,
+        title: cls.title,
+        time: `${startTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })} - ${endTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`,
+        day: isToday ? 'Today' : isTomorrow ? 'Tomorrow' : startTime.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
+      };
+    }) : [];
+
+  // Get pending assignments
+  const pendingAssignments = mounted ? allAssignments
+    .filter(a => a.status === 'pending' || a.status === 'submitted')
+    .slice(0, 3)
+    .map(assignment => {
+      const now = new Date();
+      const dueDate = new Date(assignment.dueDate);
+      const isToday = dueDate.toDateString() === now.toDateString();
+      const isTomorrow = dueDate.toDateString() === new Date(now.getTime() + 86400000).toDateString();
+      
+      let dueText = '';
+      if (isToday) {
+        dueText = `Due Today at ${dueDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`;
+      } else if (isTomorrow) {
+        dueText = `Due Tomorrow at ${dueDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`;
+      } else {
+        dueText = `Due ${dueDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
+      }
+      
+      return {
+        id: assignment.id,
+        course: assignment.course,
+        title: assignment.title,
+        due: dueText
+      };
+    }) : [];
+
+  // Mock learning activity (can be enhanced later with real data)
+  const learningActivity = {
+    hoursThisWeek: completedClasses * 2, // Assume 2 hours per completed class
+    coursesActive: [...new Set(mockClasses.map(c => c.course))].length,
+    weeklyIncrease: 25,
+    activityData: [40, 35, 48, 42, 38, 45, 40],
+  };
+
+  // Mock classmates (can be populated from real data later)
+  const mockClassmates = [
+    { name: "John", avatar: "👨‍💼" },
+    { name: "Kelly", avatar: "👩‍💼" },
+    { name: "Julie", avatar: "👩‍🎓" },
+    { name: "Rachel", avatar: "👩‍💻" },
+    { name: "Richard", avatar: "👨‍🏫" },
+    { name: "Jenny", avatar: "👩‍🔬" },
+    { name: "George", avatar: "👨‍💻" },
+  ];
 
   return (
     <div>
@@ -130,7 +180,7 @@ export default function StudentDashboardContent() {
                 background: 'linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%)'
               }}
             >
-              53% Complete
+              {learningProgress.progressPercentage}% Complete
             </div>
           </div>
           
@@ -176,7 +226,7 @@ export default function StudentDashboardContent() {
                   strokeWidth="6"
                   fill="none"
                   strokeDasharray={`${2 * Math.PI * 50}`}
-                  strokeDashoffset={`${2 * Math.PI * 50 * (1 - mockLearningProgress.progressPercentage / 100)}`}
+                  strokeDashoffset={`${2 * Math.PI * 50 * (1 - learningProgress.progressPercentage / 100)}`}
                   className="transition-all duration-1000 ease-out"
                   strokeLinecap="round"
                   filter="drop-shadow(0 0 8px rgba(30, 58, 138, 0.3))"
@@ -196,13 +246,13 @@ export default function StudentDashboardContent() {
                     backgroundClip: 'text'
                   }}
                 >
-                  {mockLearningProgress.papersCompleted}
+                  {learningProgress.papersCompleted}
                 </div>
                 <div className="text-xs font-bold tracking-wider" style={{ color: 'var(--ink-muted)' }}>
                   PAPERS
                 </div>
                 <div className="text-xs mt-1 text-center leading-tight" style={{ color: 'var(--ink-faint)' }}>
-                  of {mockLearningProgress.totalPapers} required
+                  of {learningProgress.totalPapers} required
                 </div>
               </div>
             </div>
@@ -221,7 +271,7 @@ export default function StudentDashboardContent() {
                 PROFESSIONAL CERTIFICATION
               </p>
               <p className="font-bold text-sm leading-tight" style={{ color: 'var(--navy)' }}>
-                {mockLearningProgress.currentProgram}
+                {learningProgress.currentProgram}
               </p>
             </div>
             
@@ -269,10 +319,13 @@ export default function StudentDashboardContent() {
             className="text-3xl font-bold mb-2"
             style={{ color: 'var(--ink)', fontFamily: 'var(--font-display)' }}
           >
-            {fmt(balance?.balance_due) || '₦150.00'}
+            {DEMO_MODE 
+              ? `₦${mockFinances.outstandingBalance.toLocaleString()}`
+              : (fmt(balance?.balance_due) || '₦0.00')
+            }
           </div>
           <p className="text-xs mb-6 font-semibold tracking-wider" style={{ color: 'var(--ink-muted)' }}>
-            CURRENT BALANCE
+            OUTSTANDING BALANCE
           </p>
           
           <div className="grid grid-cols-2 gap-3 md:gap-4 mb-4 md:mb-6">
@@ -281,32 +334,35 @@ export default function StudentDashboardContent() {
               style={{ backgroundColor: 'var(--navy)' }}
             >
               <div className="text-white text-xs md:text-sm font-bold mb-1">
-                NEXT
+                TOTAL
               </div>
-              <div className="text-white/80 text-xs mb-1">PAYMENT</div>
-              <div className="text-white font-bold text-sm md:text-base">₦150.00</div>
-              <div className="text-white/70 text-xs">August 30,2021</div>
+              <div className="text-white/80 text-xs mb-1">FEES</div>
+              <div className="text-white font-bold text-sm md:text-base">
+                ₦{mockFinances.totalFees.toLocaleString()}
+              </div>
             </div>
             
             <div 
               className="p-3 md:p-4 rounded-lg md:rounded-xl transition-all hover:shadow-md"
-              style={{ backgroundColor: 'var(--ink-faint)' }}
+              style={{ backgroundColor: 'var(--gold)' }}
             >
               <div className="text-white text-xs md:text-sm font-bold mb-1">
-                LAST
+                TOTAL
               </div>
-              <div className="text-white/80 text-xs mb-1">PAYMENT</div>
-              <div className="text-white font-bold text-sm md:text-base">₦200.00</div>
-              <div className="text-white/70 text-xs">July 20,2021</div>
+              <div className="text-white/80 text-xs mb-1">PAID</div>
+              <div className="text-white font-bold text-sm md:text-base">
+                ₦{mockFinances.totalPaid.toLocaleString()}
+              </div>
             </div>
           </div>
           
-          <button 
-            className="w-full py-3 px-4 rounded-xl font-semibold text-white transition-all hover:shadow-md hover:scale-[1.02]"
+          <Link 
+            href="/portal/student/fees"
+            className="w-full py-3 px-4 rounded-xl font-semibold text-white transition-all hover:shadow-md hover:scale-[1.02] block text-center"
             style={{ backgroundColor: 'var(--navy)' }}
           >
-            Go to Your Account
-          </button>
+            View Full Financial Details
+          </Link>
         </div>
 
         {/* Weekly Schedule Card */}
@@ -344,25 +400,31 @@ export default function StudentDashboardContent() {
           
           {/* Today's Classes */}
           <div className="space-y-3">
-            {mockUpcomingClasses.map((cls, index) => (
-              <div key={index} className="flex items-center gap-3 p-2 rounded-lg transition-all hover:bg-opacity-50" style={{ backgroundColor: 'transparent' }}>
-                <div 
-                  className="w-3 h-3 rounded-full animate-pulse"
-                  style={{ backgroundColor: 'var(--gold)' }}
-                />
-                <div className="flex-1">
-                  <p className="font-semibold text-sm" style={{ color: 'var(--ink)' }}>
-                    {cls.course}
-                  </p>
-                  <p className="text-xs" style={{ color: 'var(--ink-muted)' }}>
-                    {cls.title}
-                  </p>
-                  <p className="text-xs font-medium" style={{ color: 'var(--ink-faint)' }}>
-                    {cls.time}
-                  </p>
+            {upcomingClasses.length > 0 ? (
+              upcomingClasses.map((cls, index) => (
+                <div key={index} className="flex items-center gap-3 p-2 rounded-lg transition-all hover:bg-opacity-50" style={{ backgroundColor: 'transparent' }}>
+                  <div 
+                    className="w-3 h-3 rounded-full animate-pulse"
+                    style={{ backgroundColor: 'var(--gold)' }}
+                  />
+                  <div className="flex-1">
+                    <p className="font-semibold text-sm" style={{ color: 'var(--ink)' }}>
+                      {cls.course}
+                    </p>
+                    <p className="text-xs" style={{ color: 'var(--ink-muted)' }}>
+                      {cls.title}
+                    </p>
+                    <p className="text-xs font-medium" style={{ color: 'var(--ink-faint)' }}>
+                      {cls.time} • {cls.day}
+                    </p>
+                  </div>
                 </div>
+              ))
+            ) : (
+              <div className="text-center py-4" style={{ color: 'var(--ink-muted)' }}>
+                <p className="text-sm">No upcoming classes scheduled</p>
               </div>
-            ))}
+            )}
           </div>
         </div>
         {/* Learning Activity Card */}
@@ -388,7 +450,7 @@ export default function StudentDashboardContent() {
                 className="text-2xl md:text-4xl font-bold mb-2"
                 style={{ color: 'var(--ink)', fontFamily: 'var(--font-display)' }}
               >
-                {mockLearningActivity.hoursThisWeek}
+                {learningActivity.hoursThisWeek}
               </div>
               <div className="text-xs md:text-sm font-semibold tracking-wider" style={{ color: 'var(--ink-muted)' }}>
                 HOURS
@@ -400,7 +462,7 @@ export default function StudentDashboardContent() {
                 className="text-2xl md:text-4xl font-bold mb-2"
                 style={{ color: 'var(--ink)', fontFamily: 'var(--font-display)' }}
               >
-                {mockLearningActivity.coursesActive}
+                {learningActivity.coursesActive}
               </div>
               <div className="text-xs md:text-sm font-semibold tracking-wider" style={{ color: 'var(--ink-muted)' }}>
                 COURSES
@@ -412,7 +474,7 @@ export default function StudentDashboardContent() {
                 className="text-2xl md:text-4xl font-bold mb-2 flex items-center gap-2"
                 style={{ color: 'var(--ink)', fontFamily: 'var(--font-display)' }}
               >
-                {mockLearningActivity.weeklyIncrease}%
+                {learningActivity.weeklyIncrease}%
                 <TrendingUp className="w-4 h-4 md:w-6 md:h-6 animate-bounce" style={{ color: 'var(--gold)' }} />
               </div>
               <div className="text-xs md:text-sm font-semibold tracking-wider" style={{ color: 'var(--ink-muted)' }}>
@@ -421,26 +483,79 @@ export default function StudentDashboardContent() {
             </div>
           </div>
           
-          {/* Activity Chart */}
-          <div className="h-24 md:h-32 flex items-end gap-1 md:gap-2">
-            {mockLearningActivity.activityData.map((value, index) => (
-              <div key={index} className="flex-1 flex flex-col items-center group">
-                <div 
-                  className="w-full rounded-t-lg transition-all duration-700 hover:scale-105 group-hover:shadow-lg"
-                  style={{ 
-                    height: `${(value / 50) * 100}%`,
-                    backgroundColor: index === 5 ? 'var(--navy)' : 'var(--rule)',
-                    boxShadow: index === 5 ? '0 4px 12px rgba(30, 58, 138, 0.3)' : 'none'
-                  }}
+          {/* Activity Chart - Line Chart */}
+          <div className="h-24 md:h-32 relative">
+            {/* Grid lines */}
+            <div className="absolute inset-0 flex flex-col justify-between">
+              {[0, 1, 2, 3, 4].map((i) => (
+                <div key={i} className="w-full border-b opacity-10" style={{ borderColor: 'var(--rule)' }} />
+              ))}
+            </div>
+
+            {/* Line Chart SVG */}
+            <svg className="absolute inset-0 w-full h-full" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" style={{ stopColor: 'var(--navy)', stopOpacity: 0.6 }} />
+                  <stop offset="100%" style={{ stopColor: 'var(--gold)', stopOpacity: 0.8 }} />
+                </linearGradient>
+                <linearGradient id="areaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" style={{ stopColor: 'var(--navy)', stopOpacity: 0.2 }} />
+                  <stop offset="100%" style={{ stopColor: 'var(--navy)', stopOpacity: 0 }} />
+                </linearGradient>
+              </defs>
+              
+              {/* Area under the line */}
+              <path
+                d={`M 0,${96 - (learningActivity.activityData[0] / 50) * 96} ${learningActivity.activityData.map((value, index) => 
+                  `L ${(index / 6) * 100},${96 - (value / 50) * 96}`
+                ).join(' ')} L 100,96 L 0,96 Z`}
+                fill="url(#areaGradient)"
+                vectorEffect="non-scaling-stroke"
+              />
+              
+              {/* Line */}
+              <path
+                d={`M 0,${96 - (learningActivity.activityData[0] / 50) * 96} ${learningActivity.activityData.map((value, index) => 
+                  `L ${(index / 6) * 100},${96 - (value / 50) * 96}`
+                ).join(' ')}`}
+                stroke="url(#lineGradient)"
+                strokeWidth="3"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                vectorEffect="non-scaling-stroke"
+              />
+              
+              {/* Data points */}
+              {learningActivity.activityData.map((value, index) => (
+                <circle
+                  key={index}
+                  cx={`${(index / 6) * 100}%`}
+                  cy={`${96 - (value / 50) * 96}%`}
+                  r="4"
+                  fill={index === 5 ? 'var(--gold)' : 'var(--navy)'}
+                  stroke="white"
+                  strokeWidth="2"
+                  className="transition-all hover:r-6"
+                  style={{ filter: index === 5 ? 'drop-shadow(0 2px 4px rgba(244, 196, 48, 0.4))' : 'none' }}
                 />
-                <div className="text-xs mt-1 md:mt-2 font-medium transition-colors group-hover:text-gray-900 hidden sm:block" style={{ color: 'var(--ink-muted)' }}>
-                  {['Mon 01', 'Tue 02', 'Wed 03', 'Thu 04', 'Fri 05', 'Sat 06', 'Sun 07'][index]}
+              ))}
+            </svg>
+
+            {/* Day labels */}
+            <div className="absolute -bottom-6 left-0 right-0 flex justify-between px-1">
+              {['Mon 01', 'Tue 02', 'Wed 03', 'Thu 04', 'Fri 05', 'Sat 06', 'Sun 07'].map((day, index) => (
+                <div key={index} className="text-xs font-medium hidden sm:block" style={{ color: 'var(--ink-muted)' }}>
+                  {day}
                 </div>
-                <div className="text-xs mt-1 font-medium transition-colors group-hover:text-gray-900 sm:hidden" style={{ color: 'var(--ink-muted)' }}>
-                  {['M', 'T', 'W', 'T', 'F', 'S', 'S'][index]}
+              ))}
+              {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((day, index) => (
+                <div key={index} className="text-xs font-medium sm:hidden" style={{ color: 'var(--ink-muted)' }}>
+                  {day}
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
           
           {/* Hours Badge */}
@@ -449,7 +564,7 @@ export default function StudentDashboardContent() {
               className="px-3 py-1 rounded-full text-white text-sm font-semibold shadow-lg animate-pulse"
               style={{ backgroundColor: 'var(--navy)' }}
             >
-              29 Hours
+              {learningActivity.hoursThisWeek} Hours
             </div>
           </div>
         </div>
@@ -476,30 +591,36 @@ export default function StudentDashboardContent() {
           </p>
           
           <div className="space-y-4">
-            {mockAssignments.map((assignment) => (
-              <div key={assignment.id} className="flex items-start gap-3">
-                <div 
-                  className="w-5 h-5 rounded flex items-center justify-center mt-0.5"
-                  style={{ border: '2px solid var(--rule)' }}
-                >
+            {pendingAssignments.length > 0 ? (
+              pendingAssignments.map((assignment) => (
+                <div key={assignment.id} className="flex items-start gap-3">
                   <div 
-                    className="w-2 h-2 rounded-sm"
-                    style={{ backgroundColor: 'var(--navy)' }}
-                  />
+                    className="w-5 h-5 rounded flex items-center justify-center mt-0.5"
+                    style={{ border: '2px solid var(--rule)' }}
+                  >
+                    <div 
+                      className="w-2 h-2 rounded-sm"
+                      style={{ backgroundColor: 'var(--navy)' }}
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-semibold text-sm" style={{ color: 'var(--ink)' }}>
+                      {assignment.course}
+                    </p>
+                    <p className="text-sm" style={{ color: 'var(--ink-muted)' }}>
+                      {assignment.title}
+                    </p>
+                    <p className="text-xs" style={{ color: 'var(--ink-faint)' }}>
+                      {assignment.due}
+                    </p>
+                  </div>
                 </div>
-                <div className="flex-1">
-                  <p className="font-semibold text-sm" style={{ color: 'var(--ink)' }}>
-                    {assignment.course}
-                  </p>
-                  <p className="text-sm" style={{ color: 'var(--ink-muted)' }}>
-                    {assignment.title}
-                  </p>
-                  <p className="text-xs" style={{ color: 'var(--ink-faint)' }}>
-                    {assignment.due}
-                  </p>
-                </div>
+              ))
+            ) : (
+              <div className="text-center py-4" style={{ color: 'var(--ink-muted)' }}>
+                <p className="text-sm">No pending assignments</p>
               </div>
-            ))}
+            )}
           </div>
         </div>
 

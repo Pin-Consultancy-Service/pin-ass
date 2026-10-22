@@ -17,7 +17,7 @@ const serviceSlides = [
     },
     description: "PIN Associate helps students and professionals pass ICAN, ACCA, CITN, CISA, and ATS exams on their first attempt with expert tutors and structured programmes.",
     cta: {
-      primary: { text: "Apply Now", href: "/portal/register" },
+      primary: { text: "Sign Up", href: "/portal/register" },
       secondary: { text: "Explore Courses", href: "/#programs" }
     },
     background: {

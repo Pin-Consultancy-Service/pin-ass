@@ -63,6 +63,7 @@
     --rule:       #334155;
     --navy-50:    #1E293B;
     --navy-100:   #334155;
+    --gold-50:    #422006;
   }
 
   /* ── Portal / form backward-compat aliases ── */
@@ -325,7 +326,7 @@ img { max-width: 100%; height: auto; display: block; }
 .form-input {
   width: 100%;
   padding: 0.75rem 1rem;
-  background: #fff;
+  background: var(--surface);
   border: 1px solid var(--rule);
   border-radius: 2px;
   font-family: var(--font-body);
@@ -345,7 +346,7 @@ img { max-width: 100%; height: auto; display: block; }
   font-size: 0.8125rem;
   font-weight: 500;
   letter-spacing: 0.04em;
-  color: var(--ink-muted);
+  color: var(--ink);
   margin-bottom: 0.4rem;
 }
 
@@ -476,4 +477,13 @@ img { max-width: 100%; height: auto; display: block; }
 /* Learning Progress Card Enhancements */
 .progress-glow {
   animation: spin 20s linear infinite;
+}
+@keyframes gradient {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.animate-gradient {
+  background-size: 200% auto;
+  animation: gradient 6s ease infinite;
 }

@@ -1,12 +1,31 @@
 "use client";
 
-import { Users, DollarSign, Calendar, TrendingUp, BarChart3, Clock } from "lucide-react";
-import { getSystemStats, formatNaira, mockEnrollments, getRecentActivity } from "@/lib/mockAdminData";
+import { Users, DollarSign, Calendar, TrendingUp, Clock, PlusCircle, FileText, TrendingDown } from "lucide-react";
+import { 
+  getSystemStats, 
+  formatNaira, 
+  mockEnrollments, 
+  getRecentActivity,
+  getRevenueChartData,
+  getEnrollmentChartData,
+  getProgrammeBreakdown,
+  mockAdminClasses
+} from "@/lib/mockAdminData";
+import LineChart from "@/components/admin/charts/LineChart";
+import AreaChart from "@/components/admin/charts/AreaChart";
+import BarChart from "@/components/admin/charts/BarChart";
 
 export default function AdminDashboardContent() {
   const stats = getSystemStats();
   const recentEnrollments = mockEnrollments.slice(0, 5);
   const recentActivity = getRecentActivity(6);
+  const revenueData = getRevenueChartData();
+  const enrollmentData = getEnrollmentChartData();
+  const programmeData = getProgrammeBreakdown();
+  const upcomingClasses = mockAdminClasses
+    .filter(c => c.status === 'upcoming')
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+    .slice(0, 5);
 
   const getRelativeTime = (timestamp: string) => {
     const now = new Date();
@@ -23,229 +42,295 @@ export default function AdminDashboardContent() {
 
   return (
     <div className="space-y-6">
-      {/* Page Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2" style={{ color: 'var(--ink)', fontFamily: 'var(--font-display)' }}>
-          Dashboard Overview
-        </h1>
-        <p style={{ color: 'var(--ink-muted)' }}>
-          Complete system statistics and recent activity
-        </p>
+      {/* Hero Section with Gradient */}
+      <div 
+        className="p-8 rounded-2xl relative overflow-hidden mb-8"
+        style={{
+          background: 'linear-gradient(135deg, var(--navy) 0%, var(--navy-dark) 100%)',
+        }}
+      >
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute inset-0" style={{ 
+            backgroundImage: 'radial-gradient(circle at 20% 50%, var(--gold) 0%, transparent 50%)',
+          }} />
+        </div>
+        <div className="relative z-10">
+          <h1 className="text-4xl font-bold mb-3 text-white" style={{ fontFamily: 'var(--font-display)' }}>
+            Welcome Back! 👋
+          </h1>
+          <p className="text-white opacity-90 mb-6 max-w-2xl">
+            Complete system overview with real-time analytics, enrollment tracking, and financial insights
+          </p>
+          <div className="flex flex-wrap gap-3">
+            <button 
+              className="px-5 py-2.5 rounded-xl font-semibold text-sm flex items-center gap-2 transition-all hover:scale-105"
+              style={{ backgroundColor: 'var(--gold)', color: 'var(--navy-dark)' }}
+            >
+              <PlusCircle className="w-4 h-4" />
+              Create Class
+            </button>
+            <button 
+              className="px-5 py-2.5 rounded-xl font-semibold text-sm flex items-center gap-2 transition-all hover:bg-white/20"
+              style={{ backgroundColor: 'rgba(255,255,255,0.1)', color: 'white', border: '1px solid rgba(255,255,255,0.2)' }}
+            >
+              <Users className="w-4 h-4" />
+              Add Student
+            </button>
+            <button 
+              className="px-5 py-2.5 rounded-xl font-semibold text-sm flex items-center gap-2 transition-all hover:bg-white/20"
+              style={{ backgroundColor: 'rgba(255,255,255,0.1)', color: 'white', border: '1px solid rgba(255,255,255,0.2)' }}
+            >
+              <FileText className="w-4 h-4" />
+              Generate Report
+            </button>
+          </div>
+        </div>
       </div>
 
-      {/* Stats Cards */}
+      {/* Enhanced Stats Cards with Glassmorphism */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Total Users */}
         <div 
-          className="p-6 rounded-xl border"
-          style={{ backgroundColor: 'var(--navy-50)', borderColor: 'var(--rule)' }}
+          className="p-6 rounded-2xl border relative overflow-hidden group transition-all duration-300 hover:scale-[1.02] hover:shadow-xl"
+          style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--rule)' }}
         >
-          <div className="flex items-center justify-between mb-4">
+          <div className="absolute inset-0 bg-gradient-to-br from-[var(--navy)] to-transparent opacity-0 group-hover:opacity-5 transition-opacity duration-300" />
+          <div className="relative z-10">
             <div 
-              className="w-12 h-12 rounded-xl flex items-center justify-center"
-              style={{ backgroundColor: 'var(--navy)' }}
+              className="w-14 h-14 rounded-xl flex items-center justify-center mb-4 shadow-lg"
+              style={{ background: 'linear-gradient(135deg, var(--navy) 0%, var(--navy-dark) 100%)' }}
             >
-              <Users className="w-6 h-6 text-white" />
+              <Users className="w-7 h-7 text-white" />
+            </div>
+            <h3 className="text-3xl font-bold mb-1" style={{ color: 'var(--ink)' }}>
+              {stats.totalUsers}
+            </h3>
+            <p className="text-sm mb-2" style={{ color: 'var(--ink-muted)' }}>
+              Total Users
+            </p>
+            <div className="flex items-center gap-1">
+              <TrendingUp className="w-3 h-3" style={{ color: '#10B981' }} />
+              <p className="text-xs font-semibold" style={{ color: '#10B981' }}>
+                +{stats.newUsersThisMonth} this month
+              </p>
             </div>
           </div>
-          <h3 className="text-2xl font-bold mb-1" style={{ color: 'var(--ink)' }}>
-            {stats.totalUsers}
-          </h3>
-          <p className="text-sm" style={{ color: 'var(--ink-muted)' }}>
-            Total Users
-          </p>
-          <p className="text-xs mt-2" style={{ color: 'var(--navy)' }}>
-            +{stats.newUsersThisMonth} this month
-          </p>
         </div>
 
         {/* Total Revenue */}
         <div 
-          className="p-6 rounded-xl border"
-          style={{ backgroundColor: '#DCFCE7', borderColor: 'var(--rule)' }}
+          className="p-6 rounded-2xl border relative overflow-hidden group transition-all duration-300 hover:scale-[1.02] hover:shadow-xl"
+          style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--rule)' }}
         >
-          <div className="flex items-center justify-between mb-4">
+          <div className="absolute inset-0 bg-gradient-to-br from-green-500 to-transparent opacity-0 group-hover:opacity-5 transition-opacity duration-300" />
+          <div className="relative z-10">
             <div 
-              className="w-12 h-12 rounded-xl flex items-center justify-center"
-              style={{ backgroundColor: '#16A34A' }}
+              className="w-14 h-14 rounded-xl flex items-center justify-center mb-4 shadow-lg"
+              style={{ background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)' }}
             >
-              <DollarSign className="w-6 h-6 text-white" />
+              <DollarSign className="w-7 h-7 text-white" />
             </div>
+            <h3 className="text-3xl font-bold mb-1" style={{ color: 'var(--ink)' }}>
+              {formatNaira(stats.totalRevenue)}
+            </h3>
+            <p className="text-sm mb-2" style={{ color: 'var(--ink-muted)' }}>
+              Total Revenue
+            </p>
+            <p className="text-xs font-semibold" style={{ color: '#10B981' }}>
+              {formatNaira(stats.revenueThisMonth)} this month
+            </p>
           </div>
-          <h3 className="text-2xl font-bold mb-1" style={{ color: 'var(--ink)' }}>
-            {formatNaira(stats.totalRevenue)}
-          </h3>
-          <p className="text-sm" style={{ color: 'var(--ink-muted)' }}>
-            Total Revenue
-          </p>
-          <p className="text-xs mt-2" style={{ color: '#16A34A' }}>
-            {formatNaira(stats.revenueThisMonth)} this month
-          </p>
         </div>
 
         {/* Active Classes */}
         <div 
-          className="p-6 rounded-xl border"
-          style={{ backgroundColor: 'var(--gold-50)', borderColor: 'var(--rule)' }}
+          className="p-6 rounded-2xl border relative overflow-hidden group transition-all duration-300 hover:scale-[1.02] hover:shadow-xl"
+          style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--rule)' }}
         >
-          <div className="flex items-center justify-between mb-4">
+          <div className="absolute inset-0 bg-gradient-to-br from-[var(--gold)] to-transparent opacity-0 group-hover:opacity-5 transition-opacity duration-300" />
+          <div className="relative z-10">
             <div 
-              className="w-12 h-12 rounded-xl flex items-center justify-center"
-              style={{ backgroundColor: 'var(--gold-dark)' }}
+              className="w-14 h-14 rounded-xl flex items-center justify-center mb-4 shadow-lg"
+              style={{ background: 'linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%)' }}
             >
-              <Calendar className="w-6 h-6 text-white" />
+              <Calendar className="w-7 h-7 text-white" />
             </div>
+            <h3 className="text-3xl font-bold mb-1" style={{ color: 'var(--ink)' }}>
+              {stats.activeClasses}
+            </h3>
+            <p className="text-sm mb-2" style={{ color: 'var(--ink-muted)' }}>
+              Active Classes
+            </p>
+            <p className="text-xs font-semibold" style={{ color: '#F59E0B' }}>
+              {stats.upcomingClasses} upcoming
+            </p>
           </div>
-          <h3 className="text-2xl font-bold mb-1" style={{ color: 'var(--ink)' }}>
-            {stats.activeClasses}
-          </h3>
-          <p className="text-sm" style={{ color: 'var(--ink-muted)' }}>
-            Active Classes
-          </p>
-          <p className="text-xs mt-2" style={{ color: '#92600A' }}>
-            {stats.upcomingClasses} upcoming
-          </p>
         </div>
 
         {/* Total Enrollments */}
         <div 
-          className="p-6 rounded-xl border"
-          style={{ backgroundColor: 'var(--navy-100)', borderColor: 'var(--rule)' }}
+          className="p-6 rounded-2xl border relative overflow-hidden group transition-all duration-300 hover:scale-[1.02] hover:shadow-xl"
+          style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--rule)' }}
         >
-          <div className="flex items-center justify-between mb-4">
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-transparent opacity-0 group-hover:opacity-5 transition-opacity duration-300" />
+          <div className="relative z-10">
             <div 
-              className="w-12 h-12 rounded-xl flex items-center justify-center"
-              style={{ backgroundColor: '#2563EB' }}
+              className="w-14 h-14 rounded-xl flex items-center justify-center mb-4 shadow-lg"
+              style={{ background: 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)' }}
             >
-              <TrendingUp className="w-6 h-6 text-white" />
+              <TrendingUp className="w-7 h-7 text-white" />
             </div>
-          </div>
-          <h3 className="text-2xl font-bold mb-1" style={{ color: 'var(--ink)' }}>
-            {stats.totalEnrollments}
-          </h3>
-          <p className="text-sm" style={{ color: 'var(--ink-muted)' }}>
-            Total Enrollments
-          </p>
-          <p className="text-xs mt-2" style={{ color: '#2563EB' }}>
-            {stats.completedClasses} completed
-          </p>
-        </div>
-      </div>
-
-      {/* Recent Enrollments & Revenue Overview */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Recent Enrollments */}
-        <div 
-          className="p-6 rounded-xl border"
-          style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--rule)' }}
-        >
-          <h3 className="text-xl font-bold mb-4" style={{ color: 'var(--ink)', fontFamily: 'var(--font-display)' }}>
-            Recent Enrollments
-          </h3>
-          
-          <div className="space-y-3">
-            {recentEnrollments.map((enrollment) => (
-              <div 
-                key={enrollment.id}
-                className="flex items-center justify-between p-3 rounded-lg"
-                style={{ backgroundColor: 'var(--bg)', border: '1px solid var(--rule)' }}
-              >
-                <div className="flex-1">
-                  <p className="font-semibold text-sm mb-1" style={{ color: 'var(--ink)' }}>
-                    {enrollment.studentName}
-                  </p>
-                  <p className="text-xs" style={{ color: 'var(--ink-muted)' }}>
-                    {enrollment.programmeName}
-                  </p>
-                  <p className="text-xs mt-1" style={{ color: 'var(--ink-faint)' }}>
-                    {new Date(enrollment.enrollmentDate).toLocaleDateString('en-NG', { 
-                      month: 'short', 
-                      day: 'numeric',
-                      year: 'numeric'
-                    })}
-                  </p>
-                </div>
-                <div className="text-right">
-                  <p className="font-bold text-sm mb-1" style={{ color: 'var(--ink)' }}>
-                    {formatNaira(enrollment.totalFees)}
-                  </p>
-                  <span 
-                    className="inline-block px-2 py-1 rounded-md text-xs font-medium"
-                    style={{
-                      backgroundColor: enrollment.paymentStatus === 'paid' 
-                        ? '#DCFCE7' 
-                        : enrollment.paymentStatus === 'partial' 
-                        ? '#FEF3C7' 
-                        : '#FEE2E2',
-                      color: enrollment.paymentStatus === 'paid' 
-                        ? '#16A34A' 
-                        : enrollment.paymentStatus === 'partial' 
-                        ? '#D97706' 
-                        : '#DC2626',
-                    }}
-                  >
-                    {enrollment.paymentStatus}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Revenue Overview Placeholder */}
-        <div 
-          className="p-6 rounded-xl border"
-          style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--rule)' }}
-        >
-          <h3 className="text-xl font-bold mb-4" style={{ color: 'var(--ink)', fontFamily: 'var(--font-display)' }}>
-            Revenue Overview
-          </h3>
-          
-          <div 
-            className="flex flex-col items-center justify-center py-12"
-            style={{ borderRadius: '12px', backgroundColor: 'var(--bg)' }}
-          >
-            <BarChart3 className="w-16 h-16 mb-4" style={{ color: 'var(--ink-faint)' }} />
-            <p className="text-sm" style={{ color: 'var(--ink-muted)' }}>
-              Analytics dashboard coming soon
+            <h3 className="text-3xl font-bold mb-1" style={{ color: 'var(--ink)' }}>
+              {stats.totalEnrollments}
+            </h3>
+            <p className="text-sm mb-2" style={{ color: 'var(--ink-muted)' }}>
+              Total Enrollments
+            </p>
+            <p className="text-xs font-semibold" style={{ color: '#2563EB' }}>
+              {stats.completedClasses} completed
             </p>
           </div>
         </div>
       </div>
 
-      {/* Recent Activity */}
+      {/* Charts Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Revenue Line Chart */}
+        <div 
+          className="p-6 rounded-2xl border shadow-lg"
+          style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--rule)' }}
+        >
+          <LineChart 
+            data={revenueData}
+            height={280}
+            color="var(--navy)"
+            title="Revenue Trend (7 Months)"
+            showGrid={true}
+            gradientFill={true}
+          />
+        </div>
+
+        {/* Enrollment Area Chart */}
+        <div 
+          className="p-6 rounded-2xl border shadow-lg"
+          style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--rule)' }}
+        >
+          <AreaChart 
+            data={enrollmentData}
+            height={280}
+            color="#10B981"
+            title="Enrollment Growth (8 Weeks)"
+          />
+        </div>
+      </div>
+
+      {/* Programme Breakdown & Upcoming Classes */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Programme Bar Chart */}
+        <div 
+          className="p-6 rounded-2xl border shadow-lg"
+          style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--rule)' }}
+        >
+          <BarChart 
+            data={programmeData}
+            height={280}
+            title="Students per Programme"
+            horizontal={true}
+          />
+        </div>
+
+        {/* Upcoming Classes */}
+        <div 
+          className="p-6 rounded-2xl border shadow-lg"
+          style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--rule)' }}
+        >
+          <h3 className="text-xl font-bold mb-4" style={{ color: 'var(--ink)', fontFamily: 'var(--font-display)' }}>
+            Upcoming Classes
+          </h3>
+          
+          <div className="space-y-3">
+            {upcomingClasses.map((classItem) => (
+              <div 
+                key={classItem.id}
+                className="p-4 rounded-xl border transition-all hover:shadow-md"
+                style={{ backgroundColor: 'var(--bg)', borderColor: 'var(--rule)' }}
+              >
+                <div className="flex items-start justify-between mb-2">
+                  <div className="flex-1">
+                    <p className="font-semibold text-sm mb-1" style={{ color: 'var(--ink)' }}>
+                      {classItem.courseName}
+                    </p>
+                    <p className="text-xs" style={{ color: 'var(--ink-muted)' }}>
+                      {classItem.instructorName}
+                    </p>
+                  </div>
+                  <span 
+                    className="inline-block px-2 py-1 rounded-md text-xs font-medium"
+                    style={{
+                      backgroundColor: classItem.type === 'online' ? '#DBEAFE' : classItem.type === 'hybrid' ? '#FEF3C7' : '#DCFCE7',
+                      color: classItem.type === 'online' ? '#1E40AF' : classItem.type === 'hybrid' ? '#92600A' : '#15803D',
+                    }}
+                  >
+                    {classItem.type}
+                  </span>
+                </div>
+                <div className="flex items-center gap-4 text-xs" style={{ color: 'var(--ink-muted)' }}>
+                  <span>{new Date(classItem.date).toLocaleDateString('en-NG', { month: 'short', day: 'numeric' })}</span>
+                  <span>{classItem.startTime}</span>
+                  <span>{classItem.enrolled}/{classItem.capacity} enrolled</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Recent Activity Timeline */}
       <div 
-        className="p-6 rounded-xl border"
+        className="p-6 rounded-2xl border shadow-lg"
         style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--rule)' }}
       >
-        <h3 className="text-xl font-bold mb-4" style={{ color: 'var(--ink)', fontFamily: 'var(--font-display)' }}>
-          Recent Activity
-        </h3>
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-xl font-bold" style={{ color: 'var(--ink)', fontFamily: 'var(--font-display)' }}>
+            Recent Activity
+          </h3>
+          <button className="text-sm font-medium" style={{ color: 'var(--navy)' }}>
+            View All
+          </button>
+        </div>
         
-        <div className="space-y-3">
-          {recentActivity.map((activity) => (
+        <div className="space-y-4">
+          {recentActivity.map((activity, index) => (
             <div 
               key={activity.id}
-              className="flex items-start gap-3 p-3 rounded-lg"
+              className="flex items-start gap-4 p-4 rounded-xl transition-all hover:shadow-md"
               style={{ backgroundColor: 'var(--bg)', border: '1px solid var(--rule)' }}
             >
               <div 
-                className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
-                style={{ backgroundColor: 'var(--navy-50)' }}
+                className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-white font-bold text-sm"
+                style={{ 
+                  background: index % 4 === 0 ? 'linear-gradient(135deg, var(--navy) 0%, var(--navy-dark) 100%)' :
+                             index % 4 === 1 ? 'linear-gradient(135deg, #10B981 0%, #059669 100%)' :
+                             index % 4 === 2 ? 'linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%)' :
+                             'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)'
+                }}
               >
-                <Clock className="w-4 h-4" style={{ color: 'var(--navy)' }} />
+                {activity.userName.charAt(0)}
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm mb-1" style={{ color: 'var(--ink)' }}>
                   <span className="font-semibold">{activity.userName}</span>
-                  {' '}{activity.action.toLowerCase()}
+                  {' '}<span style={{ color: 'var(--ink-muted)' }}>{activity.action.toLowerCase()}</span>
                 </p>
-                <p className="text-xs" style={{ color: 'var(--ink-muted)' }}>
+                <p className="text-xs mb-2" style={{ color: 'var(--ink-muted)' }}>
                   {activity.details}
                 </p>
-                <p className="text-xs mt-1" style={{ color: 'var(--ink-faint)' }}>
-                  {getRelativeTime(activity.timestamp)}
-                </p>
+                <div className="flex items-center gap-2">
+                  <Clock className="w-3 h-3" style={{ color: 'var(--ink-faint)' }} />
+                  <p className="text-xs" style={{ color: 'var(--ink-faint)' }}>
+                    {getRelativeTime(activity.timestamp)}
+                  </p>
+                </div>
               </div>
             </div>
           ))}

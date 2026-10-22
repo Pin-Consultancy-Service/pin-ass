@@ -20,8 +20,8 @@ const programmes = [
 const navLinks = [
   { label: "About",    href: "/about" },
   { label: "Students", href: "/courses",           dropdown: true },
-  { label: "Consulting",  href: "/corporate" },
-  { label: "Training", href: "/corporate#training" },
+  { label: "Business Consulting",  href: "/corporate" },
+  { label: "Professional Training", href: "/corporate#training" },
   { label: "Payment",  href: "/payment" },
   { label: "Contact",  href: "/contact" },
 ];
@@ -275,8 +275,8 @@ export default function Navbar() {
 
             {/* Primary CTA green fill when scrolled, white ghost over hero */}
             {scrolled ? (
-              <Link href="/portal/login" className="btn btn-primary" style={{ height: "2.375rem", fontSize: "0.8125rem" }}>
-                Apply Now
+              <Link href="/portal/register" className="btn btn-primary" style={{ height: "2.375rem", fontSize: "0.8125rem" }}>
+                Sign Up
               </Link>
             ) : (
               <Link
@@ -291,7 +291,7 @@ export default function Navbar() {
                   borderRadius: "2px",
                 }}
               >
-                Apply Now
+                Sign Up
               </Link>
             )}
           </div>
@@ -405,7 +405,7 @@ export default function Navbar() {
             {/* Drawer footer */}
             <div className="p-4 space-y-2.5" style={{ borderTop: "1px solid var(--rule)" }}>
               <Link href="/portal/register" className="btn btn-primary w-full justify-center">
-                Apply Now
+                Sign Up
               </Link>
               <Link
                 href="/portal/login"

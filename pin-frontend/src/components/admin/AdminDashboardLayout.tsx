@@ -282,7 +282,7 @@ export default function AdminDashboardLayout({ children, activeTab = 'dashboard'
               </button>
             </div>
 
-            <div className="p-4">
+            <div className="flex-1 overflow-y-auto p-4" style={{ maxHeight: 'calc(100vh - 80px)' }}>
               <nav className="space-y-2">
                 {sidebarItems.map((item) => (
                   <Link
@@ -307,15 +307,16 @@ export default function AdminDashboardLayout({ children, activeTab = 'dashboard'
 
       {/* Desktop Sidebar */}
       <aside 
-        className="fixed left-0 w-64 h-screen border-r overflow-y-auto hidden lg:block"
+        className="fixed left-0 w-64 border-r hidden lg:flex lg:flex-col"
         style={{ 
           borderColor: 'var(--rule)', 
           backgroundColor: 'var(--bg)',
           top: '80px',
-          bottom: 0
+          bottom: 0,
+          height: 'calc(100vh - 80px)',
         }}
       >
-        <div className="p-4">
+        <div className="flex-1 overflow-y-auto p-4" style={{ scrollbarWidth: 'thin' }}>
           <nav className="space-y-2">
             {sidebarItems.map((item) => (
               <Link

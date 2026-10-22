@@ -5,105 +5,8 @@ import {
   Calendar, Clock, FileText, Upload, Download, CheckCircle, AlertCircle, 
   Eye, Edit3, Send, Paperclip, User, Star
 } from "lucide-react";
-
-// TODO: Replace with real assignments from PIN Associate
-const mockAssignments = [
-  {
-    id: 1,
-    subject: "Financial Accounting",
-    title: "Ratio Analysis Case Study",
-    description: "Analyze the financial performance of ABC Ltd using ratio analysis. Include liquidity ratios, profitability ratios, and efficiency ratios. Provide recommendations based on your findings.",
-    instructor: "Dr. Adebayo Johnson",
-    dueDate: "2024-02-15T23:59:00",
-    submittedDate: null,
-    status: "pending",
-    type: "report",
-    maxScore: 100,
-    score: null,
-    attachments: [
-      { name: "ABC_Ltd_Financial_Statements.pdf", size: "245KB" },
-      { name: "Assignment_Guidelines.pdf", size: "120KB" }
-    ],
-    submissionType: ["file", "text"],
-    priority: "high"
-  },
-  {
-    id: 2,
-    subject: "Taxation",
-    title: "Personal Income Tax Calculation",
-    description: "Calculate personal income tax for various scenarios including employment income, business income, and investment income. Show all workings and cite relevant tax laws.",
-    instructor: "Prof. Fatima Bello",
-    dueDate: "2024-02-20T23:59:00",
-    submittedDate: "2024-02-18T14:30:00",
-    status: "submitted",
-    type: "calculation",
-    maxScore: 75,
-    score: null,
-    attachments: [
-      { name: "Tax_Scenarios.pdf", size: "180KB" }
-    ],
-    submissionType: ["file"],
-    priority: "medium"
-  },
-  {
-    id: 3,
-    subject: "Advanced Audit",
-    title: "Audit Planning Memo",
-    description: "Prepare an audit planning memorandum for a manufacturing company. Include risk assessment, materiality calculations, and audit strategy.",
-    instructor: "CA. Samuel Okafor",
-    dueDate: "2024-02-25T23:59:00",
-    submittedDate: "2024-02-22T16:45:00",
-    status: "graded",
-    type: "memo",
-    maxScore: 80,
-    score: 74,
-    feedback: "Well structured audit plan. Good risk identification but materiality calculations need more detail. See comments on submitted document.",
-    attachments: [
-      { name: "Company_Background.pdf", size: "320KB" },
-      { name: "Audit_Planning_Template.docx", size: "95KB" }
-    ],
-    submissionType: ["file", "text"],
-    priority: "medium"
-  },
-  {
-    id: 4,
-    subject: "Corporate Reporting",
-    title: "Consolidated Financial Statements",
-    description: "Prepare consolidated financial statements for a parent company and its subsidiaries. Include all necessary eliminations and adjustments.",
-    instructor: "Dr. Aisha Mohammed",
-    dueDate: "2024-03-01T23:59:00",
-    submittedDate: null,
-    status: "pending",
-    type: "financial_statement",
-    maxScore: 120,
-    score: null,
-    attachments: [
-      { name: "Parent_Company_FS.xlsx", size: "450KB" },
-      { name: "Subsidiary_A_FS.xlsx", size: "280KB" },
-      { name: "Subsidiary_B_FS.xlsx", size: "310KB" }
-    ],
-    submissionType: ["file"],
-    priority: "high"
-  },
-  {
-    id: 5,
-    subject: "Financial Management",
-    title: "Investment Appraisal Project",
-    description: "Evaluate three investment proposals using NPV, IRR, and payback period methods. Recommend the best option with justification.",
-    instructor: "Prof. Ibrahim Yusuf",
-    dueDate: "2024-03-05T23:59:00",
-    submittedDate: null,
-    status: "overdue",
-    type: "analysis",
-    maxScore: 90,
-    score: null,
-    attachments: [
-      { name: "Investment_Proposals.pdf", size: "200KB" }
-    ],
-    submissionType: ["file", "text"],
-    priority: "urgent"
-  }
-];
+import { mockAssignments as allAssignments } from "@/lib/mockAssignmentsData";
+import { DEMO_MODE } from "@/lib/auth";
 
 const getStatusBadge = (status: string, dueDate: string) => {
   const isOverdue = new Date() > new Date(dueDate) && status === 'pending';
@@ -146,17 +49,9 @@ const getStatusBadge = (status: string, dueDate: string) => {
   }
 };
 
-const getPriorityColor = (priority: string) => {
-  switch (priority) {
-    case 'urgent':
-      return '#DC2626';
-    case 'high':
-      return 'var(--gold-dark)';
-    case 'medium':
-      return 'var(--navy)';
-    default:
-      return 'var(--ink-muted)';
-  }
+const getPriorityColor = (priority?: string) => {
+  // We don't use priority in our mock data, so return a default color
+  return 'var(--navy)';
 };
 
 const formatDueDate = (dueDate: string) => {
@@ -187,22 +82,24 @@ export default function StudentAssignmentsContent() {
   const [selectedStatus, setSelectedStatus] = useState<string>("all");
   const [selectedAssignment, setSelectedAssignment] = useState<number | null>(null);
 
-  const statuses = ["all", "pending", "submitted", "graded", "overdue"];
+  // Use mock data from our centralized mock file
+  const mockAssignments = allAssignments;
+
+  const statuses = ["all", "pending", "submitted", "graded"];
+  
   const filteredAssignments = selectedStatus === "all" 
     ? mockAssignments 
-    : mockAssignments.filter(assignment => {
-        if (selectedStatus === "overdue") {
-          return new Date() > new Date(assignment.dueDate) && assignment.status === 'pending';
-        }
-        return assignment.status === selectedStatus;
-      });
+    : mockAssignments.filter(assignment => assignment.status === selectedStatus);
 
   const pendingCount = mockAssignments.filter(a => a.status === 'pending').length;
   const submittedCount = mockAssignments.filter(a => a.status === 'submitted').length;
   const gradedCount = mockAssignments.filter(a => a.status === 'graded').length;
-  const overdueCount = mockAssignments.filter(a => 
-    new Date() > new Date(a.dueDate) && a.status === 'pending'
-  ).length;
+  
+  // Calculate average score for graded assignments
+  const gradedAssignments = mockAssignments.filter(a => a.status === 'graded' && a.grade !== undefined);
+  const averageScore = gradedAssignments.length > 0
+    ? Math.round(gradedAssignments.reduce((sum, a) => sum + (a.grade || 0), 0) / gradedAssignments.length)
+    : 0;
 
   return (
     <div>
@@ -294,16 +191,16 @@ export default function StudentAssignmentsContent() {
           <div className="flex items-center gap-3">
             <div 
               className="w-10 h-10 rounded-xl flex items-center justify-center"
-              style={{ backgroundColor: '#DC2626' }}
+              style={{ backgroundColor: '#16A34A' }}
             >
-              <AlertCircle className="w-5 h-5 text-white" />
+              <Star className="w-5 h-5 text-white" />
             </div>
             <div>
               <p className="text-2xl font-bold" style={{ color: 'var(--ink)', fontFamily: 'var(--font-display)' }}>
-                {overdueCount}
+                {averageScore}%
               </p>
               <p className="text-xs font-semibold" style={{ color: 'var(--ink-muted)' }}>
-                Overdue
+                Average Score
               </p>
             </div>
           </div>
@@ -344,7 +241,7 @@ export default function StudentAssignmentsContent() {
                 <div className="flex items-center gap-3 mb-2">
                   <div 
                     className="w-1 h-8 rounded-full"
-                    style={{ backgroundColor: getPriorityColor(assignment.priority) }}
+                    style={{ backgroundColor: getPriorityColor() }}
                   />
                   <div>
                     <h3 className="font-bold text-lg" style={{ color: 'var(--ink)' }}>
@@ -352,7 +249,7 @@ export default function StudentAssignmentsContent() {
                     </h3>
                     <div className="flex items-center gap-4 text-sm" style={{ color: 'var(--ink-muted)' }}>
                       <span className="font-medium" style={{ color: 'var(--navy)' }}>
-                        {assignment.subject}
+                        {assignment.course}
                       </span>
                       <div className="flex items-center gap-1">
                         <User className="w-3 h-3" />
@@ -363,18 +260,18 @@ export default function StudentAssignmentsContent() {
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                {assignment.score !== null && (
+                {assignment.grade !== undefined && assignment.grade !== null && (
                   <div className="text-right">
                     <div 
                       className="text-2xl font-bold"
                       style={{ 
-                        color: assignment.score >= (assignment.maxScore * 0.8) ? 'var(--navy)' : 
-                               assignment.score >= (assignment.maxScore * 0.6) ? 'var(--gold-dark)' : 
+                        color: assignment.grade >= 80 ? 'var(--navy)' : 
+                               assignment.grade >= 60 ? 'var(--gold-dark)' : 
                                '#DC2626',
                         fontFamily: 'var(--font-display)' 
                       }}
                     >
-                      {assignment.score}/{assignment.maxScore}
+                      {assignment.grade}%
                     </div>
                     <div className="flex items-center gap-1 justify-end">
                       {[...Array(5)].map((_, i) => (
@@ -382,8 +279,8 @@ export default function StudentAssignmentsContent() {
                           key={i}
                           className="w-3 h-3"
                           style={{ 
-                            color: i < Math.round((assignment.score / assignment.maxScore) * 5) ? 'var(--gold)' : 'var(--rule)',
-                            fill: i < Math.round((assignment.score / assignment.maxScore) * 5) ? 'var(--gold)' : 'none'
+                            color: i < Math.round((assignment.grade / 100) * 5) ? 'var(--gold)' : 'var(--rule)',
+                            fill: i < Math.round((assignment.grade / 100) * 5) ? 'var(--gold)' : 'none'
                           }}
                         />
                       ))}
@@ -409,41 +306,11 @@ export default function StudentAssignmentsContent() {
               </div>
               <div className="flex items-center gap-2">
                 <FileText className="w-4 h-4" />
-                <span>{assignment.maxScore} points</span>
+                <span>Assignment</span>
               </div>
-              {assignment.attachments.length > 0 && (
-                <div className="flex items-center gap-2">
-                  <Paperclip className="w-4 h-4" />
-                  <span>{assignment.attachments.length} attachment{assignment.attachments.length > 1 ? 's' : ''}</span>
-                </div>
-              )}
             </div>
 
-            {/* Attachments */}
-            {assignment.attachments.length > 0 && (
-              <div className="mb-4">
-                <p className="text-xs font-semibold mb-2" style={{ color: 'var(--ink-muted)' }}>
-                  Instructor Attachments:
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {assignment.attachments.map((attachment, index) => (
-                    <button
-                      key={index}
-                      className="flex items-center gap-2 px-3 py-2 rounded-lg border transition-all hover:shadow-md"
-                      style={{ backgroundColor: 'var(--bg)', borderColor: 'var(--rule)' }}
-                    >
-                      <Download className="w-4 h-4" style={{ color: 'var(--navy)' }} />
-                      <span className="text-xs font-medium" style={{ color: 'var(--ink)' }}>
-                        {attachment.name}
-                      </span>
-                      <span className="text-xs" style={{ color: 'var(--ink-faint)' }}>
-                        ({attachment.size})
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
+            {/* Attachments - Remove this section since our mock data doesn't include attachments */}
 
             {/* Feedback (for graded assignments) */}
             {assignment.feedback && (
@@ -464,14 +331,12 @@ export default function StudentAssignmentsContent() {
                   Submit Assignment:
                 </p>
                 <div className="flex items-center gap-3">
-                  {assignment.submissionType.includes('file') && (
-                    <button className="flex items-center gap-2 px-4 py-2 rounded-xl border transition-all hover:shadow-md">
-                      <Upload className="w-4 h-4" style={{ color: 'var(--navy)' }} />
-                      <span className="text-sm font-medium" style={{ color: 'var(--ink)' }}>
-                        Upload File
-                      </span>
-                    </button>
-                  )}
+                  <button className="flex items-center gap-2 px-4 py-2 rounded-xl border transition-all hover:shadow-md">
+                    <Upload className="w-4 h-4" style={{ color: 'var(--navy)' }} />
+                    <span className="text-sm font-medium" style={{ color: 'var(--ink)' }}>
+                      Upload File
+                    </span>
+                  </button>
                   <button 
                     className="flex items-center gap-2 px-4 py-2 rounded-xl font-semibold text-white transition-all hover:shadow-md hover:scale-[1.02]"
                     style={{ backgroundColor: 'var(--navy)' }}
@@ -484,11 +349,11 @@ export default function StudentAssignmentsContent() {
             )}
 
             {/* Submitted Date (for submitted assignments) */}
-            {assignment.submittedDate && (
+            {assignment.submittedAt && (
               <div className="border-t pt-4" style={{ borderColor: 'var(--rule)' }}>
                 <div className="flex items-center justify-between">
                   <p className="text-xs" style={{ color: 'var(--ink-muted)' }}>
-                    Submitted on {new Date(assignment.submittedDate).toLocaleDateString('en-US', { 
+                    Submitted on {new Date(assignment.submittedAt).toLocaleDateString('en-US', { 
                       weekday: 'long', 
                       year: 'numeric', 
                       month: 'long', 

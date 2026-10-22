@@ -6,7 +6,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff, UserPlus, AlertCircle, CheckCircle2, ArrowLeft } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { register, portalHomeForRole, DEMO_MODE } from "@/lib/auth";
+import { register, portalHomeForRole, DEMO_MODE, TEST_MODE } from "@/lib/auth";
 import GoogleAuthButton from "@/components/ui/GoogleAuthButton";
 
 /* ── Background slide data from hero section ──────────────────────────── */
@@ -59,10 +59,53 @@ export default function RegisterPageContent() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    if (password !== password2) { setError("Passwords do not match."); return; }
+    
+    // In TEST mode, minimal validation - just check passwords match
+    if (TEST_MODE) {
+      if (password !== password2) { 
+        setError("Passwords do not match."); 
+        return; 
+      }
+    } else {
+      // Normal validation
+      if (password !== password2) { 
+        setError("Passwords do not match."); 
+        return; 
+      }
+    }
+    
     setLoading(true);
     
     try {
+      // In TEST mode, accept any input and create a mock registration
+      if (TEST_MODE) {
+        // Simulate a brief loading state for realism
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
+        // Create and save a mock user based on the inputs
+        const mockUser = {
+          id: `test-user-${Date.now()}`,
+          email: email || "test@pinassociate.com",
+          first_name: firstName || "Test",
+          last_name: lastName || "User",
+          phone_number: phone || "+234 800 000 0000",
+          role: role,
+          date_joined: new Date().toISOString(),
+        };
+        
+        // Save to localStorage
+        localStorage.setItem("pin_user", JSON.stringify(mockUser));
+        localStorage.setItem("pin_access", "test-access-token");
+        localStorage.setItem("pin_refresh", "test-refresh-token");
+        
+        setDone(true);
+        // Redirect to appropriate dashboard after showing success message
+        setTimeout(() => {
+          router.replace(role === "STUDENT" ? "/portal/student" : "/portal/client");
+        }, 2000);
+        return;
+      }
+
       // In demo mode, just redirect without actual registration
       if (DEMO_MODE) {
         // Simulate a brief loading state for realism
