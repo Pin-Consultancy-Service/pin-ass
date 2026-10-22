@@ -22,6 +22,7 @@ export default function AddStudentModal({ isOpen, onClose, onSuccess }: AddStude
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
@@ -45,12 +46,30 @@ export default function AddStudentModal({ isOpen, onClose, onSuccess }: AddStude
     if (!validate()) return;
 
     setIsSubmitting(true);
-    // Simulate API call
-    setTimeout(() => {
-      setIsSubmitting(false);
+    setSubmitError(null);
+    
+    try {
+      // Simulate API call
+      await new Promise((resolve, reject) => {
+        setTimeout(() => {
+          // Randomly succeed or fail for demonstration
+          // In production, this would be an actual API call
+          const success = true; // Math.random() > 0.1;
+          if (success) {
+            resolve(true);
+          } else {
+            reject(new Error('Failed to add student. Please try again.'));
+          }
+        }, 1000);
+      });
+      
       onSuccess();
       handleClose();
-    }, 1000);
+    } catch (error: any) {
+      setSubmitError(error.message || 'An unexpected error occurred');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleClose = () => {
@@ -64,6 +83,7 @@ export default function AddStudentModal({ isOpen, onClose, onSuccess }: AddStude
       amountPaid: 0,
     });
     setErrors({});
+    setSubmitError(null);
     onClose();
   };
 
@@ -98,6 +118,19 @@ export default function AddStudentModal({ isOpen, onClose, onSuccess }: AddStude
       }
     >
       <form onSubmit={handleSubmit} className="space-y-4">
+        {submitError && (
+          <div 
+            className="p-3 rounded-xl border"
+            style={{ 
+              backgroundColor: '#FEF2F2', 
+              borderColor: '#FEE2E2',
+              color: '#DC2626'
+            }}
+          >
+            <p className="text-sm font-medium">{submitError}</p>
+          </div>
+        )}
+        
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-semibold mb-2" style={{ color: 'var(--ink)' }}>

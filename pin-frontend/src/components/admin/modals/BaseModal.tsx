@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { X } from "lucide-react";
 
 interface BaseModalProps {
@@ -20,6 +20,9 @@ export default function BaseModal({
   size = 'md',
   footer,
 }: BaseModalProps) {
+  const modalRef = useRef<HTMLDivElement>(null);
+  const previouslyFocusedElement = useRef<HTMLElement | null>(null);
+
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isOpen) {
@@ -28,15 +31,47 @@ export default function BaseModal({
     };
 
     if (isOpen) {
+      // Save the previously focused element
+      previouslyFocusedElement.current = document.activeElement as HTMLElement;
+      
       document.addEventListener('keydown', handleEscape);
       document.body.style.overflow = 'hidden';
+      
+      // Focus the modal
+      setTimeout(() => {
+        modalRef.current?.focus();
+      }, 10);
     }
 
     return () => {
       document.removeEventListener('keydown', handleEscape);
       document.body.style.overflow = 'unset';
+      
+      // Restore focus to the previously focused element
+      if (previouslyFocusedElement.current && !isOpen) {
+        previouslyFocusedElement.current.focus();
+      }
     };
   }, [isOpen, onClose]);
+
+  // Simple focus trap
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key !== 'Tab' || !modalRef.current) return;
+
+    const focusableElements = modalRef.current.querySelectorAll<HTMLElement>(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    const firstElement = focusableElements[0];
+    const lastElement = focusableElements[focusableElements.length - 1];
+
+    if (e.shiftKey && document.activeElement === firstElement) {
+      e.preventDefault();
+      lastElement?.focus();
+    } else if (!e.shiftKey && document.activeElement === lastElement) {
+      e.preventDefault();
+      firstElement?.focus();
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -48,7 +83,12 @@ export default function BaseModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center p-0 md:p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
+    >
       {/* Backdrop */}
       <div
         className="absolute inset-0 transition-opacity"
@@ -56,23 +96,31 @@ export default function BaseModal({
           backgroundColor: 'rgba(0, 0, 0, 0.5)',
           backdropFilter: 'blur(8px)',
         }}
-        onClick={onClose}
+        onClick={(e) => {
+          if (e.target === e.currentTarget) {
+            onClose();
+          }
+        }}
       />
 
       {/* Modal */}
       <div
-        className={`${sizeClasses[size]} relative rounded-2xl shadow-2xl max-h-[90vh] md:max-h-[90vh] overflow-hidden flex flex-col animate-fadeInUp`}
+        ref={modalRef}
+        tabIndex={-1}
+        onKeyDown={handleKeyDown}
+        className={`${sizeClasses[size]} relative shadow-2xl overflow-hidden flex flex-col animate-fadeInUp h-full w-full md:h-auto md:max-h-[90vh] md:rounded-2xl`}
         style={{
           backgroundColor: 'var(--bg)',
           border: '1px solid var(--rule)',
         }}
+        onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div
           className="flex items-center justify-between p-6 border-b"
           style={{ borderColor: 'var(--rule)' }}
         >
-          <h2 className="text-xl font-bold" style={{ color: 'var(--ink)', fontFamily: 'var(--font-display)' }}>
+          <h2 id="modal-title" className="text-xl font-bold" style={{ color: 'var(--ink)', fontFamily: 'var(--font-display)' }}>
             {title}
           </h2>
           <button

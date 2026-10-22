@@ -3,10 +3,12 @@
 import { useState } from "react";
 import { Plus, UserCheck, Clock, MapPin, Video } from "lucide-react";
 import { mockAdminClasses } from "@/lib/mockAdminData";
+import CreateClassModal from '@/components/admin/modals/CreateClassModal';
 
 export default function AdminClassesContent() {
   const [statusFilter, setStatusFilter] = useState<'all' | 'upcoming' | 'ongoing' | 'completed'>('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   const filteredClasses = mockAdminClasses.filter(cls => {
     const matchesStatus = statusFilter === 'all' || cls.status === statusFilter;
@@ -62,6 +64,7 @@ export default function AdminClassesContent() {
           </p>
         </div>
         <button
+          onClick={() => setIsCreateModalOpen(true)}
           className="px-4 py-2 rounded-xl font-semibold text-sm flex items-center gap-2"
           style={{ backgroundColor: 'var(--gold)', color: 'var(--navy-dark)' }}
         >
@@ -203,6 +206,15 @@ export default function AdminClassesContent() {
           <p style={{ color: 'var(--ink-muted)' }}>No classes found matching your filters</p>
         </div>
       )}
+
+      <CreateClassModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onSuccess={() => {
+          setIsCreateModalOpen(false);
+          console.log('Class created successfully');
+        }}
+      />
     </div>
   );
 }

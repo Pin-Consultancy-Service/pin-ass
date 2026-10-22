@@ -24,6 +24,7 @@ export default function CreateClassModal({ isOpen, onClose, onSuccess }: CreateC
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const instructors = mockSystemUsers.filter(u => u.role === 'instructor');
 
@@ -45,24 +46,58 @@ export default function CreateClassModal({ isOpen, onClose, onSuccess }: CreateC
     if (!validate()) return;
 
     setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
+    setSubmitError(null);
+    
+    try {
+      // Simulate API call
+      await new Promise((resolve, reject) => {
+        setTimeout(() => {
+          const success = true;
+          if (success) {
+            resolve(true);
+          } else {
+            reject(new Error('Failed to create class. Please try again.'));
+          }
+        }, 1000);
+      });
+      
       onSuccess();
-      onClose();
-    }, 1000);
+      handleClose();
+    } catch (error: any) {
+      setSubmitError(error.message || 'An unexpected error occurred');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleClose = () => {
+    setFormData({
+      courseId: '',
+      instructorId: '',
+      date: '',
+      startTime: '',
+      endTime: '',
+      venue: '',
+      type: 'in-person',
+      capacity: 50,
+      onlineLink: '',
+    });
+    setErrors({});
+    setSubmitError(null);
+    onClose();
   };
 
   return (
     <BaseModal
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={handleClose}
       title="Create New Class"
       size="lg"
       footer={
         <>
           <button
             type="button"
-            onClick={onClose}
+            onClick={handleClose}
             className="px-4 py-2 rounded-xl font-semibold text-sm"
             style={{ backgroundColor: 'var(--surface)', color: 'var(--ink-muted)' }}
           >
@@ -80,6 +115,19 @@ export default function CreateClassModal({ isOpen, onClose, onSuccess }: CreateC
       }
     >
       <form onSubmit={handleSubmit} className="space-y-4">
+        {submitError && (
+          <div 
+            className="p-3 rounded-xl border"
+            style={{ 
+              backgroundColor: '#FEF2F2', 
+              borderColor: '#FEE2E2',
+              color: '#DC2626'
+            }}
+          >
+            <p className="text-sm font-medium">{submitError}</p>
+          </div>
+        )}
+        
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-semibold mb-2" style={{ color: 'var(--ink)' }}>

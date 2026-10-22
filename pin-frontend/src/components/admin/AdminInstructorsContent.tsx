@@ -3,9 +3,11 @@
 import { useState } from "react";
 import { Plus, ChevronDown, ChevronUp } from "lucide-react";
 import { mockSystemUsers, mockAdminClasses } from "@/lib/mockAdminData";
+import AddInstructorModal from "@/components/admin/modals/AddInstructorModal";
 
 export default function AdminInstructorsContent() {
   const [expandedRow, setExpandedRow] = useState<string | null>(null);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   const instructors = mockSystemUsers.filter(u => u.role === 'instructor');
   
@@ -44,6 +46,7 @@ export default function AdminInstructorsContent() {
           </p>
         </div>
         <button
+          onClick={() => setIsAddModalOpen(true)}
           className="px-4 py-2 rounded-xl font-semibold text-sm flex items-center gap-2"
           style={{ backgroundColor: 'var(--gold)', color: 'var(--navy-dark)' }}
         >
@@ -237,6 +240,16 @@ export default function AdminInstructorsContent() {
           );
         })}
       </div>
+
+      {/* Add Instructor Modal */}
+      <AddInstructorModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onSuccess={() => {
+          // In a real app, refresh the instructor list
+          console.log('Instructor added successfully');
+        }}
+      />
     </div>
   );
 }

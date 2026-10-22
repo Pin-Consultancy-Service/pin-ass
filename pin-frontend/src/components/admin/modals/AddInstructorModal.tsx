@@ -20,6 +20,7 @@ export default function AddInstructorModal({ isOpen, onClose, onSuccess }: AddIn
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
@@ -41,24 +42,55 @@ export default function AddInstructorModal({ isOpen, onClose, onSuccess }: AddIn
     if (!validate()) return;
 
     setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
+    setSubmitError(null);
+    
+    try {
+      // Simulate API call
+      await new Promise((resolve, reject) => {
+        setTimeout(() => {
+          const success = true;
+          if (success) {
+            resolve(true);
+          } else {
+            reject(new Error('Failed to add instructor. Please try again.'));
+          }
+        }, 1000);
+      });
+      
       onSuccess();
-      onClose();
-    }, 1000);
+      handleClose();
+    } catch (error: any) {
+      setSubmitError(error.message || 'An unexpected error occurred');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleClose = () => {
+    setFormData({
+      first_name: '',
+      last_name: '',
+      email: '',
+      phone_number: '',
+      specialization: '',
+      bio: '',
+    });
+    setErrors({});
+    setSubmitError(null);
+    onClose();
   };
 
   return (
     <BaseModal
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={handleClose}
       title="Add New Instructor"
       size="md"
       footer={
         <>
           <button
             type="button"
-            onClick={onClose}
+            onClick={handleClose}
             className="px-4 py-2 rounded-xl font-semibold text-sm"
             style={{ backgroundColor: 'var(--surface)', color: 'var(--ink-muted)' }}
           >
@@ -76,6 +108,19 @@ export default function AddInstructorModal({ isOpen, onClose, onSuccess }: AddIn
       }
     >
       <form onSubmit={handleSubmit} className="space-y-4">
+        {submitError && (
+          <div 
+            className="p-3 rounded-xl border"
+            style={{ 
+              backgroundColor: '#FEF2F2', 
+              borderColor: '#FEE2E2',
+              color: '#DC2626'
+            }}
+          >
+            <p className="text-sm font-medium">{submitError}</p>
+          </div>
+        )}
+        
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-semibold mb-2" style={{ color: 'var(--ink)' }}>
