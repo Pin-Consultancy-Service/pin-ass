@@ -96,9 +96,9 @@ export default function StudentAssignmentsContent() {
   const gradedCount = mockAssignments.filter(a => a.status === 'graded').length;
   
   // Calculate average score for graded assignments
-  const gradedAssignments = mockAssignments.filter(a => a.status === 'graded' && a.grade !== undefined);
+  const gradedAssignments = mockAssignments.filter(a => a.status === 'graded' && a.score !== undefined);
   const averageScore = gradedAssignments.length > 0
-    ? Math.round(gradedAssignments.reduce((sum, a) => sum + (a.grade || 0), 0) / gradedAssignments.length)
+    ? Math.round(gradedAssignments.reduce((sum, a) => sum + (a.score || 0), 0) / gradedAssignments.length)
     : 0;
 
   return (
@@ -249,7 +249,7 @@ export default function StudentAssignmentsContent() {
                     </h3>
                     <div className="flex items-center gap-4 text-sm" style={{ color: 'var(--ink-muted)' }}>
                       <span className="font-medium" style={{ color: 'var(--navy)' }}>
-                        {assignment.course}
+                        {assignment.courseName}
                       </span>
                       <div className="flex items-center gap-1">
                         <User className="w-3 h-3" />
@@ -349,11 +349,11 @@ export default function StudentAssignmentsContent() {
             )}
 
             {/* Submitted Date (for submitted assignments) */}
-            {assignment.submittedAt && (
+            {assignment.submittedDate && (
               <div className="border-t pt-4" style={{ borderColor: 'var(--rule)' }}>
                 <div className="flex items-center justify-between">
                   <p className="text-xs" style={{ color: 'var(--ink-muted)' }}>
-                    Submitted on {new Date(assignment.submittedAt).toLocaleDateString('en-US', { 
+                    Submitted on {new Date(assignment.submittedDate).toLocaleDateString('en-US', { 
                       weekday: 'long', 
                       year: 'numeric', 
                       month: 'long', 

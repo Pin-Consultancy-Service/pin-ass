@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, ChevronDown, ChevronUp } from "lucide-react";
+import { Plus, ChevronDown, ChevronUp, Search } from "lucide-react";
 import { mockSystemUsers, mockAdminClasses } from "@/lib/mockAdminData";
 import AddInstructorModal from "@/components/admin/modals/AddInstructorModal";
 
@@ -75,11 +75,62 @@ export default function AdminInstructorsContent() {
         </div>
       </div>
 
-      {/* Desktop Table */}
-      <div className="hidden md:block overflow-x-auto rounded-xl border" style={{ borderColor: 'var(--rule)' }}>
+      {/* Enhanced Search & Filter Bar */}
+      <div 
+        className="p-4 rounded-xl border"
+        style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--rule)' }}
+      >
+        <div className="flex flex-col sm:flex-row gap-3">
+          <div className="relative flex-1">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: 'var(--ink-faint)' }} />
+            <input
+              type="text"
+              placeholder="Search instructors by name, email, or specialization..."
+              className="w-full pl-12 pr-4 py-3 rounded-lg border transition-all focus:outline-none focus:ring-2"
+              style={{ 
+                backgroundColor: 'var(--bg)', 
+                borderColor: 'var(--rule)', 
+                color: 'var(--ink)',
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.borderColor = 'var(--gold)';
+                e.currentTarget.style.boxShadow = '0 0 0 3px rgba(244, 196, 48, 0.1)';
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.borderColor = 'var(--rule)';
+                e.currentTarget.style.boxShadow = 'none';
+              }}
+            />
+          </div>
+          <select 
+            className="px-4 py-3 rounded-lg border transition-all focus:outline-none focus:ring-2"
+            style={{ 
+              backgroundColor: 'var(--bg)', 
+              borderColor: 'var(--rule)', 
+              color: 'var(--ink)',
+              minWidth: '160px'
+            }}
+            onFocus={(e) => {
+              e.currentTarget.style.borderColor = 'var(--gold)';
+              e.currentTarget.style.boxShadow = '0 0 0 3px rgba(244, 196, 48, 0.1)';
+            }}
+            onBlur={(e) => {
+              e.currentTarget.style.borderColor = 'var(--rule)';
+              e.currentTarget.style.boxShadow = 'none';
+            }}
+          >
+            <option>All Statuses</option>
+            <option>Active</option>
+            <option>Inactive</option>
+          </select>
+        </div>
+      </div>
+
+      {/* Desktop Table with Enhanced Styling */}
+      <div className="hidden md:block overflow-x-auto rounded-xl border" style={{ borderColor: 'var(--rule)', boxShadow: 'var(--shadow-sm)' }}>
         <table className="w-full">
           <thead>
-            <tr style={{ backgroundColor: 'var(--surface)', borderBottom: '1px solid var(--rule)' }}>
+            <tr style={{ backgroundColor: 'var(--surface)', borderBottom: '2px solid var(--rule)' }}>
               <th className="text-left p-4 text-sm font-semibold" style={{ color: 'var(--ink)' }}>Instructor</th>
               <th className="text-left p-4 text-sm font-semibold" style={{ color: 'var(--ink)' }}>Email</th>
               <th className="text-left p-4 text-sm font-semibold" style={{ color: 'var(--ink)' }}>Specialization</th>
@@ -99,9 +150,21 @@ export default function AdminInstructorsContent() {
                 <>
                   <tr 
                     key={instructor.id} 
-                    style={{ borderBottom: '1px solid var(--rule)', backgroundColor: 'var(--bg)' }}
-                    className="cursor-pointer hover:opacity-80"
+                    style={{ 
+                      borderBottom: '1px solid var(--rule)', 
+                      backgroundColor: 'var(--bg)',
+                      transition: 'all 0.15s ease'
+                    }}
+                    className="cursor-pointer"
                     onClick={() => setExpandedRow(isExpanded ? null : instructor.id)}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = 'var(--surface)';
+                      e.currentTarget.style.transform = 'scale(1.002)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = 'var(--bg)';
+                      e.currentTarget.style.transform = 'scale(1)';
+                    }}
                   >
                     <td className="p-4">
                       <div className="flex items-center gap-3">
@@ -191,7 +254,7 @@ export default function AdminInstructorsContent() {
         </table>
       </div>
 
-      {/* Mobile Cards */}
+      {/* Enhanced Mobile Cards */}
       <div className="md:hidden space-y-3">
         {instructors.map((instructor) => {
           const instructorClasses = getInstructorClasses(instructor.id);
@@ -200,8 +263,20 @@ export default function AdminInstructorsContent() {
           return (
             <div 
               key={instructor.id}
-              className="p-4 rounded-xl border"
-              style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--rule)' }}
+              className="p-4 rounded-xl border transition-all"
+              style={{ 
+                backgroundColor: 'var(--surface)', 
+                borderColor: 'var(--rule)',
+                boxShadow: 'var(--shadow-sm)'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = 'var(--shadow-md)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+              }}
             >
               <div className="flex items-start gap-3 mb-3">
                 <div 

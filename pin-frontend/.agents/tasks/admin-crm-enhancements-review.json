@@ -1,0 +1,71 @@
+{
+  "verdict": "CHANGES_REQUESTED",
+  "findings": [
+    {
+      "severity": "HIGH",
+      "file": "src/components/admin/AdminDashboardContent.tsx",
+      "description": "Imports LineChart, AreaChart, and BarChart from '@/components/admin/charts/' but the directory doesn't exist. This will cause module resolution errors at runtime when navigating to /admin/dashboard. Create the chart components or remove the chart rendering code."
+    },
+    {
+      "severity": "HIGH",
+      "file": "src/components/admin/AdminStudentsContent.tsx",
+      "description": "Imports AddStudentModal from '@/components/admin/modals/AddStudentModal' but the component doesn't exist. Clicking the 'Add Student' button will fail at runtime. Create the modal component or disable the button."
+    },
+    {
+      "severity": "HIGH",
+      "file": "src/components/admin/AdminInstructorsContent.tsx",
+      "description": "Imports AddInstructorModal from '@/components/admin/modals/AddInstructorModal' but the component doesn't exist. Clicking the 'Add Instructor' button will fail at runtime. Create the modal component or disable the button."
+    },
+    {
+      "severity": "HIGH",
+      "file": "src/components/admin/AdminClassesContent.tsx",
+      "description": "Imports CreateClassModal from '@/components/admin/modals/CreateClassModal' but the component doesn't exist. Clicking the 'Schedule Class' button will fail at runtime. Create the modal component or disable the button."
+    },
+    {
+      "severity": "HIGH",
+      "file": "src/components/admin/AdminStudentsContent.tsx",
+      "description": "Status badges use hardcoded hex colors (#DCFCE7, #FEF3C7, #FEE2E2 for backgrounds; #16A34A, #D97706, #DC2626 for text) instead of CSS variables. These don't respond to dark mode, breaking the theme system. Add CSS variables for success/warning/error states or map to existing variables like --navy-50, --gold-50."
+    },
+    {
+      "severity": "HIGH",
+      "file": "src/components/admin/AdminClassesContent.tsx",
+      "description": "Class status and type badges use hardcoded hex colors (#FEF3C7, #DCFCE7, #DBEAFE, #FEE2E2 for backgrounds; #D97706, #16A34A, #2563EB, #DC2626 for text). Replace with CSS variables for dark mode compatibility."
+    },
+    {
+      "severity": "HIGH",
+      "file": "src/components/admin/AdminInstructorsContent.tsx",
+      "description": "Status badges use hardcoded hex colors (#DCFCE7, #FEE2E2, #16A34A, #DC2626). Replace with CSS variables."
+    },
+    {
+      "severity": "MEDIUM",
+      "file": "src/components/admin/CalendarWidget.tsx",
+      "description": "Event type badges use hardcoded colors: { backgroundColor: '#FEE2E2', color: '#DC2626' } for exams. Replace with CSS variables."
+    },
+    {
+      "severity": "MEDIUM",
+      "file": "src/components/admin/NotificationPanel.tsx",
+      "description": "Notification icon backgrounds use hardcoded colors (#DCFCE7, #16A34A, #DBEAFE, #2563EB, #FEF3C7, #D97706). Replace with semantic CSS variables."
+    },
+    {
+      "severity": "MEDIUM",
+      "file": "src/components/admin/ProfileDropdown.tsx",
+      "description": "Logout button hover state uses hardcoded background color #FEE2E2. Add a CSS variable for error-hover or error-surface."
+    },
+    {
+      "severity": "MEDIUM",
+      "file": "src/components/admin/AdminStudentsContent.tsx",
+      "description": "Implements custom table with 200+ lines instead of using the reusable DataTable component. Duplicates search, pagination, and mobile layout logic. Refactor to use DataTable."
+    },
+    {
+      "severity": "MEDIUM",
+      "file": "src/components/admin/AdminInstructorsContent.tsx",
+      "description": "Implements custom table instead of using DataTable component. Refactor to use DataTable."
+    },
+    {
+      "severity": "MEDIUM",
+      "file": "src/components/admin/AdminClassesContent.tsx",
+      "description": "Implements custom card grid instead of using DataTable component. Consider refactoring to use DataTable for consistency."
+    }
+  ],
+  "reviewDoc": "c:\\Users\\ayemo\\Desktop\\Desktop\\andrewgold\\pin-ass\\pin-frontend\\.agents\\tasks\\admin-crm-enhancements-review.md"
+}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, UserCheck, Clock, MapPin, Video } from "lucide-react";
+import { Plus, UserCheck, Clock, MapPin, Video, Search } from "lucide-react";
 import { mockAdminClasses } from "@/lib/mockAdminData";
 import CreateClassModal from '@/components/admin/modals/CreateClassModal';
 
@@ -93,46 +93,92 @@ export default function AdminClassesContent() {
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="flex gap-3 overflow-x-auto pb-2">
-        {[
-          { key: 'all', label: 'All' },
-          { key: 'upcoming', label: 'Upcoming' },
-          { key: 'ongoing', label: 'Ongoing' },
-          { key: 'completed', label: 'Completed' }
-        ].map(filter => (
-          <button
-            key={filter.key}
-            onClick={() => setStatusFilter(filter.key as any)}
-            className="px-4 py-2 rounded-lg font-medium text-sm transition-all whitespace-nowrap"
-            style={{
-              backgroundColor: statusFilter === filter.key ? 'var(--navy)' : 'var(--surface)',
-              color: statusFilter === filter.key ? 'white' : 'var(--ink-muted)',
-              border: `1px solid ${statusFilter === filter.key ? 'var(--navy)' : 'var(--rule)'}`
-            }}
-          >
-            {filter.label}
-          </button>
-        ))}
+      {/* Enhanced Filter Bar */}
+      <div 
+        className="p-4 rounded-xl border"
+        style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--rule)' }}
+      >
+        <div className="flex flex-wrap gap-3">
+          {[
+            { key: 'all', label: 'All Classes' },
+            { key: 'upcoming', label: 'Upcoming' },
+            { key: 'ongoing', label: 'Ongoing' },
+            { key: 'completed', label: 'Completed' }
+          ].map(filter => (
+            <button
+              key={filter.key}
+              onClick={() => setStatusFilter(filter.key as any)}
+              className="px-4 py-2 rounded-lg font-medium text-sm transition-all whitespace-nowrap"
+              style={{
+                backgroundColor: statusFilter === filter.key ? 'var(--navy)' : 'transparent',
+                color: statusFilter === filter.key ? 'white' : 'var(--ink-muted)',
+                border: `2px solid ${statusFilter === filter.key ? 'var(--navy)' : 'var(--rule)'}`,
+                transform: statusFilter === filter.key ? 'scale(1.02)' : 'scale(1)',
+              }}
+              onMouseEnter={(e) => {
+                if (statusFilter !== filter.key) {
+                  e.currentTarget.style.borderColor = 'var(--navy)';
+                  e.currentTarget.style.color = 'var(--navy)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (statusFilter !== filter.key) {
+                  e.currentTarget.style.borderColor = 'var(--rule)';
+                  e.currentTarget.style.color = 'var(--ink-muted)';
+                }
+              }}
+            >
+              {filter.label}
+            </button>
+          ))}
+        </div>
       </div>
 
-      {/* Search */}
-      <input
-        type="text"
-        placeholder="Search classes..."
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        className="w-full px-4 py-3 rounded-xl border"
-        style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--rule)', color: 'var(--ink)' }}
-      />
+      {/* Enhanced Search */}
+      <div className="relative">
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: 'var(--ink-faint)' }} />
+        <input
+          type="text"
+          placeholder="Search classes by name or instructor..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-full pl-12 pr-4 py-3 rounded-xl border transition-all focus:outline-none focus:ring-2"
+          style={{ 
+            backgroundColor: 'var(--surface)', 
+            borderColor: 'var(--rule)', 
+            color: 'var(--ink)',
+            boxShadow: 'var(--shadow-sm)'
+          }}
+          onFocus={(e) => {
+            e.currentTarget.style.borderColor = 'var(--gold)';
+            e.currentTarget.style.boxShadow = '0 0 0 3px rgba(244, 196, 48, 0.1)';
+          }}
+          onBlur={(e) => {
+            e.currentTarget.style.borderColor = 'var(--rule)';
+            e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+          }}
+        />
+      </div>
 
-      {/* Class Cards Grid */}
+      {/* Enhanced Class Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {filteredClasses.map((cls) => (
           <div 
             key={cls.id}
-            className="p-5 rounded-xl border"
-            style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--rule)' }}
+            className="p-5 rounded-xl border transition-all"
+            style={{ 
+              backgroundColor: 'var(--surface)', 
+              borderColor: 'var(--rule)',
+              boxShadow: 'var(--shadow-sm)'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-4px)';
+              e.currentTarget.style.boxShadow = 'var(--shadow-md)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+            }}
           >
             {/* Course Name */}
             <h3 className="font-bold text-lg mb-2" style={{ color: 'var(--ink)', fontFamily: 'var(--font-display)' }}>

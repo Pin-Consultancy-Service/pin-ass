@@ -1,0 +1,14 @@
+{
+  "verdict": "CHANGES_REQUESTED",
+  "findings": [
+    "AddInstructorModal not wired — AdminInstructorsContent.tsx line 48 renders button with no onClick handler. Wire it using the same pattern as AddStudentModal (AdminStudentsContent.tsx lines 11, 42, 220-227).",
+    "DonutChart created but unused — Dashboard calls BarChart for programme breakdown instead. Either integrate DonutChart or remove the file to avoid dead code.",
+    "Modal accessibility gaps — BaseModal lacks focus trap (focus can tab outside), no role=\"dialog\", no aria-labelledby linking title, no initial focus management. Add these for screen reader and keyboard navigation compliance.",
+    "BaseModal backdrop click event fires on content — Clicking modal content triggers onClose if click bubbles to backdrop div. Add stopPropagation to modal content div or check event.target === event.currentTarget in backdrop onClick.",
+    "DonutChart transform-origin breaks in Safari — Line 47 uses transformOrigin: 'center' in style object, which Safari may not parse correctly for SVG elements. Move transform-origin to CSS class or remove hover scale effect.",
+    "Mobile modal not full-screen — BaseModal uses w-full md:w-[600px] which respects md breakpoint but does not force full-screen on mobile. On small devices, modal has horizontal padding from parent .p-4 class. Change to w-full h-full md:w-[600px] md:h-auto md:rounded-2xl and remove padding on mobile.",
+    "No loading or error states in modals — AddStudentModal, AddInstructorModal, CreateClassModal have isSubmitting state but no error handling. Forms silently succeed after 1s timeout with no error path. Add try/catch blocks and error state display even in mock implementation.",
+    "Sidebar scrollbar not visible on macOS/iOS — AdminDashboardLayout.tsx line 250 uses scrollbarWidth: 'thin' which is Firefox-only. WebKit devices show no scrollbar. Add -webkit-scrollbar styles or rely on default overflow-y-auto behavior."
+  ],
+  "reviewDoc": "c:\\Users\\ayemo\\Desktop\\Desktop\\andrewgold\\pin-ass\\pin-frontend\\.agents\\tasks\\admin-crm-review.md"
+}

@@ -66,18 +66,22 @@ export default function StudentDashboardContent() {
   // Only compute on client to avoid hydration issues
   const upcomingClasses = mounted ? mockClasses
     .filter(c => c.status === 'scheduled' || c.status === 'live')
-    .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())
+    .sort((a, b) => {
+      const dateA = new Date(`${a.scheduledDate}T${a.scheduledTime}`);
+      const dateB = new Date(`${b.scheduledDate}T${b.scheduledTime}`);
+      return dateA.getTime() - dateB.getTime();
+    })
     .slice(0, 3)
     .map(cls => {
       const now = new Date();
-      const startTime = new Date(cls.startTime);
-      const endTime = new Date(cls.endTime);
+      const startTime = new Date(`${cls.scheduledDate}T${cls.scheduledTime}`);
+      const endTime = new Date(startTime.getTime() + cls.duration * 60000);
       const isToday = startTime.toDateString() === now.toDateString();
       const isTomorrow = startTime.toDateString() === new Date(now.getTime() + 86400000).toDateString();
       
       return {
-        course: cls.course,
-        title: cls.title,
+        course: cls.subject,
+        title: cls.topic,
         time: `${startTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })} - ${endTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`,
         day: isToday ? 'Today' : isTomorrow ? 'Tomorrow' : startTime.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
       };

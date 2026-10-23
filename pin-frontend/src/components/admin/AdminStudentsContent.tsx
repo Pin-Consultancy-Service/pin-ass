@@ -77,35 +77,87 @@ export default function AdminStudentsContent() {
         </div>
       </div>
 
-      {/* Search & Filter */}
-      <div className="flex gap-3">
-        <div className="relative flex-1">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: 'var(--ink-faint)' }} />
-          <input
-            type="text"
-            placeholder="Search students..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-12 pr-4 py-3 rounded-xl border"
-            style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--rule)', color: 'var(--ink)' }}
-          />
+      {/* Enhanced Search & Filter Bar */}
+      <div 
+        className="p-4 rounded-xl border"
+        style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--rule)' }}
+      >
+        <div className="flex flex-col sm:flex-row gap-3">
+          <div className="relative flex-1">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: 'var(--ink-faint)' }} />
+            <input
+              type="text"
+              placeholder="Search by name, email, or student ID..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-12 pr-4 py-3 rounded-lg border transition-all focus:outline-none focus:ring-2"
+              style={{ 
+                backgroundColor: 'var(--bg)', 
+                borderColor: 'var(--rule)', 
+                color: 'var(--ink)',
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.borderColor = 'var(--gold)';
+                e.currentTarget.style.boxShadow = '0 0 0 3px rgba(244, 196, 48, 0.1)';
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.borderColor = 'var(--rule)';
+                e.currentTarget.style.boxShadow = 'none';
+              }}
+            />
+          </div>
+          <select 
+            className="px-4 py-3 rounded-lg border transition-all focus:outline-none focus:ring-2"
+            style={{ 
+              backgroundColor: 'var(--bg)', 
+              borderColor: 'var(--rule)', 
+              color: 'var(--ink)',
+              minWidth: '200px'
+            }}
+            onFocus={(e) => {
+              e.currentTarget.style.borderColor = 'var(--gold)';
+              e.currentTarget.style.boxShadow = '0 0 0 3px rgba(244, 196, 48, 0.1)';
+            }}
+            onBlur={(e) => {
+              e.currentTarget.style.borderColor = 'var(--rule)';
+              e.currentTarget.style.boxShadow = 'none';
+            }}
+          >
+            <option>All Programmes</option>
+            <option>ICAN Foundation</option>
+            <option>ICAN Professional</option>
+            <option>Corporate Training</option>
+          </select>
+          <select 
+            className="px-4 py-3 rounded-lg border transition-all focus:outline-none focus:ring-2"
+            style={{ 
+              backgroundColor: 'var(--bg)', 
+              borderColor: 'var(--rule)', 
+              color: 'var(--ink)',
+              minWidth: '160px'
+            }}
+            onFocus={(e) => {
+              e.currentTarget.style.borderColor = 'var(--gold)';
+              e.currentTarget.style.boxShadow = '0 0 0 3px rgba(244, 196, 48, 0.1)';
+            }}
+            onBlur={(e) => {
+              e.currentTarget.style.borderColor = 'var(--rule)';
+              e.currentTarget.style.boxShadow = 'none';
+            }}
+          >
+            <option>All Statuses</option>
+            <option>Active</option>
+            <option>Inactive</option>
+            <option>Suspended</option>
+          </select>
         </div>
-        <select 
-          className="px-4 py-3 rounded-xl border"
-          style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--rule)', color: 'var(--ink)' }}
-        >
-          <option>All Programmes</option>
-          <option>ICAN Foundation</option>
-          <option>ICAN Professional</option>
-          <option>Corporate Training</option>
-        </select>
       </div>
 
-      {/* Desktop Table */}
-      <div className="hidden md:block overflow-x-auto rounded-xl border" style={{ borderColor: 'var(--rule)' }}>
+      {/* Desktop Table with Enhanced Styling */}
+      <div className="hidden md:block overflow-x-auto rounded-xl border" style={{ borderColor: 'var(--rule)', boxShadow: 'var(--shadow-sm)' }}>
         <table className="w-full">
           <thead>
-            <tr style={{ backgroundColor: 'var(--surface)', borderBottom: '1px solid var(--rule)' }}>
+            <tr style={{ backgroundColor: 'var(--surface)', borderBottom: '2px solid var(--rule)' }}>
               <th className="text-left p-4 text-sm font-semibold" style={{ color: 'var(--ink)' }}>Student</th>
               <th className="text-left p-4 text-sm font-semibold" style={{ color: 'var(--ink)' }}>Programme</th>
               <th className="text-left p-4 text-sm font-semibold" style={{ color: 'var(--ink)' }}>Enroll Date</th>
@@ -123,9 +175,21 @@ export default function AdminStudentsContent() {
                 <>
                   <tr 
                     key={student.id} 
-                    style={{ borderBottom: '1px solid var(--rule)', backgroundColor: 'var(--bg)' }}
-                    className="cursor-pointer hover:opacity-80"
+                    style={{ 
+                      borderBottom: '1px solid var(--rule)', 
+                      backgroundColor: 'var(--bg)',
+                      transition: 'all 0.15s ease'
+                    }}
+                    className="cursor-pointer"
                     onClick={() => setExpandedRow(isExpanded ? null : student.id)}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = 'var(--surface)';
+                      e.currentTarget.style.transform = 'scale(1.002)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = 'var(--bg)';
+                      e.currentTarget.style.transform = 'scale(1)';
+                    }}
                   >
                     <td className="p-4">
                       <div className="flex items-center gap-3">
@@ -220,15 +284,27 @@ export default function AdminStudentsContent() {
         </table>
       </div>
 
-      {/* Mobile Cards */}
+      {/* Enhanced Mobile Cards */}
       <div className="md:hidden space-y-3">
         {filteredStudents.map((student) => {
           const enrollment = getStudentEnrollment(student.id);
           return (
             <div 
               key={student.id}
-              className="p-4 rounded-xl border"
-              style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--rule)' }}
+              className="p-4 rounded-xl border transition-all"
+              style={{ 
+                backgroundColor: 'var(--surface)', 
+                borderColor: 'var(--rule)',
+                boxShadow: 'var(--shadow-sm)'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = 'var(--shadow-md)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+              }}
             >
               <div className="flex items-start gap-3 mb-3">
                 <div 
