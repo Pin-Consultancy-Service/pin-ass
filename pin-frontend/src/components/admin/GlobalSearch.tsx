@@ -225,7 +225,7 @@ export default function GlobalSearch({ isOpen = true, onClose }: GlobalSearchPro
                   </div>
                   <span
                     className="px-2 py-1 rounded-full text-xs font-medium"
-                    style={{ backgroundColor: "var(--gold-50)", color: "#92600A" }}
+                    style={{ backgroundColor: "var(--gold-50)", color: "var(--warning-text)" }}
                   >
                     Instructor
                   </span>

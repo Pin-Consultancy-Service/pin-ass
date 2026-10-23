@@ -34,9 +34,9 @@ export default function TopPerformers() {
     });
 
   const getRankIcon = (rank: number) => {
-    if (rank === 1) return <Trophy className="w-4 h-4" style={{ color: "#D4A820" }} />;
-    if (rank === 2) return <Trophy className="w-4 h-4" style={{ color: "#9CA3AF" }} />;
-    return <Trophy className="w-4 h-4" style={{ color: "#CD7F32" }} />;
+    if (rank === 1) return <Trophy className="w-4 h-4" style={{ color: "var(--gold-dark)" }} />;
+    if (rank === 2) return <Trophy className="w-4 h-4" style={{ color: "var(--ink-muted)" }} />;
+    return <Trophy className="w-4 h-4" style={{ color: "var(--ink-muted)" }} />;
   };
 
   return (

@@ -155,7 +155,7 @@ export default function AdminDashboardLayout({ children, activeTab = 'dashboard'
                 {notificationCount > 0 && (
                   <span
                     className="absolute top-1 right-1 w-2 h-2 rounded-full"
-                    style={{ backgroundColor: '#DC2626' }}
+                    style={{ backgroundColor: 'var(--error-text)' }}
                   />
                 )}
               </button>
@@ -249,7 +249,7 @@ export default function AdminDashboardLayout({ children, activeTab = 'dashboard'
                 {notificationCount > 0 && (
                   <span
                     className="absolute -top-1 -right-1 px-1.5 py-0.5 rounded-full text-xs font-bold text-white"
-                    style={{ backgroundColor: '#DC2626', minWidth: '18px', textAlign: 'center' }}
+                    style={{ backgroundColor: 'var(--error-text)', minWidth: '18px', textAlign: 'center' }}
                   >
                     {notificationCount}
                   </span>

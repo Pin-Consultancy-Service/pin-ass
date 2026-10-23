@@ -113,8 +113,8 @@ export default function AdminDashboardContent() {
               Total Users
             </p>
             <div className="flex items-center gap-1">
-              <TrendingUp className="w-3 h-3" style={{ color: '#10B981' }} />
-              <p className="text-xs font-semibold" style={{ color: '#10B981' }}>
+              <TrendingUp className="w-3 h-3" style={{ color: 'var(--success-text)' }} />
+              <p className="text-xs font-semibold" style={{ color: 'var(--success-text)' }}>
                 +{stats.newUsersThisMonth} this month
               </p>
             </div>
@@ -130,7 +130,7 @@ export default function AdminDashboardContent() {
           <div className="relative z-10">
             <div 
               className="w-14 h-14 rounded-xl flex items-center justify-center mb-4 shadow-lg"
-              style={{ background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)' }}
+              style={{ background: 'linear-gradient(135deg, var(--success-text) 0%, var(--success-bg) 100%)' }}
             >
               <DollarSign className="w-7 h-7 text-white" />
             </div>
@@ -140,7 +140,7 @@ export default function AdminDashboardContent() {
             <p className="text-sm mb-2" style={{ color: 'var(--ink-muted)' }}>
               Total Revenue
             </p>
-            <p className="text-xs font-semibold" style={{ color: '#10B981' }}>
+            <p className="text-xs font-semibold" style={{ color: 'var(--success-text)' }}>
               {formatNaira(stats.revenueThisMonth)} this month
             </p>
           </div>
@@ -165,7 +165,7 @@ export default function AdminDashboardContent() {
             <p className="text-sm mb-2" style={{ color: 'var(--ink-muted)' }}>
               Active Classes
             </p>
-            <p className="text-xs font-semibold" style={{ color: '#F59E0B' }}>
+            <p className="text-xs font-semibold" style={{ color: 'var(--warning-text)' }}>
               {stats.upcomingClasses} upcoming
             </p>
           </div>
@@ -180,7 +180,7 @@ export default function AdminDashboardContent() {
           <div className="relative z-10">
             <div 
               className="w-14 h-14 rounded-xl flex items-center justify-center mb-4 shadow-lg"
-              style={{ background: 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)' }}
+              style={{ background: 'linear-gradient(135deg, var(--info-text) 0%, var(--info-bg) 100%)' }}
             >
               <TrendingUp className="w-7 h-7 text-white" />
             </div>
@@ -190,7 +190,7 @@ export default function AdminDashboardContent() {
             <p className="text-sm mb-2" style={{ color: 'var(--ink-muted)' }}>
               Total Enrollments
             </p>
-            <p className="text-xs font-semibold" style={{ color: '#2563EB' }}>
+            <p className="text-xs font-semibold" style={{ color: 'var(--info-text)' }}>
               {stats.completedClasses} completed
             </p>
           </div>
@@ -248,7 +248,7 @@ export default function AdminDashboardContent() {
           <AreaChart 
             data={enrollmentData}
             height={280}
-            color="#10B981"
+            color="var(--success-text)"
             title="Enrollment Growth (8 Weeks)"
           />
         </div>
@@ -350,9 +350,9 @@ export default function AdminDashboardContent() {
                 className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-white font-bold text-sm"
                 style={{ 
                   background: index % 4 === 0 ? 'linear-gradient(135deg, var(--navy) 0%, var(--navy-dark) 100%)' :
-                             index % 4 === 1 ? 'linear-gradient(135deg, #10B981 0%, #059669 100%)' :
+                             index % 4 === 1 ? 'linear-gradient(135deg, var(--success-text) 0%, var(--success-bg) 100%)' :
                              index % 4 === 2 ? 'linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%)' :
-                             'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)'
+                             'linear-gradient(135deg, var(--info-text) 0%, var(--info-bg) 100%)'
                 }}
               >
                 {activity.userName.charAt(0)}
