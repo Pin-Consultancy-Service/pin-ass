@@ -343,3 +343,74 @@ export const getExpenseData = () => {
     { label: 'Jul', revenue: 795000, expenses: 450000 },
   ];
 };
+
+// ============== NEW INTERFACES FOR CRM ENHANCEMENTS ==============
+
+export interface Notification {
+  id: string;
+  type: 'enrollment' | 'payment' | 'class' | 'user' | 'system';
+  title: string;
+  message: string;
+  timestamp: string;
+  read: boolean;
+  link?: string;
+}
+
+export interface UpcomingEvent {
+  id: string;
+  title: string;
+  date: string;
+  startTime: string;
+  endTime: string;
+  type: 'class' | 'exam' | 'meeting';
+  instructor: string;
+  venue: string;
+  enrolled: number;
+  capacity: number;
+}
+
+// Mock Notifications (last 48 hours)
+export const mockNotifications: Notification[] = [
+  { id: 'NOT001', type: 'enrollment', title: 'New Enrollment', message: 'Ngozi Okoro enrolled in Business Data Analytics', timestamp: new Date(Date.now() - 1000 * 60 * 30).toISOString(), read: false, link: '/admin/enrollments' },
+  { id: 'NOT002', type: 'payment', title: 'Payment Received', message: 'Fatima Abubakar paid ₦85,000 for Risk Management course', timestamp: new Date(Date.now() - 1000 * 60 * 120).toISOString(), read: false, link: '/admin/finances' },
+  { id: 'NOT003', type: 'class', title: 'Class Scheduled', message: 'Business Data Analytics class scheduled for July 23', timestamp: new Date(Date.now() - 1000 * 60 * 180).toISOString(), read: false, link: '/admin/classes' },
+  { id: 'NOT004', type: 'user', title: 'Instructor Assigned', message: 'Mrs. Ngozi Okafor assigned to Taxation class', timestamp: new Date(Date.now() - 1000 * 60 * 240).toISOString(), read: true, link: '/admin/instructors' },
+  { id: 'NOT005', type: 'payment', title: 'Payment Pending', message: 'Ibrahim Yusuf has ₦185,000 outstanding balance', timestamp: new Date(Date.now() - 1000 * 60 * 360).toISOString(), read: false, link: '/admin/finances' },
+  { id: 'NOT006', type: 'enrollment', title: 'Enrollment Completed', message: 'Chiamaka Nwosu completed Financial Management program', timestamp: new Date(Date.now() - 1000 * 60 * 480).toISOString(), read: true, link: '/admin/enrollments' },
+  { id: 'NOT007', type: 'class', title: 'Class Completed', message: 'Financial Management for Executives class completed', timestamp: new Date(Date.now() - 1000 * 60 * 600).toISOString(), read: true, link: '/admin/classes' },
+  { id: 'NOT008', type: 'user', title: 'New Student', message: 'Yusuf Ibrahim registered as a new student', timestamp: new Date(Date.now() - 1000 * 60 * 720).toISOString(), read: true, link: '/admin/students' },
+  { id: 'NOT009', type: 'system', title: 'System Update', message: 'Platform maintenance scheduled for Sunday 3 AM', timestamp: new Date(Date.now() - 1000 * 60 * 840).toISOString(), read: true, link: '/admin/settings' },
+  { id: 'NOT010', type: 'payment', title: 'Payment Received', message: 'Blessing Okonkwo paid ₦60,000 for IFRS Certification', timestamp: new Date(Date.now() - 1000 * 60 * 960).toISOString(), read: true, link: '/admin/finances' },
+  { id: 'NOT011', type: 'enrollment', title: 'New Enrollment', message: 'Chioma Adeleke enrolled in Risk Management & Compliance', timestamp: new Date(Date.now() - 1000 * 60 * 1080).toISOString(), read: true, link: '/admin/enrollments' },
+  { id: 'NOT012', type: 'class', title: 'Class Rescheduled', message: 'Advanced Financial Accounting moved to July 20', timestamp: new Date(Date.now() - 1000 * 60 * 1200).toISOString(), read: true, link: '/admin/classes' },
+  { id: 'NOT013', type: 'user', title: 'Instructor Update', message: 'Dr. Adebayo Johnson updated course materials', timestamp: new Date(Date.now() - 1000 * 60 * 1320).toISOString(), read: true, link: '/admin/instructors' },
+  { id: 'NOT014', type: 'payment', title: 'Payment Confirmed', message: 'Amina Mohammed payment of ₦90,000 confirmed', timestamp: new Date(Date.now() - 1000 * 60 * 1440).toISOString(), read: true, link: '/admin/finances' },
+  { id: 'NOT015', type: 'system', title: 'Backup Completed', message: 'Daily data backup completed successfully', timestamp: new Date(Date.now() - 1000 * 60 * 1560).toISOString(), read: true, link: '/admin/settings' },
+];
+
+// Get Upcoming Events (next 7 days from classes)
+export const mockUpcomingEvents: UpcomingEvent[] = mockAdminClasses
+  .filter(cls => {
+    const classDate = new Date(cls.date);
+    const today = new Date();
+    const sevenDaysFromNow = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
+    return classDate >= today && classDate <= sevenDaysFromNow && (cls.status === 'upcoming' || cls.status === 'ongoing');
+  })
+  .map(cls => ({
+    id: cls.id,
+    title: cls.courseName,
+    date: cls.date,
+    startTime: cls.startTime,
+    endTime: cls.endTime,
+    type: 'class' as const,
+    instructor: cls.instructorName,
+    venue: cls.venue,
+    enrolled: cls.enrolled,
+    capacity: cls.capacity,
+  }))
+  .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+// Helper Functions
+export const getUnreadNotificationCount = (): number => {
+  return mockNotifications.filter(n => !n.read).length;
+};

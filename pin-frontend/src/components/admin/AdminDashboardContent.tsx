@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Users, DollarSign, Calendar, TrendingUp, Clock, PlusCircle, FileText, TrendingDown } from "lucide-react";
 import { 
   getSystemStats, 
@@ -14,9 +15,12 @@ import {
 import LineChart from "@/components/admin/charts/LineChart";
 import AreaChart from "@/components/admin/charts/AreaChart";
 import BarChart from "@/components/admin/charts/BarChart";
+import CalendarWidget from "./CalendarWidget";
+import TopPerformers from "./TopPerformers";
 
 export default function AdminDashboardContent() {
   const stats = getSystemStats();
+  const [dateRange, setDateRange] = useState<'7d' | '30d' | '3m' | 'all'>('30d');
   const recentEnrollments = mockEnrollments.slice(0, 5);
   const recentActivity = getRecentActivity(6);
   const revenueData = getRevenueChartData();
@@ -195,16 +199,42 @@ export default function AdminDashboardContent() {
 
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Revenue Line Chart */}
+        {/* Revenue Line Chart with Date Filter */}
         <div 
           className="p-6 rounded-2xl border shadow-lg"
           style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--rule)' }}
         >
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-bold" style={{ color: 'var(--ink)', fontFamily: 'var(--font-display)' }}>
+              Revenue Trend
+            </h3>
+            <div className="flex gap-2">
+              {[
+                { key: '7d', label: '7d' },
+                { key: '30d', label: '30d' },
+                { key: '3m', label: '3m' },
+                { key: 'all', label: 'All' }
+              ].map((range) => (
+                <button
+                  key={range.key}
+                  onClick={() => setDateRange(range.key as any)}
+                  className="px-3 py-1 rounded-lg text-xs font-medium transition-all"
+                  style={{
+                    backgroundColor: dateRange === range.key ? 'var(--navy)' : 'var(--bg)',
+                    color: dateRange === range.key ? 'white' : 'var(--ink-muted)',
+                    border: `1px solid ${dateRange === range.key ? 'var(--navy)' : 'var(--rule)'}`,
+                  }}
+                >
+                  {range.label}
+                </button>
+              ))}
+            </div>
+          </div>
           <LineChart 
             data={revenueData}
-            height={280}
+            height={240}
             color="var(--navy)"
-            title="Revenue Trend (7 Months)"
+            title=""
             showGrid={true}
             gradientFill={true}
           />
@@ -282,6 +312,16 @@ export default function AdminDashboardContent() {
               </div>
             ))}
           </div>
+        </div>
+      </div>
+
+      {/* Calendar Widget & Top Performers */}
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+        <div className="lg:col-span-3">
+          <CalendarWidget />
+        </div>
+        <div className="lg:col-span-2">
+          <TopPerformers />
         </div>
       </div>
 

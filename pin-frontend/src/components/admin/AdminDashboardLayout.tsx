@@ -1,14 +1,18 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { 
   LayoutDashboard, Users, GraduationCap, UserCheck, Calendar, BookOpen,
-  FileText, DollarSign, BarChart3, Settings, LogOut, Home,
-  Sun, Moon, Menu, X
+  FileText, DollarSign, BarChart3, Settings,
+  Sun, Moon, Menu, X, Bell, Search as SearchIcon
 } from "lucide-react";
+import GlobalSearch from "./GlobalSearch";
+import NotificationPanel from "./NotificationPanel";
+import ProfileDropdown from "./ProfileDropdown";
+import { getUnreadNotificationCount } from "@/lib/mockAdminData";
 
 interface AdminDashboardLayoutProps {
   children: React.ReactNode;
@@ -31,10 +35,15 @@ const sidebarItems = [
 export default function AdminDashboardLayout({ children, activeTab = 'dashboard' }: AdminDashboardLayoutProps) {
   const router = useRouter();
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const [notificationOpen, setNotificationOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [admin, setAdmin] = useState<any>(null);
+  const [notificationCount, setNotificationCount] = useState(0);
+  const notificationRef = useRef<HTMLDivElement>(null);
+  const profileRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -49,6 +58,24 @@ export default function AdminDashboardLayout({ children, activeTab = 'dashboard'
     if (adminData) {
       setAdmin(JSON.parse(adminData));
     }
+
+    // Get notification count
+    setNotificationCount(getUnreadNotificationCount());
+  }, []);
+
+  // Click outside to close dropdowns
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
+        setNotificationOpen(false);
+      }
+      if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
+        setProfileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const toggleTheme = () => {
@@ -103,6 +130,14 @@ export default function AdminDashboardLayout({ children, activeTab = 'dashboard'
 
           <div className="flex items-center gap-2">
             <button
+              onClick={() => setSearchOpen(!searchOpen)}
+              className="p-2 rounded-lg transition-colors"
+              style={{ color: 'var(--ink-muted)' }}
+            >
+              <SearchIcon className="w-5 h-5" />
+            </button>
+
+            <button
               onClick={toggleTheme}
               className="p-2 rounded-lg transition-colors"
               style={{ color: 'var(--ink-muted)' }}
@@ -110,9 +145,26 @@ export default function AdminDashboardLayout({ children, activeTab = 'dashboard'
               {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
 
-            <div className="relative">
+            <div className="relative" ref={notificationRef}>
               <button
-                onClick={() => setUserMenuOpen(!userMenuOpen)}
+                onClick={() => setNotificationOpen(!notificationOpen)}
+                className="p-2 rounded-lg transition-colors relative"
+                style={{ color: 'var(--ink-muted)' }}
+              >
+                <Bell className="w-5 h-5" />
+                {notificationCount > 0 && (
+                  <span
+                    className="absolute top-1 right-1 w-2 h-2 rounded-full"
+                    style={{ backgroundColor: '#DC2626' }}
+                  />
+                )}
+              </button>
+              <NotificationPanel isOpen={notificationOpen} onClose={() => setNotificationOpen(false)} />
+            </div>
+
+            <div className="relative" ref={profileRef}>
+              <button
+                onClick={() => setProfileMenuOpen(!profileMenuOpen)}
                 className="flex items-center gap-2 p-1"
               >
                 <div 
@@ -123,36 +175,22 @@ export default function AdminDashboardLayout({ children, activeTab = 'dashboard'
                   {mounted ? (admin?.first_name?.charAt(0) || 'A') : 'A'}
                 </div>
               </button>
-
-              {userMenuOpen && (
-                <div 
-                  className="absolute right-0 top-full mt-2 w-48 rounded-xl border shadow-lg z-50"
-                  style={{ backgroundColor: 'var(--bg)', borderColor: 'var(--rule)' }}
-                >
-                  <div className="p-2">
-                    <Link
-                      href="/"
-                      className="flex items-center gap-3 p-3 rounded-lg transition-colors"
-                      style={{ color: 'var(--ink-muted)' }}
-                      onClick={() => setUserMenuOpen(false)}
-                    >
-                      <Home className="w-4 h-4" />
-                      <span className="text-sm">Back to Website</span>
-                    </Link>
-                    <button
-                      onClick={handleLogout}
-                      className="w-full flex items-center gap-3 p-3 rounded-lg transition-colors text-left"
-                      style={{ color: 'var(--ink-muted)' }}
-                    >
-                      <LogOut className="w-4 h-4" />
-                      <span className="text-sm">Sign Out</span>
-                    </button>
-                  </div>
-                </div>
-              )}
+              <ProfileDropdown
+                admin={admin}
+                onLogout={handleLogout}
+                isOpen={profileMenuOpen}
+                onClose={() => setProfileMenuOpen(false)}
+              />
             </div>
           </div>
         </div>
+
+        {/* Mobile Search */}
+        {searchOpen && (
+          <div className="px-4 pb-3 border-t" style={{ borderColor: 'var(--rule)' }}>
+            <GlobalSearch isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
+          </div>
+        )}
       </header>
 
       {/* Desktop Header */}
@@ -160,8 +198,8 @@ export default function AdminDashboardLayout({ children, activeTab = 'dashboard'
         className="fixed top-0 left-0 right-0 z-50 hidden lg:block border-b"
         style={{ borderColor: 'var(--rule)', backgroundColor: 'var(--bg)' }}
       >
-        <div className="flex items-center justify-between px-6 py-4">
-          <Link href="/admin/dashboard" className="flex items-center gap-3">
+        <div className="flex items-center justify-between px-6 py-4 gap-6">
+          <Link href="/admin/dashboard" className="flex items-center gap-3 flex-shrink-0">
             <Image 
               src="/images/pin-logo.png" 
               alt="PIN Associate" 
@@ -177,7 +215,13 @@ export default function AdminDashboardLayout({ children, activeTab = 'dashboard'
             </span>
           </Link>
 
-          <div className="flex items-center gap-3">
+          {/* Global Search - Center */}
+          <div className="flex-1 max-w-xl mx-auto">
+            <GlobalSearch isOpen={true} />
+          </div>
+
+          {/* Right Controls */}
+          <div className="flex items-center gap-3 flex-shrink-0">
             <button
               onClick={toggleTheme}
               className="p-2 rounded-xl transition-colors"
@@ -192,9 +236,31 @@ export default function AdminDashboardLayout({ children, activeTab = 'dashboard'
               }
             </button>
 
-            <div className="relative">
+            <div className="relative" ref={notificationRef}>
               <button
-                onClick={() => setUserMenuOpen(!userMenuOpen)}
+                onClick={() => setNotificationOpen(!notificationOpen)}
+                className="p-2 rounded-xl transition-colors relative"
+                style={{ 
+                  backgroundColor: 'var(--surface)',
+                  border: '1px solid var(--rule)'
+                }}
+              >
+                <Bell className="w-5 h-5" style={{ color: 'var(--ink-muted)' }} />
+                {notificationCount > 0 && (
+                  <span
+                    className="absolute -top-1 -right-1 px-1.5 py-0.5 rounded-full text-xs font-bold text-white"
+                    style={{ backgroundColor: '#DC2626', minWidth: '18px', textAlign: 'center' }}
+                  >
+                    {notificationCount}
+                  </span>
+                )}
+              </button>
+              <NotificationPanel isOpen={notificationOpen} onClose={() => setNotificationOpen(false)} />
+            </div>
+
+            <div className="relative" ref={profileRef}>
+              <button
+                onClick={() => setProfileMenuOpen(!profileMenuOpen)}
                 className="flex items-center gap-3 p-2 rounded-xl transition-colors"
                 style={{ backgroundColor: 'var(--surface)' }}
               >
@@ -214,33 +280,12 @@ export default function AdminDashboardLayout({ children, activeTab = 'dashboard'
                   </p>
                 </div>
               </button>
-
-              {userMenuOpen && (
-                <div 
-                  className="absolute right-0 top-full mt-2 w-48 rounded-xl border shadow-lg z-50"
-                  style={{ backgroundColor: 'var(--bg)', borderColor: 'var(--rule)' }}
-                >
-                  <div className="p-2">
-                    <Link
-                      href="/"
-                      className="flex items-center gap-3 p-3 rounded-lg transition-colors"
-                      style={{ color: 'var(--ink-muted)' }}
-                      onClick={() => setUserMenuOpen(false)}
-                    >
-                      <Home className="w-4 h-4" />
-                      <span className="text-sm">Back to Website</span>
-                    </Link>
-                    <button
-                      onClick={handleLogout}
-                      className="w-full flex items-center gap-3 p-3 rounded-lg transition-colors text-left"
-                      style={{ color: 'var(--ink-muted)' }}
-                    >
-                      <LogOut className="w-4 h-4" />
-                      <span className="text-sm">Sign Out</span>
-                    </button>
-                  </div>
-                </div>
-              )}
+              <ProfileDropdown
+                admin={admin}
+                onLogout={handleLogout}
+                isOpen={profileMenuOpen}
+                onClose={() => setProfileMenuOpen(false)}
+              />
             </div>
           </div>
         </div>
@@ -316,7 +361,13 @@ export default function AdminDashboardLayout({ children, activeTab = 'dashboard'
           height: 'calc(100vh - 80px)',
         }}
       >
-        <div className="flex-1 overflow-y-auto p-4" style={{ scrollbarWidth: 'thin' }}>
+        <div 
+          className="flex-1 overflow-y-auto p-4 hide-scrollbar" 
+          style={{ 
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none',
+          }}
+        >
           <nav className="space-y-2">
             {sidebarItems.map((item) => (
               <Link
