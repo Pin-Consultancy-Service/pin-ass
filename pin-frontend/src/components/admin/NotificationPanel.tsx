@@ -34,13 +34,13 @@ export default function NotificationPanel({ isOpen, onClose }: NotificationPanel
       case "enrollment":
         return { backgroundColor: "var(--navy-50)", color: "var(--navy)" };
       case "payment":
-        return { backgroundColor: "#DCFCE7", color: "#16A34A" };
+        return { backgroundColor: "var(--success-bg)", color: "var(--success-text)" };
       case "class":
-        return { backgroundColor: "var(--gold-50)", color: "#92600A" };
+        return { backgroundColor: "var(--gold-50)", color: "var(--warning-text)" };
       case "user":
-        return { backgroundColor: "#DBEAFE", color: "#2563EB" };
+        return { backgroundColor: "var(--info-bg)", color: "var(--info-text)" };
       case "system":
-        return { backgroundColor: "#FEF3C7", color: "#D97706" };
+        return { backgroundColor: "var(--warning-bg)", color: "var(--warning-text)" };
       default:
         return { backgroundColor: "var(--surface)", color: "var(--ink-muted)" };
     }
@@ -90,7 +90,7 @@ export default function NotificationPanel({ isOpen, onClose }: NotificationPanel
             {unreadCount > 0 && (
               <span
                 className="px-2 py-0.5 rounded-full text-xs font-bold text-white"
-                style={{ backgroundColor: "#DC2626" }}
+                style={{ backgroundColor: "var(--error-text)" }}
               >
                 {unreadCount}
               </span>

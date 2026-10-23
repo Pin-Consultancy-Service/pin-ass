@@ -154,8 +154,8 @@ export default function AdminStudentsContent() {
                         <span 
                           className="inline-block px-3 py-1 rounded-full text-xs font-medium capitalize"
                           style={{
-                            backgroundColor: enrollment.paymentStatus === 'paid' ? '#DCFCE7' : enrollment.paymentStatus === 'partial' ? '#FEF3C7' : '#FEE2E2',
-                            color: enrollment.paymentStatus === 'paid' ? '#16A34A' : enrollment.paymentStatus === 'partial' ? '#D97706' : '#DC2626',
+                            backgroundColor: enrollment.paymentStatus === 'paid' ? 'var(--success-bg)' : enrollment.paymentStatus === 'partial' ? 'var(--warning-bg)' : 'var(--error-bg)',
+                            color: enrollment.paymentStatus === 'paid' ? 'var(--success-text)' : enrollment.paymentStatus === 'partial' ? 'var(--warning-text)' : 'var(--error-text)',
                           }}
                         >
                           {enrollment.paymentStatus}
@@ -196,7 +196,7 @@ export default function AdminStudentsContent() {
                             <p className="text-xs font-semibold mb-2" style={{ color: 'var(--ink-muted)' }}>Payment History</p>
                             <p className="text-sm mb-1" style={{ color: 'var(--ink)' }}>Total: {formatNaira(enrollment.totalFees)}</p>
                             <p className="text-sm mb-1" style={{ color: 'var(--ink)' }}>Paid: {formatNaira(enrollment.amountPaid)}</p>
-                            <p className="text-sm" style={{ color: enrollment.balance > 0 ? '#DC2626' : '#16A34A' }}>
+                            <p className="text-sm" style={{ color: enrollment.balance > 0 ? 'var(--error-text)' : 'var(--success-text)' }}>
                               Balance: {formatNaira(enrollment.balance)}
                             </p>
                           </div>
@@ -249,8 +249,8 @@ export default function AdminStudentsContent() {
                       <span 
                         className="inline-block px-2 py-1 rounded-full text-xs font-medium capitalize"
                         style={{
-                          backgroundColor: enrollment.paymentStatus === 'paid' ? '#DCFCE7' : enrollment.paymentStatus === 'partial' ? '#FEF3C7' : '#FEE2E2',
-                          color: enrollment.paymentStatus === 'paid' ? '#16A34A' : enrollment.paymentStatus === 'partial' ? '#D97706' : '#DC2626',
+                          backgroundColor: enrollment.paymentStatus === 'paid' ? 'var(--success-bg)' : enrollment.paymentStatus === 'partial' ? 'var(--warning-bg)' : 'var(--error-bg)',
+                          color: enrollment.paymentStatus === 'paid' ? 'var(--success-text)' : enrollment.paymentStatus === 'partial' ? 'var(--warning-text)' : 'var(--error-text)',
                         }}
                       >
                         {enrollment.paymentStatus}

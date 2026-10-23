@@ -49,6 +49,17 @@
   /* ── Borders ────────────────────────── */
   --rule:       #E4E2DD;
 
+  /* ── Status colors (semantic) ───────── */
+  --success-bg:    #DCFCE7;
+  --success-text:  #16A34A;
+  --warning-bg:    #FEF3C7;
+  --warning-text:  #D97706;
+  --error-bg:      #FEE2E2;
+  --error-text:    #DC2626;
+  --info-bg:       #DBEAFE;
+  --info-text:     #2563EB;
+  --error-hover:   #FEF2F2;
+
   /* ── Typography ─────────────────────── */
   --font-display: 'Cormorant Garamond', 'Cormorant', Georgia, serif;
   --font-body:    'Inter', system-ui, sans-serif;
@@ -64,6 +75,17 @@
     --navy-50:    #1E293B;
     --navy-100:   #334155;
     --gold-50:    #422006;
+    
+    /* Status colors dark mode */
+    --success-bg:    #166534;
+    --success-text:  #86EFAC;
+    --warning-bg:    #854D0E;
+    --warning-text:  #FDE047;
+    --error-bg:      #991B1B;
+    --error-text:    #FCA5A5;
+    --info-bg:       #1E40AF;
+    --info-text:     #93C5FD;
+    --error-hover:   #7F1D1D;
   }
 
   /* ── Portal / form backward-compat aliases ── */
@@ -486,4 +508,14 @@ img { max-width: 100%; height: auto; display: block; }
 .animate-gradient {
   background-size: 200% auto;
   animation: gradient 6s ease infinite;
+}
+
+/* ── Hide scrollbar while maintaining scroll functionality ────────────── */
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari, Opera */
 }

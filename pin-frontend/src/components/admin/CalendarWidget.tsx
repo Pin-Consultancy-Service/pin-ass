@@ -28,9 +28,9 @@ export default function CalendarWidget() {
       case "class":
         return { backgroundColor: "var(--navy-50)", color: "var(--navy)" };
       case "exam":
-        return { backgroundColor: "#FEE2E2", color: "#DC2626" };
+        return { backgroundColor: "var(--error-bg)", color: "var(--error-text)" };
       case "meeting":
-        return { backgroundColor: "var(--gold-50)", color: "#92600A" };
+        return { backgroundColor: "var(--gold-50)", color: "var(--warning-text)" };
       default:
         return { backgroundColor: "var(--surface)", color: "var(--ink-muted)" };
     }

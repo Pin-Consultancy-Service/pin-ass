@@ -297,8 +297,8 @@ export default function AdminDashboardContent() {
                   <span 
                     className="inline-block px-2 py-1 rounded-md text-xs font-medium"
                     style={{
-                      backgroundColor: classItem.type === 'online' ? '#DBEAFE' : classItem.type === 'hybrid' ? '#FEF3C7' : '#DCFCE7',
-                      color: classItem.type === 'online' ? '#1E40AF' : classItem.type === 'hybrid' ? '#92600A' : '#15803D',
+                      backgroundColor: classItem.type === 'online' ? 'var(--info-bg)' : classItem.type === 'hybrid' ? 'var(--warning-bg)' : 'var(--success-bg)',
+                      color: classItem.type === 'online' ? 'var(--info-text)' : classItem.type === 'hybrid' ? 'var(--warning-text)' : 'var(--success-text)',
                     }}
                   >
                     {classItem.type}

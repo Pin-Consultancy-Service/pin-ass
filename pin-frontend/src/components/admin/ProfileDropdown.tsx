@@ -52,7 +52,7 @@ export default function ProfileDropdown({ admin, onLogout, isOpen, onClose }: Pr
           </div>
           <div
             className="inline-flex px-2 py-1 rounded-full text-xs font-semibold"
-            style={{ backgroundColor: "var(--gold-50)", color: "#92600A" }}
+            style={{ backgroundColor: "var(--gold-50)", color: "var(--warning-text)" }}
           >
             Super Admin
           </div>
@@ -116,9 +116,9 @@ export default function ProfileDropdown({ admin, onLogout, isOpen, onClose }: Pr
               onLogout();
             }}
             className="w-full flex items-center gap-3 p-3 rounded-lg transition-all text-left"
-            style={{ color: "#DC2626" }}
+            style={{ color: "var(--error-text)" }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = "#FEE2E2";
+              e.currentTarget.style.backgroundColor = "var(--error-hover)";
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.backgroundColor = "transparent";

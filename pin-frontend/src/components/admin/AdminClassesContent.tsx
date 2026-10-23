@@ -26,13 +26,13 @@ export default function AdminClassesContent() {
   const getStatusBadgeStyle = (status: string) => {
     switch (status) {
       case 'upcoming':
-        return { backgroundColor: '#FEF3C7', color: '#D97706' };
+        return { backgroundColor: 'var(--warning-bg)', color: 'var(--warning-text)' };
       case 'ongoing':
-        return { backgroundColor: '#DCFCE7', color: '#16A34A' };
+        return { backgroundColor: 'var(--success-bg)', color: 'var(--success-text)' };
       case 'completed':
-        return { backgroundColor: '#DBEAFE', color: '#2563EB' };
+        return { backgroundColor: 'var(--info-bg)', color: 'var(--info-text)' };
       case 'cancelled':
-        return { backgroundColor: '#FEE2E2', color: '#DC2626' };
+        return { backgroundColor: 'var(--error-bg)', color: 'var(--error-text)' };
       default:
         return { backgroundColor: 'var(--surface)', color: 'var(--ink-muted)' };
     }
@@ -43,9 +43,9 @@ export default function AdminClassesContent() {
       case 'in-person':
         return { backgroundColor: 'var(--navy-50)', color: 'var(--navy)' };
       case 'online':
-        return { backgroundColor: '#DBEAFE', color: '#2563EB' };
+        return { backgroundColor: 'var(--info-bg)', color: 'var(--info-text)' };
       case 'hybrid':
-        return { backgroundColor: 'var(--gold-50)', color: '#92600A' };
+        return { backgroundColor: 'var(--gold-50)', color: 'var(--warning-text)' };
       default:
         return { backgroundColor: 'var(--surface)', color: 'var(--ink-muted)' };
     }

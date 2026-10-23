@@ -135,8 +135,8 @@ export default function AdminInstructorsContent() {
                       <span 
                         className="inline-block px-3 py-1 rounded-full text-xs font-medium capitalize"
                         style={{
-                          backgroundColor: instructor.status === 'active' ? '#DCFCE7' : '#FEE2E2',
-                          color: instructor.status === 'active' ? '#16A34A' : '#DC2626',
+                          backgroundColor: instructor.status === 'active' ? 'var(--success-bg)' : 'var(--error-bg)',
+                          color: instructor.status === 'active' ? 'var(--success-text)' : 'var(--error-text)',
                         }}
                       >
                         {instructor.status}
@@ -227,8 +227,8 @@ export default function AdminInstructorsContent() {
                     <span 
                       className="inline-block px-2 py-1 rounded-full text-xs font-medium capitalize"
                       style={{
-                        backgroundColor: instructor.status === 'active' ? '#DCFCE7' : '#FEE2E2',
-                        color: instructor.status === 'active' ? '#16A34A' : '#DC2626',
+                        backgroundColor: instructor.status === 'active' ? 'var(--success-bg)' : 'var(--error-bg)',
+                        color: instructor.status === 'active' ? 'var(--success-text)' : 'var(--error-text)',
                       }}
                     >
                       {instructor.status}
