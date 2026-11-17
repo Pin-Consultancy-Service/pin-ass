@@ -4,7 +4,7 @@
  */
 export const SITE_CONFIG = {
   /** WhatsApp number in international format (no +, no spaces) */
-  whatsappNumber: "2349098861253",
+  whatsappNumber: "2349099861253",
 
   /**
    * WhatsApp group invite link.
