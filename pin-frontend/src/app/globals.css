@@ -63,6 +63,8 @@
   /* ── Typography ─────────────────────── */
   --font-display: 'Cormorant Garamond', 'Cormorant', Georgia, serif;
   --font-body:    'Inter', system-ui, sans-serif;
+  --font-lexend:  'Lexend', system-ui, sans-serif;
+  --font-syne:    'Syne', system-ui, sans-serif;
 
   /* ── Dark Mode Variables ─────────────────────── */
   &[data-theme="dark"] {
@@ -122,6 +124,8 @@
   --color-foreground:  var(--ink);
   --font-sans:         var(--font-body);
   --font-display:      var(--font-display);
+  --font-lexend:       var(--font-lexend);
+  --font-syne:         var(--font-syne);
 
   /* Brand tokens */
   --color-navy:       var(--navy);
@@ -517,5 +521,14 @@ img { max-width: 100%; height: auto; display: block; }
 }
 
 .hide-scrollbar::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari, Opera */
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
   display: none;  /* Chrome, Safari, Opera */
 }

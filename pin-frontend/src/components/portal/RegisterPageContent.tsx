@@ -4,9 +4,9 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Eye, EyeOff, UserPlus, AlertCircle, CheckCircle2, ArrowLeft } from "lucide-react";
+import { Eye, EyeOff, UserPlus, AlertCircle, ArrowLeft } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { register, portalHomeForRole, DEMO_MODE, TEST_MODE } from "@/lib/auth";
+import { register, DEMO_MODE, TEST_MODE } from "@/lib/auth";
 import GoogleAuthButton from "@/components/ui/GoogleAuthButton";
 
 /* ── Background slide data from hero section ──────────────────────────── */
@@ -38,7 +38,6 @@ export default function RegisterPageContent() {
   const [showPw,    setShowPw]    = useState(false);
   const [loading,   setLoading]   = useState(false);
   const [error,     setError]     = useState<string>("");
-  const [done,      setDone]      = useState(false);
 
   // Carousel state
   const [bgIdx,  setBgIdx]  = useState(1); // Start with second slide for variety
@@ -85,28 +84,7 @@ export default function RegisterPageContent() {
       if (TEST_MODE) {
         // Simulate a brief loading state for realism
         await new Promise(resolve => setTimeout(resolve, 1500));
-        
-        // Create and save a mock user based on the inputs
-        const mockUser = {
-          id: `test-user-${Date.now()}`,
-          email: email || "test@pinassociate.com",
-          first_name: firstName || "Test",
-          last_name: lastName || "User",
-          phone_number: phone || "+234 800 000 0000",
-          role: role,
-          date_joined: new Date().toISOString(),
-        };
-        
-        // Save to localStorage
-        localStorage.setItem("pin_user", JSON.stringify(mockUser));
-        localStorage.setItem("pin_access", "test-access-token");
-        localStorage.setItem("pin_refresh", "test-refresh-token");
-        
-        setDone(true);
-        // Redirect to appropriate dashboard after showing success message
-        setTimeout(() => {
-          router.replace(role === "STUDENT" ? "/portal/student" : "/portal/client");
-        }, 2000);
+        router.replace("/portal/login?registered=1");
         return;
       }
 
@@ -114,11 +92,7 @@ export default function RegisterPageContent() {
       if (DEMO_MODE) {
         // Simulate a brief loading state for realism
         await new Promise(resolve => setTimeout(resolve, 1500));
-        setDone(true);
-        // Redirect to student dashboard after showing success message
-        setTimeout(() => {
-          router.replace("/portal/student");
-        }, 2000);
+        router.replace("/portal/login?registered=1");
         return;
       }
 
@@ -129,7 +103,7 @@ export default function RegisterPageContent() {
         phone_number: phone,
         role,
       });
-      setDone(true);
+      router.replace("/portal/login?registered=1");
     } catch (err) {
       const apiErr = err as { body?: Record<string, unknown> };
       const body = apiErr?.body;
@@ -152,63 +126,6 @@ export default function RegisterPageContent() {
       setLoading(false);
     }
   };
-
-  /* ── Success state ────────────────────────────────── */
-  if (done) {
-    return (
-      <div 
-        className="min-h-screen flex items-center justify-center px-4 py-16"
-        style={{ backgroundColor: "var(--bg)" }}
-      >
-        <div className="w-full max-w-md text-center">
-          <div 
-            className="w-16 h-16 flex items-center justify-center mx-auto mb-8"
-            style={{
-              backgroundColor: "var(--navy-50)",
-              borderRadius: "50%",
-            }}
-          >
-            <CheckCircle2 className="w-8 h-8" style={{ color: "var(--navy)" }} />
-          </div>
-          <h1 
-            className="mb-4"
-            style={{
-              fontFamily: "var(--font-display)",
-              fontWeight: 500,
-              fontSize: "2rem",
-              color: "var(--ink)",
-            }}
-          >
-            Account Created
-          </h1>
-          <p 
-            className="mb-8"
-            style={{ 
-              fontSize: "0.9375rem", 
-              color: "var(--ink-muted)", 
-              lineHeight: 1.6,
-              maxWidth: "24rem",
-              margin: "0 auto 2rem",
-            }}
-          >
-            Your account has been created successfully. You can now sign in with your email and password.
-          </p>
-          <Link
-            href="/portal/login"
-            className="btn btn-primary inline-flex items-center gap-2"
-            style={{
-              height: "3rem",
-              fontSize: "0.875rem",
-              fontWeight: 500,
-              padding: "0 2rem",
-            }}
-          >
-            Sign In to Your Portal
-          </Link>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen flex">

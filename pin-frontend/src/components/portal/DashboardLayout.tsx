@@ -11,6 +11,7 @@ import { apiFetch, clearTokens, getStoredUser, logout } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 import AISupportChatbot from "@/components/ui/AISupportChatbot";
 import ClassNotifications from "@/components/portal/ClassNotifications";
+import StudentLayout from "./student/StudentLayout";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -36,6 +37,10 @@ export default function DashboardLayout({ children, activeTab = 'dashboard' }: D
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [accessAllowed, setAccessAllowed] = useState<boolean | null>(null);
+  const [paymentAccessNotice, setPaymentAccessNotice] = useState("");
+
+  // Check if this is a student user
+  const isStudent = user?.role === 'STUDENT';
 
   useEffect(() => {
     setMounted(true);
@@ -43,8 +48,25 @@ export default function DashboardLayout({ children, activeTab = 'dashboard' }: D
       router.replace("/portal/login");
       return;
     }
+
+    // For students, delegate to StudentLayout
+    if (isStudent) {
+      return;
+    }
+
+    setAccessAllowed(null);
+    setPaymentAccessNotice(
+      new URLSearchParams(window.location.search).get("paymentRequired") === "1"
+        ? "Please complete your student fee payment before opening that page. You can make a payment from Fees."
+        : "",
+    );
     apiFetch<{ can_access_dashboard: boolean }>("/api/v1/students/me/access")
-      .then((access) => setAccessAllowed(access.can_access_dashboard))
+      .then((access) => {
+        setAccessAllowed(access.can_access_dashboard);
+        if (!access.can_access_dashboard && activeTab !== "finances" && activeTab !== "dashboard") {
+          router.replace("/portal/student?paymentRequired=1");
+        }
+      })
       .catch(() => {
         clearTokens();
         router.replace("/portal/login");
@@ -55,8 +77,14 @@ export default function DashboardLayout({ children, activeTab = 'dashboard' }: D
       setIsDarkMode(true);
       document.documentElement.setAttribute('data-theme', 'dark');
     }
-  }, []);
+  }, [activeTab, router, isStudent, user]);
 
+  // For student users, use the new StudentLayout
+  if (isStudent && mounted) {
+    return <StudentLayout activeTab={activeTab} user={user}>{children}</StudentLayout>;
+  }
+
+  // For non-student users, use the existing layout
   const toggleTheme = () => {
     const newTheme = !isDarkMode;
     setIsDarkMode(newTheme);
@@ -77,22 +105,30 @@ export default function DashboardLayout({ children, activeTab = 'dashboard' }: D
     return <div className="min-h-screen flex items-center justify-center" style={{ color: "var(--ink-muted)" }}>Loading your portal…</div>;
   }
 
-  if (!accessAllowed && activeTab !== "finances") {
-    return (
-      <main className="min-h-screen flex items-center justify-center px-6" style={{ backgroundColor: "var(--bg)" }}>
-        <section className="max-w-lg text-center p-8 rounded-2xl border" style={{ backgroundColor: "var(--surface)", borderColor: "var(--rule)" }}>
-          <CreditCard className="w-12 h-12 mx-auto mb-5" style={{ color: "var(--navy)" }} />
-          <h1 className="text-2xl font-bold mb-3" style={{ color: "var(--ink)", fontFamily: "var(--font-display)" }}>Complete your first payment</h1>
-          <p className="mb-6" style={{ color: "var(--ink-muted)" }}>Your account is ready. Dashboard resources will unlock after a student fee payment is confirmed.</p>
-          <Link href="/portal/student/fees" className="btn btn-primary inline-flex items-center gap-2">View fees and pay</Link>
-          <button onClick={handleLogout} className="block mx-auto mt-5 text-sm" style={{ color: "var(--ink-muted)" }}>Sign out</button>
-        </section>
-      </main>
-    );
-  }
+  const visibleSidebarItems = accessAllowed
+    ? sidebarItems
+    : sidebarItems.filter((item) => item.key === "dashboard" || item.key === "finances");
 
   return (
     <div className="min-h-screen flex flex-col lg:flex-row" style={{ backgroundColor: 'var(--bg)' }}>
+      {!accessAllowed && activeTab === "dashboard" && (
+        <div
+          role="status"
+          className="fixed top-20 right-5 z-50 flex max-w-sm items-start gap-3 rounded-xl border p-4 shadow-lg"
+          style={{ backgroundColor: "var(--surface)", borderColor: "var(--rule)" }}
+        >
+          <CreditCard className="mt-0.5 h-5 w-5 flex-shrink-0" style={{ color: "var(--navy)" }} />
+          <div>
+            <p className="font-semibold" style={{ color: "var(--ink)" }}>Complete your student fee payment</p>
+            <p className="mt-1 text-sm" style={{ color: "var(--ink-muted)" }}>
+              {paymentAccessNotice || "Make a payment to unlock your dashboard pages and resources."}
+            </p>
+            <Link href="/portal/student/fees" className="mt-2 inline-flex items-center text-sm font-semibold" style={{ color: "var(--navy)" }}>
+              Go to fees and pay <span aria-hidden="true" className="ml-1">→</span>
+            </Link>
+          </div>
+        </div>
+      )}
       {/* Mobile Header */}
       <header 
         className="fixed top-0 left-0 right-0 z-50 lg:hidden border-b"
@@ -364,7 +400,7 @@ export default function DashboardLayout({ children, activeTab = 'dashboard' }: D
             {/* Mobile Navigation */}
             <div className="p-4">
               <nav className="space-y-2">
-                {sidebarItems.map((item) => (
+                {visibleSidebarItems.map((item) => (
                   <Link
                     key={item.key}
                     href={item.href}
@@ -397,7 +433,7 @@ export default function DashboardLayout({ children, activeTab = 'dashboard' }: D
       >
         <div className="p-4">
           <nav className="space-y-2">
-            {sidebarItems.map((item) => (
+            {visibleSidebarItems.map((item) => (
               <Link
                 key={item.key}
                 href={item.href}

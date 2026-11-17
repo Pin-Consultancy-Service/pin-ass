@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
-import { Eye, EyeOff, LogIn, AlertCircle, ArrowLeft } from "lucide-react";
+import { Eye, EyeOff, LogIn, AlertCircle, ArrowLeft, CheckCircle2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { login, getStoredUser, portalHomeForRole, DEMO_MODE, TEST_MODE } from "@/lib/auth";
 import GoogleAuthButton from "@/components/ui/GoogleAuthButton";
@@ -23,12 +23,14 @@ export default function LoginPageContent() {
   const router       = useRouter();
   const searchParams = useSearchParams();
   const redirectTo   = searchParams?.get("redirect") ?? "";
+  const registered   = searchParams?.get("registered") === "1";
 
   const [email,    setEmail]    = useState("");
   const [password, setPassword] = useState("");
   const [showPw,   setShowPw]   = useState(false);
   const [loading,  setLoading]  = useState(false);
   const [error,    setError]    = useState("");
+  const [showRegistrationToast, setShowRegistrationToast] = useState(registered);
 
   // Carousel state
   const [bgIdx,  setBgIdx]  = useState(0);
@@ -40,6 +42,7 @@ export default function LoginPageContent() {
 
   /* If already logged in, redirect straight to their portal */
   useEffect(() => {
+    if (registered) return;
     // Skip redirect check in TEST mode - always show login page
     if (TEST_MODE) return;
     
@@ -52,6 +55,12 @@ export default function LoginPageContent() {
     const user = getStoredUser();
     if (user) router.replace(redirectTo || portalHomeForRole(user.role));
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (!showRegistrationToast) return;
+    const timeout = window.setTimeout(() => setShowRegistrationToast(false), 6000);
+    return () => window.clearTimeout(timeout);
+  }, [showRegistrationToast]);
 
   /* Carousel auto-advance */
   useEffect(() => {
@@ -319,6 +328,19 @@ export default function LoginPageContent() {
               </Link>
             </p>
           </div>
+
+          {showRegistrationToast && (
+            <div
+              role="status"
+              className="fixed right-5 top-5 z-50 flex max-w-sm items-start gap-3 rounded-lg border p-4 shadow-lg"
+              style={{ backgroundColor: "#ECFDF3", borderColor: "#A6F4C5" }}
+            >
+              <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0" style={{ color: "#067647" }} />
+              <p className="text-sm" style={{ color: "#067647" }}>
+                Account created successfully. Please sign in with your new credentials.
+              </p>
+            </div>
+          )}
 
           {/* Error Alert */}
           {error && (
