@@ -6,13 +6,14 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { 
   LayoutDashboard, Users, GraduationCap, UserCheck, Calendar, BookOpen,
-  FileText, DollarSign, BarChart3, Settings,
+  FileText, DollarSign, BarChart3, Settings, Mail,
   Sun, Moon, Menu, X, Bell, Search as SearchIcon
 } from "lucide-react";
 import GlobalSearch from "./GlobalSearch";
 import NotificationPanel from "./NotificationPanel";
 import ProfileDropdown from "./ProfileDropdown";
 import { getUnreadNotificationCount } from "@/lib/mockAdminData";
+import { apiFetch, AuthUser, logout, saveUser } from "@/lib/auth";
 
 interface AdminDashboardLayoutProps {
   children: React.ReactNode;
@@ -26,6 +27,7 @@ const sidebarItems = [
   { icon: UserCheck, label: 'Instructors', href: '/admin/instructors', key: 'instructors' },
   { icon: Calendar, label: 'Classes', href: '/admin/classes', key: 'classes' },
   { icon: BookOpen, label: 'Courses', href: '/admin/courses', key: 'courses' },
+  { icon: Mail, label: 'Communications', href: '/admin/communications', key: 'communications' },
   { icon: FileText, label: 'Enrollments', href: '/admin/enrollments', key: 'enrollments' },
   { icon: DollarSign, label: 'Finances', href: '/admin/finances', key: 'finances' },
   { icon: BarChart3, label: 'Reports', href: '/admin/reports', key: 'reports' },
@@ -39,6 +41,7 @@ export default function AdminDashboardLayout({ children, activeTab = 'dashboard'
   const [notificationOpen, setNotificationOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [admin, setAdmin] = useState<any>(null);
   const [notificationCount, setNotificationCount] = useState(0);
@@ -53,14 +56,25 @@ export default function AdminDashboardLayout({ children, activeTab = 'dashboard'
       document.documentElement.setAttribute('data-theme', 'dark');
     }
 
-    // Get admin data
-    const adminData = localStorage.getItem('admin_user');
-    if (adminData) {
-      setAdmin(JSON.parse(adminData));
-    }
-
     // Get notification count
     setNotificationCount(getUnreadNotificationCount());
+
+    apiFetch<AuthUser>("/api/v1/auth/me")
+      .then((user) => {
+        if (user.role !== "ADMIN" && user.role !== "STAFF") {
+          router.replace("/portal/student");
+          return;
+        }
+        saveUser(user);
+        setAdmin(user);
+      })
+      .catch(() => router.replace("/admin/login"));
+
+    // Load sidebar state
+    const savedSidebarState = localStorage.getItem('admin_sidebar_collapsed');
+    if (savedSidebarState === 'true') {
+      setSidebarCollapsed(true);
+    }
   }, []);
 
   // Click outside to close dropdowns
@@ -90,11 +104,20 @@ export default function AdminDashboardLayout({ children, activeTab = 'dashboard'
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('admin_token');
-    localStorage.removeItem('admin_user');
+  const toggleSidebar = () => {
+    const newState = !sidebarCollapsed;
+    setSidebarCollapsed(newState);
+    localStorage.setItem('admin_sidebar_collapsed', String(newState));
+  };
+
+  const handleLogout = async () => {
+    await logout();
     router.push('/admin/login');
   };
+
+  if (!mounted || !admin) {
+    return <div className="min-h-screen flex items-center justify-center" style={{ color: "var(--ink-muted)" }}>Loading administrator portal…</div>;
+  }
 
   return (
     <div className="min-h-screen flex flex-col lg:flex-row" style={{ backgroundColor: 'var(--bg)' }}>
@@ -337,7 +360,7 @@ export default function AdminDashboardLayout({ children, activeTab = 'dashboard'
                     className="flex items-center gap-3 p-3 rounded-xl transition-all"
                     style={{
                       backgroundColor: activeTab === item.key ? 'var(--navy)' : 'transparent',
-                      color: activeTab === item.key ? 'white' : 'var(--ink-muted)',
+                      color: activeTab === item.key ? 'white' : 'var(--ink)',
                     }}
                   >
                     <item.icon className="w-5 h-5 flex-shrink-0" />
@@ -352,15 +375,38 @@ export default function AdminDashboardLayout({ children, activeTab = 'dashboard'
 
       {/* Desktop Sidebar */}
       <aside 
-        className="fixed left-0 w-64 border-r hidden lg:flex lg:flex-col"
+        className="fixed left-0 border-r hidden lg:flex lg:flex-col transition-all duration-300"
         style={{ 
           borderColor: 'var(--rule)', 
           backgroundColor: 'var(--bg)',
           top: '80px',
           bottom: 0,
           height: 'calc(100vh - 80px)',
+          width: sidebarCollapsed ? '80px' : '256px',
         }}
       >
+        {/* Collapse Toggle Button */}
+        <div className="p-4 border-b" style={{ borderColor: 'var(--rule)' }}>
+          <button
+            onClick={toggleSidebar}
+            className="w-full p-2 rounded-lg transition-colors flex items-center justify-center"
+            style={{ 
+              backgroundColor: 'var(--surface)',
+              color: 'var(--ink)'
+            }}
+            title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          >
+            {sidebarCollapsed ? (
+              <Menu className="w-5 h-5" />
+            ) : (
+              <div className="flex items-center gap-2 w-full">
+                <Menu className="w-5 h-5" />
+                <span className="text-sm font-medium">Collapse</span>
+              </div>
+            )}
+          </button>
+        </div>
+
         <div 
           className="flex-1 overflow-y-auto p-4 hide-scrollbar" 
           style={{ 
@@ -376,11 +422,13 @@ export default function AdminDashboardLayout({ children, activeTab = 'dashboard'
                 className="flex items-center gap-3 p-3 rounded-xl transition-all hover:bg-opacity-10"
                 style={{
                   backgroundColor: activeTab === item.key ? 'var(--navy)' : 'transparent',
-                  color: activeTab === item.key ? 'white' : 'var(--ink-muted)',
+                  color: activeTab === item.key ? 'white' : 'var(--ink)',
+                  justifyContent: sidebarCollapsed ? 'center' : 'flex-start',
                 }}
+                title={sidebarCollapsed ? item.label : ''}
               >
                 <item.icon className="w-5 h-5 flex-shrink-0" />
-                <span className="font-medium">{item.label}</span>
+                {!sidebarCollapsed && <span className="font-medium">{item.label}</span>}
               </Link>
             ))}
           </nav>
@@ -388,7 +436,11 @@ export default function AdminDashboardLayout({ children, activeTab = 'dashboard'
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 overflow-y-auto pt-16 lg:pt-20 lg:ml-64 min-h-screen lg:min-h-0 lg:h-screen">
+      <main 
+        className={`flex-1 overflow-y-auto pt-16 lg:pt-20 min-h-screen lg:min-h-0 lg:h-screen transition-all duration-300 ${
+          sidebarCollapsed ? 'lg:ml-20' : 'lg:ml-64'
+        }`}
+      >
         <div className="p-4 lg:p-6">
           {children}
         </div>

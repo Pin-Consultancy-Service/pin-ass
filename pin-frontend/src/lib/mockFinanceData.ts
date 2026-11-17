@@ -7,7 +7,6 @@ export interface PaymentPlan {
   description: string;
   dueDate: string;
   isPaid: boolean;
-  installments?: number;
   paidDate?: string;
 }
 
@@ -18,7 +17,7 @@ export interface PaymentRecord {
   type: string;
   method: "paystack" | "bank_transfer" | "cash";
   methodDisplay: string;
-  status: "CONFIRMED" | "PENDING" | "FAILED" | "REFUNDED";
+  status: "CONFIRMED" | "PENDING" | "FAILED";
   statusDisplay: string;
   reference: string;
   receiptUrl?: string;
@@ -39,94 +38,40 @@ export const mockFinances: StudentFinances = {
   studentId: "STU001",
   program: "ICAN Professional Level - Diet 1 2024",
   totalFees: 850000,
-  totalPaid: 500000,
-  outstandingBalance: 350000,
+  totalPaid: 425000,
+  outstandingBalance: 425000,
   
   paymentPlans: [
     {
       id: "1",
-      name: "Registration Fee",
-      amount: 150000,
-      description: "Initial registration and materials fee",
+      name: "First of two payments",
+      amount: 425000,
+      description: "First half of the course fee",
       dueDate: "2026-09-01",
       isPaid: true,
       paidDate: "2026-09-01"
     },
     {
       id: "2",
-      name: "1st Installment",
-      amount: 200000,
-      description: "First installment payment",
-      dueDate: "2026-09-15",
-      isPaid: true,
-      paidDate: "2026-09-15",
-      installments: 4
-    },
-    {
-      id: "3",
-      name: "2nd Installment",
-      amount: 150000,
-      description: "Second installment payment",
+      name: "Second and final payment",
+      amount: 425000,
+      description: "Final half of the course fee",
       dueDate: "2026-10-01",
-      isPaid: true,
-      paidDate: "2026-10-01",
-      installments: 4
-    },
-    {
-      id: "4",
-      name: "3rd Installment",
-      amount: 175000,
-      description: "Third installment payment",
-      dueDate: "2026-10-25",
       isPaid: false,
-      installments: 4
-    },
-    {
-      id: "5",
-      name: "Final Payment",
-      amount: 175000,
-      description: "Final installment payment",
-      dueDate: "2026-11-15",
-      isPaid: false,
-      installments: 4
     }
   ],
   
   paymentHistory: [
     {
-      id: "PAY003",
+      id: "PAY001",
       date: "2026-10-01",
-      amount: 150000,
-      type: "2nd Installment",
+      amount: 425000,
+      type: "First of two payments",
       method: "paystack",
       methodDisplay: "Paystack (Card)",
       status: "CONFIRMED",
       statusDisplay: "Successful",
-      reference: "TXN-20261001-ABC123",
-      receiptUrl: "#"
-    },
-    {
-      id: "PAY002",
-      date: "2026-09-15",
-      amount: 200000,
-      type: "1st Installment",
-      method: "paystack",
-      methodDisplay: "Paystack (Bank Transfer)",
-      status: "CONFIRMED",
-      statusDisplay: "Successful",
-      reference: "TXN-20260915-XYZ789",
-      receiptUrl: "#"
-    },
-    {
-      id: "PAY001",
-      date: "2026-09-01",
-      amount: 150000,
-      type: "Registration Fee",
-      method: "bank_transfer",
-      methodDisplay: "Bank Transfer",
-      status: "CONFIRMED",
-      statusDisplay: "Successful",
-      reference: "TXN-20260901-REG001",
+      reference: "TXN-20260901-FIRST-HALF",
       receiptUrl: "#"
     }
   ]

@@ -1,266 +1,147 @@
 "use client";
 
-import { useState } from "react";
-import { Plus, UserCheck, Clock, MapPin, Video, Search } from "lucide-react";
-import { mockAdminClasses } from "@/lib/mockAdminData";
-import CreateClassModal from '@/components/admin/modals/CreateClassModal';
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { Calendar, Clock, Pencil, Plus, Search, Video } from "lucide-react";
+import { apiFetch } from "@/lib/auth";
+import CreateClassModal from "@/components/admin/modals/CreateClassModal";
+
+type ClassStatus = "SCHEDULED" | "LIVE" | "COMPLETED" | "CANCELLED";
+type ExamBody = "ICAN" | "ACCA" | "CITN" | "CISA" | "ATS";
+interface ClassSession {
+  id: string; fee_plan_id: string; exam_body: ExamBody | null; course_name: string; cohort: string; subject: string; topic: string;
+  instructor_name: string; scheduled_at: string; duration_minutes: number;
+  meeting_url: string | null; recording_url: string | null; description: string | null; status: ClassStatus;
+  materials: { name: string; url: string }[];
+}
+type Filter = "ALL" | ClassStatus;
 
 export default function AdminClassesContent() {
-  const [statusFilter, setStatusFilter] = useState<'all' | 'upcoming' | 'ongoing' | 'completed'>('all');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [classes, setClasses] = useState<ClassSession[]>([]);
+  const [filter, setFilter] = useState<Filter>("ALL");
+  const [query, setQuery] = useState("");
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [editingClass, setEditingClass] = useState<ClassSession | null>(null);
+  const [selectedRecordingClass, setSelectedRecordingClass] = useState<ClassSession | null>(null);
+  const [recordingDraft, setRecordingDraft] = useState("");
+  const [savingRecording, setSavingRecording] = useState(false);
+  const [recordingError, setRecordingError] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const filteredClasses = mockAdminClasses.filter(cls => {
-    const matchesStatus = statusFilter === 'all' || cls.status === statusFilter;
-    const matchesSearch = searchQuery === '' ||
-      cls.courseName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      cls.instructorName.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesStatus && matchesSearch;
+  const loadClasses = useCallback(async () => {
+    try {
+      const result = await apiFetch<ClassSession[]>("/api/v1/admin/classes");
+      setClasses(Array.isArray(result) ? result : []);
+      setError("");
+    } catch {
+      setError("Class records could not be loaded. Please refresh or sign in again as an administrator.");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void loadClasses();
+    const refreshInterval = window.setInterval(() => void loadClasses(), 60_000);
+    return () => window.clearInterval(refreshInterval);
+  }, [loadClasses]);
+
+  const shownClasses = useMemo(() => classes.filter(session => {
+    const matchesFilter = filter === "ALL" || session.status === filter;
+    const searchText = `${session.exam_body ?? ""} ${session.course_name} ${session.topic} ${session.subject} ${session.instructor_name} ${session.cohort}`.toLowerCase();
+    return matchesFilter && searchText.includes(query.toLowerCase());
+  }), [classes, filter, query]);
+
+  const stats = [
+    { label: "Total Classes", value: classes.length },
+    { label: "Upcoming", value: classes.filter(item => item.status === "SCHEDULED").length },
+    { label: "Live Now", value: classes.filter(item => item.status === "LIVE").length },
+    { label: "Completed", value: classes.filter(item => item.status === "COMPLETED").length },
+  ];
+  const formatDate = (value: string) => new Date(value).toLocaleString("en-NG", {
+    day: "numeric", month: "short", year: "numeric", hour: "numeric", minute: "2-digit", timeZone: "Africa/Lagos",
   });
 
-  const totalClasses = mockAdminClasses.length;
-  const upcomingClasses = mockAdminClasses.filter(c => c.status === 'upcoming').length;
-  const ongoingClasses = mockAdminClasses.filter(c => c.status === 'ongoing').length;
-  const completedClasses = mockAdminClasses.filter(c => c.status === 'completed').length;
-
-  const getStatusBadgeStyle = (status: string) => {
-    switch (status) {
-      case 'upcoming':
-        return { backgroundColor: 'var(--warning-bg)', color: 'var(--warning-text)' };
-      case 'ongoing':
-        return { backgroundColor: 'var(--success-bg)', color: 'var(--success-text)' };
-      case 'completed':
-        return { backgroundColor: 'var(--info-bg)', color: 'var(--info-text)' };
-      case 'cancelled':
-        return { backgroundColor: 'var(--error-bg)', color: 'var(--error-text)' };
-      default:
-        return { backgroundColor: 'var(--surface)', color: 'var(--ink-muted)' };
-    }
-  };
-
-  const getTypeBadgeStyle = (type: string) => {
-    switch (type) {
-      case 'in-person':
-        return { backgroundColor: 'var(--navy-50)', color: 'var(--navy)' };
-      case 'online':
-        return { backgroundColor: 'var(--info-bg)', color: 'var(--info-text)' };
-      case 'hybrid':
-        return { backgroundColor: 'var(--gold-50)', color: 'var(--warning-text)' };
-      default:
-        return { backgroundColor: 'var(--surface)', color: 'var(--ink-muted)' };
+  const saveRecording = async (classId: string, value = recordingDraft) => {
+    setSavingRecording(true);
+    setRecordingError("");
+    try {
+      await apiFetch(`/api/v1/admin/classes/${classId}/recording`, {
+        method: "PATCH",
+        body: JSON.stringify({ recording_url: value.trim() || null }),
+      });
+      setSelectedRecordingClass(null);
+      setRecordingDraft("");
+      await loadClasses();
+    } catch (cause) {
+      const apiError = cause as { body?: { detail?: unknown } };
+      setRecordingError(typeof apiError.body?.detail === "string" ? apiError.body.detail : "Could not save the class recording link. Check that it is a valid HTTPS URL.");
+    } finally {
+      setSavingRecording(false);
     }
   };
 
   return (
     <div className="space-y-6">
-      {/* Page Header */}
-      <div className="flex justify-between items-start mb-8">
-        <div>
-          <h1 className="text-3xl font-bold mb-2" style={{ color: 'var(--ink)', fontFamily: 'var(--font-display)' }}>
-            Class Management
-          </h1>
-          <p style={{ color: 'var(--ink-muted)' }}>
-            Schedule and manage all classes
-          </p>
-        </div>
-        <button
-          onClick={() => setIsCreateModalOpen(true)}
-          className="px-4 py-2 rounded-xl font-semibold text-sm flex items-center gap-2"
-          style={{ backgroundColor: 'var(--gold)', color: 'var(--navy-dark)' }}
-        >
-          <Plus className="w-4 h-4" />
-          Schedule Class
-        </button>
+      <header className="flex flex-wrap justify-between items-start gap-4">
+        <div><h1 className="text-3xl font-bold mb-2" style={{ color: "var(--ink)", fontFamily: "var(--font-display)" }}>Class Management</h1><p style={{ color: "var(--ink-muted)" }}>Schedule classes, edit upcoming sessions, and add a recording link from a completed class card.</p></div>
+        <button type="button" onClick={() => setIsCreateOpen(true)} className="px-4 py-2 rounded-xl font-semibold text-sm flex items-center gap-2" style={{ backgroundColor: "var(--gold)", color: "var(--navy-dark)" }}><Plus className="w-4 h-4" />Schedule Class</button>
+      </header>
+
+      {error && <p role="alert" className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">{error}</p>}
+
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {stats.map(stat => <div key={stat.label} className="p-4 rounded-xl border" style={{ backgroundColor: "var(--surface)", borderColor: "var(--rule)" }}><p className="text-2xl font-bold mb-1" style={{ color: "var(--ink)" }}>{loading ? "…" : stat.value}</p><p className="text-sm" style={{ color: "var(--ink-muted)" }}>{stat.label}</p></div>)}
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="p-4 rounded-xl border" style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--rule)' }}>
-          <p className="text-2xl font-bold mb-1" style={{ color: 'var(--ink)' }}>{totalClasses}</p>
-          <p className="text-sm" style={{ color: 'var(--ink-muted)' }}>Total Classes</p>
-        </div>
-        <div className="p-4 rounded-xl border" style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--rule)' }}>
-          <p className="text-2xl font-bold mb-1" style={{ color: 'var(--ink)' }}>{upcomingClasses}</p>
-          <p className="text-sm" style={{ color: 'var(--ink-muted)' }}>Upcoming</p>
-        </div>
-        <div className="p-4 rounded-xl border" style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--rule)' }}>
-          <p className="text-2xl font-bold mb-1" style={{ color: 'var(--ink)' }}>{ongoingClasses}</p>
-          <p className="text-sm" style={{ color: 'var(--ink-muted)' }}>Ongoing</p>
-        </div>
-        <div className="p-4 rounded-xl border" style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--rule)' }}>
-          <p className="text-2xl font-bold mb-1" style={{ color: 'var(--ink)' }}>{completedClasses}</p>
-          <p className="text-sm" style={{ color: 'var(--ink-muted)' }}>Completed</p>
-        </div>
-      </div>
-
-      {/* Enhanced Filter Bar */}
-      <div 
-        className="p-4 rounded-xl border"
-        style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--rule)' }}
-      >
+      <div className="p-4 rounded-xl border" style={{ backgroundColor: "var(--surface)", borderColor: "var(--rule)" }}>
         <div className="flex flex-wrap gap-3">
-          {[
-            { key: 'all', label: 'All Classes' },
-            { key: 'upcoming', label: 'Upcoming' },
-            { key: 'ongoing', label: 'Ongoing' },
-            { key: 'completed', label: 'Completed' }
-          ].map(filter => (
-            <button
-              key={filter.key}
-              onClick={() => setStatusFilter(filter.key as any)}
-              className="px-4 py-2 rounded-lg font-medium text-sm transition-all whitespace-nowrap"
-              style={{
-                backgroundColor: statusFilter === filter.key ? 'var(--navy)' : 'transparent',
-                color: statusFilter === filter.key ? 'white' : 'var(--ink-muted)',
-                border: `2px solid ${statusFilter === filter.key ? 'var(--navy)' : 'var(--rule)'}`,
-                transform: statusFilter === filter.key ? 'scale(1.02)' : 'scale(1)',
-              }}
-              onMouseEnter={(e) => {
-                if (statusFilter !== filter.key) {
-                  e.currentTarget.style.borderColor = 'var(--navy)';
-                  e.currentTarget.style.color = 'var(--navy)';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (statusFilter !== filter.key) {
-                  e.currentTarget.style.borderColor = 'var(--rule)';
-                  e.currentTarget.style.color = 'var(--ink-muted)';
-                }
-              }}
-            >
-              {filter.label}
-            </button>
-          ))}
+          {(["ALL", "SCHEDULED", "LIVE", "COMPLETED", "CANCELLED"] as Filter[]).map(value => <button key={value} type="button" onClick={() => setFilter(value)} className="px-4 py-2 rounded-lg text-sm font-medium" style={{ backgroundColor: filter === value ? "var(--navy)" : "transparent", color: filter === value ? "white" : "var(--ink-muted)", border: `1px solid ${filter === value ? "var(--navy)" : "var(--rule)"}` }}>{value === "ALL" ? "All Classes" : value.toLowerCase()}</button>)}
         </div>
       </div>
 
-      {/* Enhanced Search */}
-      <div className="relative">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: 'var(--ink-faint)' }} />
-        <input
-          type="text"
-          placeholder="Search classes by name or instructor..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full pl-12 pr-4 py-3 rounded-xl border transition-all focus:outline-none focus:ring-2"
-          style={{ 
-            backgroundColor: 'var(--surface)', 
-            borderColor: 'var(--rule)', 
-            color: 'var(--ink)',
-            boxShadow: 'var(--shadow-sm)'
-          }}
-          onFocus={(e) => {
-            e.currentTarget.style.borderColor = 'var(--gold)';
-            e.currentTarget.style.boxShadow = '0 0 0 3px rgba(244, 196, 48, 0.1)';
-          }}
-          onBlur={(e) => {
-            e.currentTarget.style.borderColor = 'var(--rule)';
-            e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
-          }}
-        />
-      </div>
+      <div className="relative"><Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: "var(--ink-faint)" }} /><input type="search" placeholder="Search by topic, subject, programme, or instructor…" value={query} onChange={event => setQuery(event.target.value)} className="w-full pl-12 pr-4 py-3 rounded-xl border" style={{ backgroundColor: "var(--surface)", borderColor: "var(--rule)", color: "var(--ink)" }} /></div>
 
-      {/* Enhanced Class Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filteredClasses.map((cls) => (
-          <div 
-            key={cls.id}
-            className="p-5 rounded-xl border transition-all"
-            style={{ 
-              backgroundColor: 'var(--surface)', 
-              borderColor: 'var(--rule)',
-              boxShadow: 'var(--shadow-sm)'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-4px)';
-              e.currentTarget.style.boxShadow = 'var(--shadow-md)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
-            }}
-          >
-            {/* Course Name */}
-            <h3 className="font-bold text-lg mb-2" style={{ color: 'var(--ink)', fontFamily: 'var(--font-display)' }}>
-              {cls.courseName}
-            </h3>
-
-            {/* Instructor */}
-            <div className="flex items-center gap-2 mb-3">
-              <UserCheck className="w-4 h-4" style={{ color: 'var(--ink-muted)' }} />
-              <p className="text-sm" style={{ color: 'var(--ink-muted)' }}>{cls.instructorName}</p>
-            </div>
-
-            {/* Date & Time */}
-            <div className="flex items-center gap-2 mb-3">
-              <Clock className="w-4 h-4" style={{ color: 'var(--ink-muted)' }} />
-              <p className="text-sm" style={{ color: 'var(--ink-muted)' }}>
-                {new Date(cls.date).toLocaleDateString('en-NG', { month: 'short', day: 'numeric', year: 'numeric' })} • {cls.startTime} - {cls.endTime}
-              </p>
-            </div>
-
-            {/* Venue */}
-            <div className="flex items-center gap-2 mb-4">
-              {cls.type === 'online' ? (
-                <Video className="w-4 h-4" style={{ color: 'var(--ink-muted)' }} />
-              ) : (
-                <MapPin className="w-4 h-4" style={{ color: 'var(--ink-muted)' }} />
-              )}
-              <p className="text-sm" style={{ color: 'var(--ink-muted)' }}>{cls.venue}</p>
-            </div>
-
-            {/* Capacity Progress */}
-            <div className="mb-4">
-              <div className="flex justify-between items-center mb-2">
-                <p className="text-xs" style={{ color: 'var(--ink-muted)' }}>Capacity</p>
-                <p className="text-xs font-bold" style={{ color: 'var(--ink)' }}>
-                  {cls.enrolled}/{cls.capacity}
-                </p>
-              </div>
-              <div className="h-2 rounded-full" style={{ backgroundColor: 'var(--rule)' }}>
-                <div 
-                  className="h-full rounded-full"
-                  style={{ 
-                    width: `${(cls.enrolled / cls.capacity) * 100}%`, 
-                    backgroundColor: 'var(--navy)' 
-                  }}
-                />
-              </div>
-            </div>
-
-            {/* Badges */}
-            <div className="flex gap-2">
-              <span 
-                className="inline-block px-3 py-1 rounded-full text-xs font-medium capitalize"
-                style={getStatusBadgeStyle(cls.status)}
-              >
-                {cls.status}
-              </span>
-              <span 
-                className="inline-block px-3 py-1 rounded-full text-xs font-medium capitalize"
-                style={getTypeBadgeStyle(cls.type)}
-              >
-                {cls.type}
-              </span>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {filteredClasses.length === 0 && (
-        <div className="text-center py-12">
-          <p style={{ color: 'var(--ink-muted)' }}>No classes found matching your filters</p>
+      {loading ? <p className="py-12 text-center text-sm" style={{ color: "var(--ink-muted)" }}>Loading classes…</p> : shownClasses.length ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+          {shownClasses.map(session => <article key={session.id} className="p-5 rounded-xl border" style={{ backgroundColor: "var(--surface)", borderColor: "var(--rule)" }}>
+            <p className="text-xs font-semibold mb-2" style={{ color: "var(--gold-dark)" }}>{session.exam_body ?? "Unclassified"} · {session.course_name} · {session.cohort}</p>
+            <h2 className="font-bold text-lg mb-1" style={{ color: "var(--ink)" }}>{session.topic}</h2>
+            <p className="text-sm mb-4" style={{ color: "var(--ink-muted)" }}>{session.subject} · {session.instructor_name}</p>
+            <div className="flex items-start gap-2 mb-2 text-sm" style={{ color: "var(--ink-muted)" }}><Calendar className="w-4 h-4 mt-0.5" /><span>{formatDate(session.scheduled_at)}</span></div>
+            <div className="flex items-center gap-2 mb-4 text-sm" style={{ color: "var(--ink-muted)" }}><Clock className="w-4 h-4" /><span>{session.duration_minutes} minutes</span></div>
+            <div className="flex flex-wrap gap-2"><span className="rounded-full px-3 py-1 text-xs font-semibold" style={{ backgroundColor: "var(--navy-50)", color: "var(--navy)" }}>{session.status.toLowerCase()}</span>{session.meeting_url && <span className="inline-flex items-center gap-1 text-xs" style={{ color: "var(--ink-muted)" }}><Video className="w-3 h-3" />Online</span>}</div>
+            {new Date(session.scheduled_at).getTime() > Date.now() && session.status !== "CANCELLED" && <button type="button" onClick={() => setEditingClass(session)} className="mt-4 inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-semibold" style={{ borderColor: "var(--rule)", color: "var(--navy)" }}><Pencil className="h-4 w-4" />Edit class</button>}
+            {session.status === "COMPLETED" && <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border p-3" style={{ borderColor: "var(--rule)", backgroundColor: "var(--bg)" }}>
+              <div><p className="text-sm font-semibold" style={{ color: "var(--ink)" }}>Class recording</p><p className="text-xs" style={{ color: "var(--ink-muted)" }}>{session.recording_url ? "A recording link is saved" : "No recording link added yet"}</p></div>
+              <button type="button" onClick={() => { setSelectedRecordingClass(session); setRecordingDraft(session.recording_url ?? ""); setRecordingError(""); }} className="rounded-lg px-4 py-2 text-sm font-semibold text-white" style={{ backgroundColor: "var(--navy)" }}>{session.recording_url ? "Update recording" : "Add recording"}</button>
+            </div>}
+          </article>)}
         </div>
-      )}
+      ) : <div className="py-12 text-center rounded-2xl border" style={{ backgroundColor: "var(--surface)", borderColor: "var(--rule)", color: "var(--ink-muted)" }}>{classes.length ? "No classes match these filters." : "No classes scheduled yet."}</div>}
 
       <CreateClassModal
-        isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
-        onSuccess={() => {
-          setIsCreateModalOpen(false);
-          console.log('Class created successfully');
-        }}
+        isOpen={isCreateOpen || Boolean(editingClass)}
+        initialClass={editingClass}
+        onClose={() => { setIsCreateOpen(false); setEditingClass(null); }}
+        onSuccess={() => { setIsCreateOpen(false); setEditingClass(null); void loadClasses(); }}
       />
+
+      {selectedRecordingClass && <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 p-4" onClick={() => setSelectedRecordingClass(null)}>
+        <section role="dialog" aria-modal="true" aria-labelledby="recording-dialog-title" className="w-full max-w-xl rounded-2xl border p-6 shadow-2xl" style={{ backgroundColor: "var(--surface)", borderColor: "var(--rule)" }} onClick={event => event.stopPropagation()}>
+          <h2 id="recording-dialog-title" className="text-2xl font-bold" style={{ color: "var(--ink)", fontFamily: "var(--font-display)" }}>{selectedRecordingClass.recording_url ? "Update class recording" : "Add class recording"}</h2>
+          <p className="mt-1 text-sm" style={{ color: "var(--ink-muted)" }}>{selectedRecordingClass.course_name} · {selectedRecordingClass.cohort} · {selectedRecordingClass.topic}</p>
+          <p className="mt-4 text-sm" style={{ color: "var(--ink-muted)" }}>After Google finishes processing the recording, copy its Drive link and paste it here. Students with permission to view the Drive file will see it on their dashboard.</p>
+          <label htmlFor="class-recording-url" className="mt-5 block text-sm font-medium" style={{ color: "var(--ink)" }}>Recording URL (HTTPS)</label>
+          <input id="class-recording-url" autoFocus type="url" pattern="https://.*" value={recordingDraft} onChange={event => setRecordingDraft(event.target.value)} placeholder="https://drive.google.com/file/d/..." className="mt-2 w-full rounded-lg border px-4 py-3" style={{ backgroundColor: "var(--bg)", borderColor: "var(--rule)", color: "var(--ink)" }} />
+          {recordingError && <p role="alert" className="mt-3 rounded-lg bg-red-50 p-3 text-sm text-red-700">{recordingError}</p>}
+          <div className="mt-5 flex flex-wrap justify-end gap-2">
+            {selectedRecordingClass.recording_url && <button type="button" onClick={() => void saveRecording(selectedRecordingClass.id, "")} disabled={savingRecording} className="mr-auto rounded-lg border px-4 py-2 text-sm font-semibold disabled:opacity-50" style={{ borderColor: "var(--rule)", color: "#B91C1C" }}>Remove link</button>}
+            <button type="button" onClick={() => setSelectedRecordingClass(null)} className="rounded-lg border px-4 py-2 text-sm font-semibold" style={{ borderColor: "var(--rule)", color: "var(--ink)" }}>Cancel</button>
+            <button type="button" onClick={() => void saveRecording(selectedRecordingClass.id)} disabled={savingRecording || !recordingDraft.trim()} className="rounded-lg px-4 py-2 text-sm font-semibold text-white disabled:opacity-50" style={{ backgroundColor: "var(--navy)" }}>{savingRecording ? "Saving…" : "Save recording link"}</button>
+          </div>
+        </section>
+      </div>}
     </div>
   );
 }

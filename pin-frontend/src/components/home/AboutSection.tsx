@@ -128,7 +128,7 @@ export default function AboutSection() {
               style={{ aspectRatio: "16/10" }}
             >
               <img
-                src="https://res.cloudinary.com/yaovkmpi/image/upload/v1784423630/IMG-20260716-WA0007_r0isob.jpg"
+                src="https://res.cloudinary.com/yaovkmpi/image/upload/v1793970460/PIN_Associates_Courtyard_Team_Portrait_d0f9ez.png"
                 alt="PIN Associate professional class in session"
                 style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 30%" }}
               />

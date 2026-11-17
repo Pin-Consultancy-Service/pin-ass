@@ -30,7 +30,6 @@ const statusStyle: Record<string, { bg: string; text: string }> = {
   CONFIRMED: { bg: "var(--navy-50)", text: "var(--navy-dark)" },
   PENDING:   { bg: "#FEF3C7", text: "#92600A" },
   FAILED:    { bg: "#FEF2F2", text: "#DC2626" },
-  REFUNDED:  { bg: "var(--navy-50)", text: "var(--navy)" },
 };
 
 export default function StudentFeesPage() {

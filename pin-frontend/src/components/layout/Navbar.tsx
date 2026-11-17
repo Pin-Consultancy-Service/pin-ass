@@ -18,11 +18,12 @@ const programmes = [
 ];
 
 const navLinks = [
+  { label: "Home",    href: "/" },
   { label: "About",    href: "/about" },
   { label: "Students", href: "/courses",           dropdown: true },
   { label: "Business Consulting",  href: "/corporate" },
-  { label: "Professional Training", href: "/corporate#training" },
-  { label: "Payment",  href: "/payment" },
+  // { label: "Professional Training", href: "/corporate#training" },
+  // { label: "Payment",  href: "/payment" },
   { label: "Contact",  href: "/contact" },
 ];
 

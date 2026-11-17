@@ -1,57 +1,48 @@
 /**
- * Frontend auth utilities.
- * Stores JWT tokens in localStorage (access + refresh).
- * All API calls go through apiFetch() which attaches the Bearer token
- * and automatically refreshes on 401.
+ * Frontend auth utilities. Authentication credentials stay in HttpOnly cookies;
+ * only non-sensitive display data is cached in localStorage.
  */
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+const API_BASE = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000").replace(/\/$/, "");
 
 // ⚠️ DEMO MODE: Set to true to bypass login/register pages entirely
 export const DEMO_MODE = false;
 
-// ⚠️ TEST MODE: Set to true to show login/register but accept any input without validation
-export const TEST_MODE = true;
-
-export interface AuthTokens {
-  access: string;
-  refresh: string;
-}
+// Local mock mode must be explicitly enabled and can never be enabled in production.
+export const TEST_MODE = process.env.NODE_ENV !== "production" && process.env.NEXT_PUBLIC_TEST_MODE === "true";
 
 export interface AuthUser {
   id: string;
   email: string;
   first_name: string;
   last_name: string;
-  phone_number: string;
-  role: "STUDENT" | "CLIENT" | "STAFF";
-  date_joined: string;
+  phone_number: string | null;
+  role: "STUDENT" | "CLIENT" | "STAFF" | "ADMIN";
+  date_joined?: string;
+  created_at?: string;
 }
 
-/* ─── Token storage (browser-only) ──────────────────── */
-export function saveTokens(tokens: AuthTokens) {
-  localStorage.setItem("pin_access",  tokens.access);
-  localStorage.setItem("pin_refresh", tokens.refresh);
-}
+let csrfToken: string | null = null;
 
-export function getAccessToken(): string | null {
-  if (typeof window === "undefined") return null;
-  return localStorage.getItem("pin_access");
-}
-
-export function getRefreshToken(): string | null {
-  if (typeof window === "undefined") return null;
-  return localStorage.getItem("pin_refresh");
-}
+// Kept as no-op adapters while older portal components migrate away from bearer tokens.
+export function saveTokens(_tokens: { access: string; refresh: string }) {}
+export function getAccessToken(): string | null { return null; }
+export function getRefreshToken(): string | null { return null; }
 
 export function clearTokens() {
   localStorage.removeItem("pin_access");
   localStorage.removeItem("pin_refresh");
   localStorage.removeItem("pin_user");
+  csrfToken = null;
 }
 
 export function saveUser(user: AuthUser) {
-  localStorage.setItem("pin_user", JSON.stringify(user));
+  const normalized = {
+    ...user,
+    phone_number: user.phone_number ?? "",
+    date_joined: user.date_joined ?? user.created_at ?? new Date().toISOString(),
+  };
+  localStorage.setItem("pin_user", JSON.stringify(normalized));
 }
 
 export function getStoredUser(): AuthUser | null {
@@ -61,22 +52,15 @@ export function getStoredUser(): AuthUser | null {
   try { return JSON.parse(raw) as AuthUser; } catch { return null; }
 }
 
-/* ─── Token refresh ─────────────────────────────────── */
-async function refreshAccessToken(): Promise<string | null> {
-  const refresh = getRefreshToken();
-  if (!refresh) return null;
+async function getCsrfToken(): Promise<string | null> {
+  if (csrfToken) return csrfToken;
   try {
-    const res = await fetch(`${API_BASE}/api/auth/login/refresh/`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ refresh }),
-    });
-    if (!res.ok) { clearTokens(); return null; }
-    const data = await res.json() as { access: string };
-    localStorage.setItem("pin_access", data.access);
-    return data.access;
+    const response = await fetch(`${API_BASE}/api/v1/auth/csrf`, { credentials: "include", cache: "no-store" });
+    if (!response.ok) return null;
+    const data = await response.json() as { csrf_token: string };
+    csrfToken = data.csrf_token;
+    return csrfToken;
   } catch {
-    clearTokens();
     return null;
   }
 }
@@ -85,25 +69,22 @@ async function refreshAccessToken(): Promise<string | null> {
 export async function apiFetch<T = unknown>(
   path: string,
   options: RequestInit = {},
-  retry = true,
 ): Promise<T> {
-  const token = getAccessToken();
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json",
-    ...(options.headers as Record<string, string> ?? {}),
-  };
-  if (token) headers["Authorization"] = `Bearer ${token}`;
-
-  const res = await fetch(`${API_BASE}${path}`, { ...options, headers });
-
-  if (res.status === 401 && retry) {
-    const newToken = await refreshAccessToken();
-    if (newToken) return apiFetch<T>(path, options, false);
-    throw new Error("SESSION_EXPIRED");
+  const method = (options.method ?? "GET").toUpperCase();
+  const headers = new Headers(options.headers);
+  if (options.body && !headers.has("Content-Type") && !(options.body instanceof FormData)) {
+    headers.set("Content-Type", "application/json");
   }
+  const isPublicAuth = path === "/api/v1/auth/login" || path === "/api/v1/auth/register";
+  if (!isPublicAuth && !["GET", "HEAD", "OPTIONS"].includes(method)) {
+    const token = await getCsrfToken();
+    if (token) headers.set("X-CSRF-Token", token);
+  }
+  const res = await fetch(`${API_BASE}${path}`, { ...options, method, headers, credentials: "include" });
 
   if (!res.ok) {
     const errBody = await res.json().catch(() => ({}));
+    if (res.status === 401) clearTokens();
     throw Object.assign(new Error("API_ERROR"), { status: res.status, body: errBody });
   }
 
@@ -111,19 +92,39 @@ export async function apiFetch<T = unknown>(
   return res.json() as Promise<T>;
 }
 
+export async function apiDownload(path: string, filename: string): Promise<void> {
+  const response = await fetch(`${API_BASE}${path}`, {
+    credentials: "include",
+    cache: "no-store",
+  });
+  if (!response.ok) {
+    const errorBody = await response.json().catch(() => ({}));
+    if (response.status === 401) clearTokens();
+    throw Object.assign(new Error("DOWNLOAD_ERROR"), { status: response.status, body: errorBody });
+  }
+  const objectUrl = URL.createObjectURL(await response.blob());
+  const anchor = document.createElement("a");
+  anchor.href = objectUrl;
+  anchor.download = filename;
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+  window.setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
+}
+
 /* ─── Auth API calls ────────────────────────────────── */
 export async function login(
   email: string,
   password: string,
-): Promise<{ user: AuthUser; access: string; refresh: string }> {
-  const data = await apiFetch<{ access: string; refresh: string; user: AuthUser }>(
-    "/api/auth/login/",
+): Promise<{ user: AuthUser }> {
+  const user = await apiFetch<AuthUser>(
+    "/api/v1/auth/login",
     { method: "POST", body: JSON.stringify({ email, password }) },
-    false,
   );
-  saveTokens({ access: data.access, refresh: data.refresh });
-  saveUser(data.user);
-  return data;
+  saveUser(user);
+  csrfToken = null;
+  await getCsrfToken();
+  return { user };
 }
 
 export async function register(payload: {
@@ -135,10 +136,10 @@ export async function register(payload: {
   phone_number?: string;
   role: "STUDENT" | "CLIENT";
 }): Promise<AuthUser> {
-  return apiFetch<AuthUser>("/api/auth/register/", {
+  return apiFetch<AuthUser>("/api/v1/auth/register", {
     method: "POST",
     body: JSON.stringify(payload),
-  }, false);
+  });
 }
 
 /**
@@ -158,19 +159,17 @@ export async function googleAuth(
     user: AuthUser;
     created: boolean;
   }>(
-    "/api/auth/google/",
+    "/api/v1/auth/google",
     { method: "POST", body: JSON.stringify({ credential, role }) },
-    false,
   );
   saveTokens({ access: data.access, refresh: data.refresh });
   saveUser(data.user);
   return data;
 }
 
-export async function logout(refresh: string) {
-  await apiFetch("/api/auth/logout/", {
+export async function logout(_refresh?: string) {
+  await apiFetch("/api/v1/auth/logout", {
     method: "POST",
-    body: JSON.stringify({ refresh }),
   }).catch(() => {});
   clearTokens();
 }
@@ -180,7 +179,8 @@ export function portalHomeForRole(role: AuthUser["role"]): string {
   switch (role) {
     case "STUDENT": return "/portal/student";
     case "CLIENT":  return "/portal/client";
-    case "STAFF":   return "/admin-portal";
+    case "STAFF":
+    case "ADMIN": return "/admin/dashboard";
     default:        return "/portal/training";
   }
 }

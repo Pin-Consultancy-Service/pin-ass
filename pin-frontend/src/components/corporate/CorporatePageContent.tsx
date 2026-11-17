@@ -9,21 +9,21 @@ import PageHero from "@/components/layout/PageHero";
 /* ─── Data — unchanged ───────────────────────────────── */
 const heroSlides = [
   { id: 1, src: "https://res.cloudinary.com/yaovkmpi/image/upload/v1784488319/pexels-rdne-7821702_1_1_xq4cuh.jpg", alt: "Business professionals in meeting" },
-  { id: 2, src: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=1600&q=60",                           alt: "Corporate training session" },
+  { id: 2, src: "https://res.cloudinary.com/yaovkmpi/image/upload/v1793970460/PIN_Associates_Courtyard_Team_Portrait_d0f9ez.png",                           alt: "Corporate training session" },
   { id: 3, src: "https://res.cloudinary.com/yaovkmpi/image/upload/v1784481889/wmremove-transformed_3_ujyrty.jpg",  alt: "Financial consultancy work" },
 ];
 
 const consultancyServices = [
   { title: "Business Advisory",       body: "Strategic planning, business modelling, and feasibility studies to guide key organisational decisions. We work with SMEs, growing businesses, and established corporations.", deliverables: ["Strategic plans", "Business models", "Feasibility reports"] },
   { title: "Taxation",                body: "Corporate tax planning, FIRS compliance, transfer pricing documentation, and tax dispute resolution. We ensure your organisation's tax position is defensible and optimised.", deliverables: ["Tax computations", "FIRS filings", "Transfer pricing reports"] },
-  { title: "Financial Statements",    body: "Preparation of IFRS-compliant financial statements for entities of all sizes — statutory accounts, management accounts, and consolidated group reporting.", deliverables: ["Statutory accounts", "Management accounts", "Group consolidations"] },
+  { title: "Financial Statements",    body: "Preparation of IFRS-compliant financial statements for entities of all sizes statutory accounts, management accounts, and consolidated group reporting.", deliverables: ["Statutory accounts", "Management accounts", "Group consolidations"] },
   { title: "Audit Support",           body: "Pre-audit preparation, internal audit reviews, and working paper support to ensure your organisation enters the audit process in the strongest possible position.", deliverables: ["Audit files", "Internal review reports", "Control assessments"] },
-  { title: "Asset Review",            body: "Valuation and review of business assets — fixed assets, financial instruments, and intangibles — for financial reporting, transaction, or regulatory purposes.", deliverables: ["Asset schedules", "Valuation reports", "Impairment reviews"] },
+  { title: "Asset Review",            body: "Valuation and review of business assets fixed assets, financial instruments, and intangibles for financial reporting, transaction, or regulatory purposes.", deliverables: ["Asset schedules", "Valuation reports", "Impairment reviews"] },
   { title: "Regulatory Compliance",   body: "Ensuring your organisation meets requirements from FIRS, SEC, CBN, CAC, and sector-specific bodies. We identify gaps and implement remediation before regulators do.", deliverables: ["Compliance gap analysis", "Remediation plans", "Regulatory filings"] },
 ];
 
 const trainingProgrammes = [
-  { title: "Financial Intelligence for Executives", audience: "Senior management & board members", duration: "1–2 days",         body: "Reading financial statements, understanding key ratios, and making finance-informed decisions — without requiring an accounting background." },
+  { title: "Financial Intelligence for Executives", audience: "Senior management & board members", duration: "1–2 days",         body: "Reading financial statements, understanding key ratios, and making finance-informed decisions without requiring an accounting background." },
   { title: "Tax Updates & Compliance",              audience: "Finance teams & tax professionals",  duration: "Half-day to 1 day", body: "Current FIRS regulations, new tax laws, and practical compliance requirements delivered by active tax practitioners." },
   { title: "IFRS Fundamentals & Updates",           audience: "Accountants & finance staff",        duration: "1–3 days",         body: "Core IFRS standards, recent amendments, and practical application to your entity's financial reporting environment." },
   { title: "Finance Team Development",              audience: "Finance departments",                duration: "3–5 days",         body: "Structured upskilling programme covering financial reporting, budgeting, internal controls, and professional ethics." },
@@ -45,7 +45,7 @@ const clients = [
 const process = [
   { n: "01", title: "Initial Enquiry", body: "You contact us with your challenge or objective. We respond within one business day with an initial discussion." },
   { n: "02", title: "Scoping Call",    body: "We hold a focused call to understand your organisation's specific needs, timelines, and desired outcomes." },
-  { n: "03", title: "Proposal",        body: "We deliver a tailored written proposal — scope of work, fee structure, timeline, and deliverables — within 48 hours." },
+  { n: "03", title: "Proposal",        body: "We deliver a tailored written proposal scope of work, fee structure, timeline, and deliverables within 48 hours." },
   { n: "04", title: "Engagement",      body: "Upon agreement, we begin work. You receive a named relationship manager and clear communication throughout." },
   { n: "05", title: "Delivery",        body: "We deliver the agreed outputs with a debrief and Q&A session." },
   { n: "06", title: "Aftercare",       body: "We remain available for follow-up questions and to support implementation of our recommendations." },
@@ -77,7 +77,7 @@ export default function CorporatePageContent() {
       <PageHero
         label="Corporate Services"
         title="Consultancy & Training That Delivers Results"
-        description="Business and financial advisory, taxation, financial statements, audits, and bespoke corporate training — delivered by practitioners, not generalists."
+        description="Business and financial advisory, taxation, financial statements, audits, and bespoke corporate training delivered by practitioners, not generalists."
         slides={heroSlides}
       >
         <div className="flex flex-wrap items-center justify-center gap-3 mt-4">
@@ -96,10 +96,10 @@ export default function CorporatePageContent() {
           <div className="grid lg:grid-cols-[1fr_auto] gap-10 items-start">
             <div style={{ maxWidth: "36rem" }}>
               <p style={{ fontSize: "0.9375rem", lineHeight: 1.65, color: "var(--ink-muted)", marginBottom: "0.75rem" }}>
-                PIN Associate works with Nigerian organisations — from growing SMEs to listed corporations and government agencies — to solve real financial challenges, meet regulatory obligations, and develop the professional capability of their teams.
+                PIN Associate works with Nigerian organisations from growing SMEs to listed corporations and government agencies to solve real financial challenges, meet regulatory obligations, and develop the professional capability of their teams.
               </p>
               <p style={{ fontSize: "0.9375rem", lineHeight: 1.65, color: "var(--ink-muted)" }}>
-                Our consultants are active practitioners. The people who advise your organisation today are the same people handling engagements across multiple sectors — meaning our advice is current, practical, and tested.
+                Our consultants are active practitioners. The people who advise your organisation today are the same people handling engagements across multiple sectors meaning our advice is current, practical, and tested.
               </p>
             </div>
             <div className="grid grid-cols-2 gap-0 flex-shrink-0" style={{ borderTop: "1px solid var(--rule)", minWidth: "240px" }}>

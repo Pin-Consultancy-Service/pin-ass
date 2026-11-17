@@ -47,7 +47,6 @@ function ContactFormWithParams() {
       if (s && serviceTypes.some((t) => t.id === s)) setActiveService(s);
     } catch (error) {
       // Handle case where searchParams are not available during build
-      console.log('Search params not available during build');
     }
   }, [searchParams]);
 

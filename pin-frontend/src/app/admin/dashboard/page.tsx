@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import AdminDashboardLayout from '@/components/admin/AdminDashboardLayout';
-import AdminDashboardContent from '@/components/admin/AdminDashboardContent';
+import AdminOperationsOverview from '@/components/admin/AdminOperationsOverview';
 
 export const metadata: Metadata = { 
   title: 'Dashboard | Admin Portal' 
@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 export default function AdminDashboardPage() {
   return (
     <AdminDashboardLayout activeTab="dashboard">
-      <AdminDashboardContent />
+      <AdminOperationsOverview />
     </AdminDashboardLayout>
   );
 }

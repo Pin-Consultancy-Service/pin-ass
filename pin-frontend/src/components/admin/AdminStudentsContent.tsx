@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { Search, Download, Eye, Edit, ChevronDown, ChevronUp, Plus } from "lucide-react";
 import { mockSystemUsers, mockEnrollments, formatNaira } from "@/lib/mockAdminData";
 import AddStudentModal from "@/components/admin/modals/AddStudentModal";
@@ -172,9 +172,8 @@ export default function AdminStudentsContent() {
               const isExpanded = expandedRow === student.id;
               
               return (
-                <>
+                <React.Fragment key={student.id}>
                   <tr 
-                    key={student.id} 
                     style={{ 
                       borderBottom: '1px solid var(--rule)', 
                       backgroundColor: 'var(--bg)',
@@ -277,7 +276,7 @@ export default function AdminStudentsContent() {
                       </td>
                     </tr>
                   )}
-                </>
+                </React.Fragment>
               );
             })}
           </tbody>
@@ -355,7 +354,6 @@ export default function AdminStudentsContent() {
         onClose={() => setIsAddModalOpen(false)}
         onSuccess={() => {
           // In a real app, refresh the student list
-          console.log('Student added successfully');
         }}
       />
     </div>

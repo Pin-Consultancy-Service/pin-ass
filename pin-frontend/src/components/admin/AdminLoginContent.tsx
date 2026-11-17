@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { Mail, Lock, Eye, EyeOff, Users, DollarSign, BarChart3 } from "lucide-react";
+import { login, logout } from "@/lib/auth";
 
 export default function AdminLoginContent() {
   const router = useRouter();
@@ -20,23 +21,16 @@ export default function AdminLoginContent() {
     setError("");
 
     try {
-      // TODO: Replace with actual admin authentication API
-      // For now, simulate login
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Store admin token (demo)
-      localStorage.setItem('admin_token', 'demo-admin-token');
-      localStorage.setItem('admin_user', JSON.stringify({
-        id: 'ADM001',
-        first_name: 'Super',
-        last_name: 'Admin',
-        email: email,
-        role: 'super_admin'
-      }));
-      
+      const { user } = await login(email, password);
+      if (user.role !== "ADMIN" && user.role !== "STAFF") {
+        await logout();
+        setError("This account does not have administrator access.");
+        return;
+      }
       router.push('/admin/dashboard');
     } catch (err) {
-      setError('Invalid credentials. Please try again.');
+      const apiError = err as { body?: { detail?: string } };
+      setError(apiError.body?.detail ?? 'Invalid credentials. Please try again.');
     } finally {
       setLoading(false);
     }

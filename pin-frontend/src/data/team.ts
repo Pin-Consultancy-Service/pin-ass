@@ -27,13 +27,13 @@ export const teamMembers: TeamMember[] = [
   },
   {
     id: "babatunde",
-    name: "Anthony Babatunde", // [PLACEHOLDER — full name to be supplied]
-    role: "Director of Studies", // [PLACEHOLDER — confirm title]
-    quals: "ACA", // [PLACEHOLDER — confirm credentials]
-    bio: "A seasoned accounting and audit professional, Saloko leads PIN's academic curriculum and examination strategy. His exam-intelligence approach — understanding exactly what examiners award marks for — is at the heart of PIN's consistently high pass rates.",
-    initials: "SL",
+    name: "Anthony Babatunde Peter",
+    role: "Finance Analyst & Taxation Specialist",
+    quals: "ABWA, ICAN, CITN, FMVA",
+    bio: "A result-driven accounting professional with a First-Class degree from Redeemers University and 8+ years as a seasoned tutor in ICAN and ACCA taxation programs. Anthony combines academic excellence with practical expertise, having worked with 14+ firms including a Big 4 accounting firm. Currently Finance Analyst at PZ Cussons, he specializes in taxation, financial modeling, and has contributed to Nigeria's Presidential Committee on Fiscal Policy and Tax Reform.",
+    initials: "AB",
     color: "var(--navy-dark)",
-    image: "https://res.cloudinary.com/yaovkmpi/image/upload/v1784402566/Anthony_Tunde_bq4utq.jpg", // [PLACEHOLDER — photo to be supplied]
+    image: "https://res.cloudinary.com/yaovkmpi/image/upload/v1784402566/Anthony_Tunde_bq4utq.jpg",
   },
   {
     id: "motiu",

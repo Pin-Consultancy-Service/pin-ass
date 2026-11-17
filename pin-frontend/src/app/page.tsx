@@ -12,7 +12,6 @@ import TestimonialsSection from "@/components/home/TestimonialsSection";
 import RegistrationSection from "@/components/home/RegistrationSection";
 import CorporateSection from "@/components/home/CorporateSection";
 import FAQSection from "@/components/home/FAQSection";
-import BlogSection from "@/components/home/BlogSection";
 import ContactSection from "@/components/home/ContactSection";
 
 export const metadata: Metadata = {
@@ -37,7 +36,6 @@ export default function HomePage() {
         <RegistrationSection />
         <CorporateSection />
         <FAQSection />
-        <BlogSection />
         <ContactSection />
       </main>
       <Footer />

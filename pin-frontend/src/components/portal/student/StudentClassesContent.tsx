@@ -1,445 +1,232 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { 
-  Calendar, Clock, Play, Download, Users, BookOpen, Video, 
-  Eye, CheckCircle, PlayCircle, AlertCircle, ExternalLink, Maximize2
-} from "lucide-react";
-import { mockClasses, getTimeUntilClass, isClassLive, type ClassData } from "@/lib/mockClassData";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { AlertCircle, Calendar, CheckCircle, Clock, ExternalLink, Play, Video } from "lucide-react";
+import { apiFetch, getStoredUser } from "@/lib/auth";
+
+type ClassStatus = "SCHEDULED" | "LIVE" | "COMPLETED" | "CANCELLED";
+type Filter = "all" | "upcoming" | "live" | "completed";
+
+interface ClassSession {
+  id: string;
+  fee_plan_id: string;
+  exam_body: "ICAN" | "ACCA" | "CITN" | "CISA" | "ATS" | null;
+  course_name: string;
+  cohort: string;
+  subject: string;
+  topic: string;
+  instructor_name: string;
+  scheduled_at: string;
+  duration_minutes: number;
+  meeting_url: string | null;
+  recording_url: string | null;
+  materials: { name: string; url: string }[];
+  description: string | null;
+  status: ClassStatus;
+}
+
+const filters: { id: Filter; label: string }[] = [
+  { id: "all", label: "All Classes" },
+  { id: "upcoming", label: "Upcoming" },
+  { id: "live", label: "Live" },
+  { id: "completed", label: "Completed" },
+];
 
 export default function StudentClassesContent() {
-  const [selectedFilter, setSelectedFilter] = useState<string>("all");
-  const [activeClassId, setActiveClassId] = useState<number | null>(null);
-  const [currentTime, setCurrentTime] = useState(new Date());
-  const [mounted, setMounted] = useState(false);
+  const router = useRouter();
+  const user = getStoredUser();
+  const [classes, setClasses] = useState<ClassSession[]>([]);
+  const [playingRecordingId, setPlayingRecordingId] = useState<string | null>(null);
+  const [selectedFilter, setSelectedFilter] = useState<Filter>("all");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  // Prevent hydration mismatch by only showing dynamic content after mount
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  // Update clock every minute
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentTime(new Date());
-      
-      // Auto-open live classes when it's time
-      mockClasses.forEach(cls => {
-        if (cls.status === 'scheduled' && isClassLive(cls.scheduledDate, cls.scheduledTime, cls.duration)) {
-          setActiveClassId(cls.id);
-        }
-      });
-    }, 60000); // Check every minute
-    
-    return () => clearInterval(interval);
-  }, []);
-
-  const filters = ["all", "upcoming", "live", "completed", "missed"];
-  
-  // Filter classes based on selected filter
-  const filteredClasses = mockClasses.filter(cls => {
-    if (selectedFilter === "all") return true;
-    if (selectedFilter === "upcoming") return cls.status === 'scheduled' && !isClassLive(cls.scheduledDate, cls.scheduledTime, cls.duration);
-    if (selectedFilter === "live") return isClassLive(cls.scheduledDate, cls.scheduledTime, cls.duration);
-    if (selectedFilter === "completed") return cls.status === 'completed';
-    if (selectedFilter === "missed") return cls.status === 'completed' && cls.attendance === 'absent';
-    return true;
-  });
-
-  // Smart sorting: Upcoming/scheduled classes FIRST, then completed classes by date (newest first)
-  const sortedClasses = [...filteredClasses].sort((a, b) => {
-    // Priority 1: Scheduled/upcoming classes always come first
-    if (a.status === 'scheduled' && b.status !== 'scheduled') return -1;
-    if (a.status !== 'scheduled' && b.status === 'scheduled') return 1;
-    
-    // Priority 2: Within same status, sort by date (newest first)
-    const dateA = new Date(`${a.scheduledDate} ${a.scheduledTime}`);
-    const dateB = new Date(`${b.scheduledDate} ${b.scheduledTime}`);
-    
-    // For upcoming classes: soonest first (ascending)
-    if (a.status === 'scheduled' && b.status === 'scheduled') {
-      return dateA.getTime() - dateB.getTime();
+  const loadClasses = useCallback(async () => {
+    try {
+      const result = await apiFetch<ClassSession[]>("/api/v1/students/me/classes");
+      setClasses(Array.isArray(result) ? result : []);
+      setError("");
+    } catch {
+      setError("Classes could not be loaded. Please refresh or sign in again.");
+    } finally {
+      setLoading(false);
     }
-    
-    // For completed classes: newest first (descending)
-    return dateB.getTime() - dateA.getTime();
+  }, []);
+
+  useEffect(() => {
+    if (!user) {
+      router.replace("/portal/login?redirect=/portal/student/classes");
+      return;
+    }
+    void loadClasses();
+    const refreshInterval = window.setInterval(() => void loadClasses(), 60_000);
+    return () => window.clearInterval(refreshInterval);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const filteredClasses = useMemo(() => {
+    const result = classes.filter((session) => {
+      if (selectedFilter === "upcoming") return session.status === "SCHEDULED";
+      if (selectedFilter === "live") return session.status === "LIVE";
+      if (selectedFilter === "completed") return session.status === "COMPLETED";
+      return true;
+    });
+    return result.sort((a, b) => {
+      const timeA = new Date(a.scheduled_at).getTime();
+      const timeB = new Date(b.scheduled_at).getTime();
+      if (a.status === "SCHEDULED" && b.status !== "SCHEDULED") return -1;
+      if (b.status === "SCHEDULED" && a.status !== "SCHEDULED") return 1;
+      return a.status === "SCHEDULED" ? timeA - timeB : timeB - timeA;
+    });
+  }, [classes, selectedFilter]);
+
+  const counts = {
+    upcoming: classes.filter(session => session.status === "SCHEDULED").length,
+    live: classes.filter(session => session.status === "LIVE").length,
+    completed: classes.filter(session => session.status === "COMPLETED").length,
+    recordings: classes.filter(session => session.recording_url).length,
+  };
+
+  const formatDate = (value: string) => new Date(value).toLocaleString("en-NG", {
+    weekday: "short", day: "numeric", month: "short", year: "numeric",
+    hour: "numeric", minute: "2-digit", timeZone: "Africa/Lagos",
   });
 
-  const upcomingCount = mockClasses.filter(c => c.status === 'scheduled').length;
-  const liveCount = mockClasses.filter(c => isClassLive(c.scheduledDate, c.scheduledTime, c.duration)).length;
-  const missedCount = mockClasses.filter(c => c.status === 'completed' && c.attendance === 'absent').length;
-  const recordedCount = mockClasses.filter(c => c.recordingUrl).length;
+  const getMeetingUrl = (value: string | null) => {
+    if (!value) return null;
+    try {
+      const url = new URL(value);
+      const isGoogleMeet = url.hostname === "meet.google.com";
+      const isZoom = url.hostname === "zoom.us" || url.hostname.endsWith(".zoom.us");
+      return url.protocol === "https:" && (isGoogleMeet || isZoom) ? url.toString() : null;
+    } catch {
+      return null;
+    }
+  };
+
+  const getRecordingPlayer = (value: string | null) => {
+    if (!value) return null;
+    try {
+      const url = new URL(value);
+      if (url.protocol !== "https:") return null;
+
+      if (url.hostname === "drive.google.com") {
+        const fileId = url.pathname.match(/^\/file\/d\/([A-Za-z0-9_-]+)/)?.[1];
+        return fileId ? { type: "iframe" as const, src: `https://drive.google.com/file/d/${fileId}/preview` } : null;
+      }
+
+      if (url.hostname === "youtu.be" || url.hostname === "www.youtube.com" || url.hostname === "youtube.com") {
+        const videoId = url.hostname === "youtu.be"
+          ? url.pathname.split("/").filter(Boolean)[0]
+          : url.pathname === "/watch" ? url.searchParams.get("v") : url.pathname.match(/^\/(?:embed|shorts)\/([^/]+)/)?.[1];
+        return videoId && /^[A-Za-z0-9_-]{6,20}$/.test(videoId)
+          ? { type: "iframe" as const, src: `https://www.youtube-nocookie.com/embed/${videoId}` }
+          : null;
+      }
+
+      return /\.(mp4|webm|ogg)$/i.test(url.pathname) ? { type: "video" as const, src: url.toString() } : null;
+    } catch {
+      return null;
+    }
+  };
 
   return (
     <div>
-      {/* Header Section */}
       <div className="mb-8">
-        <h1 
-          className="text-2xl font-bold mb-2"
-          style={{ color: 'var(--ink)', fontFamily: 'var(--font-display)' }}
-        >
-          Live Classes & Recordings
+        <h1 className="text-2xl font-bold mb-2" style={{ color: "var(--ink)", fontFamily: "var(--font-display)" }}>
+          Live Classes &amp; Recordings
         </h1>
-        <p style={{ color: 'var(--ink-muted)' }}>
-          Join live classes, watch missed class recordings, and download materials
-        </p>
+        <p style={{ color: "var(--ink-muted)" }}>Classes and recordings for your paid course cohorts.</p>
       </div>
 
-      {/* Statistics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-        <div 
-          className="p-4 rounded-2xl border transition-all hover:shadow-lg"
-          style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--rule)' }}
-        >
-          <div className="flex items-center gap-3">
-            <div 
-              className="w-10 h-10 rounded-xl flex items-center justify-center"
-              style={{ backgroundColor: 'var(--navy)' }}
-            >
-              <Calendar className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold" style={{ color: 'var(--ink)', fontFamily: 'var(--font-display)' }}>
-                {upcomingCount}
-              </p>
-              <p className="text-xs font-semibold" style={{ color: 'var(--ink-muted)' }}>
-                Upcoming
-              </p>
-            </div>
-          </div>
-        </div>
+      {error && <p role="alert" className="mb-6 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">{error}</p>}
 
-        <div 
-          className="p-4 rounded-2xl border transition-all hover:shadow-lg"
-          style={{ backgroundColor: liveCount > 0 ? '#FEF3C7' : 'var(--surface)', borderColor: liveCount > 0 ? 'var(--gold)' : 'var(--rule)' }}
-        >
-          <div className="flex items-center gap-3">
-            <div 
-              className="w-10 h-10 rounded-xl flex items-center justify-center relative"
-              style={{ backgroundColor: '#DC2626' }}
-            >
-              <Play className="w-5 h-5 text-white" />
-              {liveCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse" />
-              )}
-            </div>
-            <div>
-              <p className="text-2xl font-bold" style={{ color: 'var(--ink)', fontFamily: 'var(--font-display)' }}>
-                {liveCount}
-              </p>
-              <p className="text-xs font-semibold" style={{ color: 'var(--ink-muted)' }}>
-                Live Now
-              </p>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        {[
+          { label: "Upcoming", count: counts.upcoming, icon: Calendar, color: "var(--navy)" },
+          { label: "Live Now", count: counts.live, icon: Play, color: "#DC2626" },
+          { label: "Completed", count: counts.completed, icon: CheckCircle, color: "var(--gold-dark)" },
+          { label: "Recordings", count: counts.recordings, icon: Video, color: "var(--navy)" },
+        ].map(({ label, count, icon: Icon, color }) => (
+          <div key={label} className="p-4 rounded-2xl border" style={{ backgroundColor: "var(--surface)", borderColor: "var(--rule)" }}>
+            <div className="flex items-center gap-3">
+              <span className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: color }}><Icon className="w-5 h-5 text-white" /></span>
+              <div><p className="text-2xl font-bold" style={{ color: "var(--ink)" }}>{loading ? "…" : count}</p><p className="text-xs font-semibold" style={{ color: "var(--ink-muted)" }}>{label}</p></div>
             </div>
           </div>
-        </div>
-
-        <div 
-          className="p-4 rounded-2xl border transition-all hover:shadow-lg"
-          style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--rule)' }}
-        >
-          <div className="flex items-center gap-3">
-            <div 
-              className="w-10 h-10 rounded-xl flex items-center justify-center"
-              style={{ backgroundColor: '#EF4444' }}
-            >
-              <AlertCircle className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold" style={{ color: 'var(--ink)', fontFamily: 'var(--font-display)' }}>
-                {missedCount}
-              </p>
-              <p className="text-xs font-semibold" style={{ color: 'var(--ink-muted)' }}>
-                Missed
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div 
-          className="p-4 rounded-2xl border transition-all hover:shadow-lg"
-          style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--rule)' }}
-        >
-          <div className="flex items-center gap-3">
-            <div 
-              className="w-10 h-10 rounded-xl flex items-center justify-center"
-              style={{ backgroundColor: 'var(--gold-dark)' }}
-            >
-              <Video className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold" style={{ color: 'var(--ink)', fontFamily: 'var(--font-display)' }}>
-                {recordedCount}
-              </p>
-              <p className="text-xs font-semibold" style={{ color: 'var(--ink-muted)' }}>
-                Recordings
-              </p>
-            </div>
-          </div>
-        </div>
+        ))}
       </div>
 
-      {/* Filter Section */}
-      <div className="mb-6">
-        <div className="flex flex-wrap gap-2">
-          {filters.map((filter) => (
-            <button
-              key={filter}
-              onClick={() => setSelectedFilter(filter)}
-              className="px-4 py-2 rounded-xl text-sm font-medium transition-all hover:shadow-md capitalize relative"
-              style={{
-                backgroundColor: selectedFilter === filter ? 'var(--navy)' : 'var(--surface)',
-                color: selectedFilter === filter ? 'white' : 'var(--ink-muted)',
-                border: '1px solid var(--rule)'
-              }}
-            >
-              {filter === "all" ? "All Classes" : filter}
-              {filter === "live" && liveCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
-                  {liveCount}
-                </span>
-              )}
-            </button>
-          ))}
-        </div>
+      <div className="mb-6 flex flex-wrap gap-2">
+        {filters.map(filter => (
+          <button key={filter.id} type="button" onClick={() => setSelectedFilter(filter.id)} className="px-4 py-2 rounded-xl text-sm font-medium capitalize" style={{
+            backgroundColor: selectedFilter === filter.id ? "var(--navy)" : "var(--surface)",
+            color: selectedFilter === filter.id ? "white" : "var(--ink-muted)",
+            border: "1px solid var(--rule)",
+          }}>{filter.label}</button>
+        ))}
       </div>
 
-      {/* Classes List */}
-      <div className="space-y-4">
-        {sortedClasses.map((classItem) => {
-          const timeUntil = getTimeUntilClass(classItem.scheduledDate, classItem.scheduledTime);
-          const isLive = isClassLive(classItem.scheduledDate, classItem.scheduledTime, classItem.duration);
-          const isActive = activeClassId === classItem.id;
-          const isMissed = classItem.status === 'completed' && classItem.attendance === 'absent';
-
-          return (
-            <div
-              key={classItem.id}
-              className="p-6 rounded-2xl border transition-all"
-              style={{ 
-                backgroundColor: isLive ? '#FEF3C7' : 'var(--surface)', 
-                borderColor: isLive ? 'var(--gold)' : 'var(--rule)',
-                boxShadow: isLive ? '0 4px 20px rgba(217, 119, 6, 0.2)' : 'none'
-              }}
-            >
-              {/* Live Indicator */}
-              {isLive && (
-                <div className="flex items-center gap-2 mb-4 px-4 py-2 rounded-xl bg-red-500 text-white w-fit animate-pulse">
-                  <span className="w-2 h-2 bg-white rounded-full animate-pulse" />
-                  <span className="font-bold text-sm">CLASS IS LIVE NOW!</span>
-                </div>
-              )}
-
-              {/* Completed Class Badge */}
-              {classItem.status === 'completed' && !isLive && (
-                <div className="flex items-center gap-2 mb-4 px-4 py-2 rounded-xl bg-gray-100 text-gray-700 w-fit">
-                  <CheckCircle className="w-4 h-4" />
-                  <span className="font-semibold text-sm">Class Ended</span>
-                </div>
-              )}
-
-              {/* Countdown Timer for Upcoming Classes */}
-              {mounted && timeUntil && !isLive && (
-                <div className="mb-4 p-4 rounded-xl" style={{ backgroundColor: 'var(--navy-50)', border: '2px solid var(--navy)' }} suppressHydrationWarning>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Clock className="w-5 h-5" style={{ color: 'var(--navy)' }} />
-                      <span className="font-bold" style={{ color: 'var(--navy)' }}>
-                        Class starts in:
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-4" suppressHydrationWarning>
-                      <div className="text-center">
-                        <div className="text-3xl font-bold" style={{ color: 'var(--navy)', fontFamily: 'var(--font-display)' }}>
-                          {timeUntil.hours}
-                        </div>
-                        <div className="text-xs" style={{ color: 'var(--ink-muted)' }}>hours</div>
-                      </div>
-                      <div className="text-2xl font-bold" style={{ color: 'var(--navy)' }}>:</div>
-                      <div className="text-center">
-                        <div className="text-3xl font-bold" style={{ color: 'var(--navy)', fontFamily: 'var(--font-display)' }}>
-                          {timeUntil.minutes}
-                        </div>
-                        <div className="text-xs" style={{ color: 'var(--ink-muted)' }}>minutes</div>
-                      </div>
-                    </div>
+      {loading ? <p className="py-12 text-center text-sm" style={{ color: "var(--ink-muted)" }}>Loading your classes…</p> : filteredClasses.length ? (
+        <div className="space-y-4">
+          {filteredClasses.map(session => (
+            <article key={session.id} className="p-5 md:p-6 rounded-2xl border" style={{ backgroundColor: session.status === "LIVE" ? "#FEF3C7" : "var(--surface)", borderColor: session.status === "LIVE" ? "var(--gold)" : "var(--rule)" }}>
+              <div className="flex flex-wrap items-start justify-between gap-4">
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs font-semibold mb-1" style={{ color: "var(--gold-dark)" }}>{session.exam_body ?? "Unclassified"} · {session.course_name} · {session.cohort}</p>
+                  <h2 className="font-bold text-xl mb-1" style={{ color: "var(--ink)" }}>{session.topic}</h2>
+                  <p className="text-sm" style={{ color: "var(--ink-muted)" }}>{session.subject} · {session.instructor_name}</p>
+                  {session.description && <p className="mt-3 text-sm leading-relaxed" style={{ color: "var(--ink-muted)" }}>{session.description}</p>}
+                  {session.materials?.length > 0 && <div className="mt-4"><p className="text-xs font-semibold mb-2" style={{ color: "var(--ink)" }}>Class materials</p><ul className="flex flex-wrap gap-2">{session.materials.map(material => <li key={`${material.name}-${material.url}`}><a href={material.url} target="_blank" rel="noopener noreferrer" className="rounded-lg border px-3 py-2 text-sm underline" style={{ borderColor: "var(--rule)", color: "var(--navy)" }}>{material.name}</a></li>)}</ul></div>}
+                  <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm" style={{ color: "var(--ink-muted)" }}>
+                    <span className="inline-flex items-center gap-2"><Calendar className="w-4 h-4" />{formatDate(session.scheduled_at)}</span>
+                    <span className="inline-flex items-center gap-2"><Clock className="w-4 h-4" />{session.duration_minutes} minutes</span>
                   </div>
                 </div>
+                <span className="rounded-full px-3 py-1 text-xs font-bold" style={{
+                  backgroundColor: session.status === "LIVE" ? "#FEE2E2" : session.status === "COMPLETED" ? "#DCFCE7" : "var(--navy-50)",
+                  color: session.status === "LIVE" ? "#B91C1C" : session.status === "COMPLETED" ? "#166534" : "var(--navy)",
+                }}>{session.status.toLowerCase()}</span>
+              </div>
+              {(session.meeting_url || session.recording_url) && (
+                <div className="mt-5 pt-4 border-t flex flex-wrap gap-3" style={{ borderColor: "var(--rule)" }}>
+                  {session.meeting_url && (getMeetingUrl(session.meeting_url) ? (
+                    <a href={getMeetingUrl(session.meeting_url)!} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2 rounded-xl font-semibold text-white" style={{ backgroundColor: "#15803D" }}><Video className="w-4 h-4" />Join live class<ExternalLink className="w-4 h-4" /></a>
+                  ) : (
+                    <span className="text-sm" style={{ color: "var(--ink-muted)" }}>Meeting link unavailable. Ask your administrator to check the Google Meet URL.</span>
+                  ))}
+                  {session.recording_url && <>
+                    {getRecordingPlayer(session.recording_url) ? (
+                      <button type="button" onClick={() => setPlayingRecordingId(playingRecordingId === session.id ? null : session.id)} className="inline-flex items-center gap-2 px-4 py-2 rounded-xl font-semibold text-white" style={{ backgroundColor: "var(--navy)" }}><Play className="w-4 h-4" />{playingRecordingId === session.id ? "Close recording" : "Watch recording"}</button>
+                    ) : null}
+                    <a href={session.recording_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border font-semibold" style={{ borderColor: "var(--rule)", color: "var(--navy)" }}>{getRecordingPlayer(session.recording_url) ? "Open recording separately" : "Watch recording"}<ExternalLink className="w-4 h-4" /></a>
+                  </>}
+                </div>
               )}
-
-              {/* Class Header */}
-              <div className="mb-4">
-                <div className="flex items-start justify-between mb-2">
-                  <div className="flex-1">
-                    <p className="text-xs font-semibold mb-1" style={{ color: 'var(--gold-dark)' }}>
-                      {classItem.cohort}
-                    </p>
-                    <h3 className="font-bold text-xl mb-1" style={{ color: 'var(--ink)' }}>
-                      {classItem.topic}
-                    </h3>
-                    <div className="flex items-center gap-4 text-sm" style={{ color: 'var(--ink-muted)' }}>
-                      <span className="font-medium" style={{ color: 'var(--navy)' }}>
-                        {classItem.subject}
-                      </span>
-                      <span>{classItem.instructor}</span>
-                    </div>
+              {playingRecordingId === session.id && session.recording_url && getRecordingPlayer(session.recording_url) && (
+                <div className="mt-4 overflow-hidden rounded-xl border" style={{ borderColor: "var(--rule)" }}>
+                  <div className="flex items-center justify-between gap-3 p-3" style={{ backgroundColor: "var(--bg)" }}>
+                    <p className="font-semibold" style={{ color: "var(--ink)" }}>Class recording · {session.topic}</p>
+                    <button type="button" onClick={() => setPlayingRecordingId(null)} className="rounded-lg border px-3 py-1 text-sm" style={{ borderColor: "var(--rule)", color: "var(--ink)" }}>Close</button>
                   </div>
-                  {isMissed && (
-                    <div className="flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold" 
-                         style={{ backgroundColor: '#FEE2E2', color: '#DC2626' }}>
-                      <AlertCircle className="w-3 h-3" />
-                      Missed - Recording Available
-                    </div>
+                  {getRecordingPlayer(session.recording_url)?.type === "iframe" ? (
+                    <iframe src={getRecordingPlayer(session.recording_url)!.src} title={`Recording: ${session.topic}`} className="aspect-video w-full" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowFullScreen referrerPolicy="no-referrer" />
+                  ) : (
+                    <video src={getRecordingPlayer(session.recording_url)!.src} controls playsInline preload="metadata" className="aspect-video w-full bg-black" />
                   )}
                 </div>
-
-                <p className="leading-relaxed" style={{ color: 'var(--ink-muted)' }}>
-                  {classItem.description}
-                </p>
-              </div>
-
-              {/* Google Meet Join Section - Shows when live */}
-              {(isLive || isActive) && classItem.googleMeetLink && (
-                <div className="mb-4">
-                  {/* Big Join Button */}
-                  <div className="p-6 rounded-xl border-2 border-green-500 bg-green-50 text-center">
-                    <div className="flex items-center justify-center gap-2 mb-3">
-                      <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse" />
-                      <span className="text-sm font-bold text-gray-700">LIVE SESSION IN PROGRESS</span>
-                    </div>
-                    <a 
-                      href={classItem.googleMeetLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-3 px-8 py-4 rounded-xl font-bold text-lg transition-all hover:scale-105 shadow-lg"
-                      style={{ backgroundColor: '#10B981', color: 'white' }}
-                    >
-                      <Video className="w-6 h-6" />
-                      Join Live Class Now
-                      <ExternalLink className="w-5 h-5" />
-                    </a>
-                    <p className="mt-3 text-xs text-gray-600">
-                      Click to open Google Meet and join the session with {classItem.instructor}
-                    </p>
-                  </div>
-                </div>
               )}
-
-              {/* Recording Player - Auto-shown for missed classes */}
-              {isMissed && classItem.recordingUrl && (
-                <div className="mb-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <p className="text-sm font-semibold" style={{ color: 'var(--ink)' }}>
-                      📹 Class Recording (Auto-uploaded from Google Meet)
-                    </p>
-                  </div>
-                  <div className="relative w-full rounded-xl overflow-hidden border-2" style={{ paddingBottom: '56.25%', borderColor: 'var(--rule)' }}>
-                    <iframe
-                      src={classItem.recordingUrl}
-                      className="absolute top-0 left-0 w-full h-full"
-                      allow="autoplay; fullscreen"
-                      style={{ border: 'none' }}
-                    />
-                  </div>
-                </div>
-              )}
-
-              {/* Class Details */}
-              <div className="flex items-center gap-6 mb-4 text-sm" style={{ color: 'var(--ink-muted)' }}>
-                <div className="flex items-center gap-2" suppressHydrationWarning>
-                  <Calendar className="w-4 h-4" />
-                  <span>
-                    {new Date(classItem.scheduledDate).toLocaleDateString('en-US', { 
-                      weekday: 'short', 
-                      month: 'short', 
-                      day: 'numeric',
-                      year: 'numeric'
-                    })}
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4" />
-                  <span>{classItem.scheduledTime} ({classItem.duration} mins)</span>
-                </div>
-              </div>
-
-              {/* Class Materials */}
-              {classItem.materials && classItem.materials.length > 0 && (
-                <div className="mb-4">
-                  <p className="text-sm font-semibold mb-2" style={{ color: 'var(--ink)' }}>
-                    📚 Class Materials:
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {classItem.materials.map((material, index) => (
-                      <a
-                        key={index}
-                        href={material.url}
-                        download
-                        className="flex items-center gap-2 px-3 py-2 rounded-lg border transition-all hover:shadow-md"
-                        style={{ backgroundColor: 'var(--bg)', borderColor: 'var(--rule)' }}
-                      >
-                        <Download className="w-4 h-4" style={{ color: 'var(--navy)' }} />
-                        <span className="text-sm font-medium" style={{ color: 'var(--ink)' }}>
-                          {material.name}
-                        </span>
-                        <span className="text-xs" style={{ color: 'var(--ink-faint)' }}>
-                          ({material.size})
-                        </span>
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Action Buttons */}
-              <div className="flex items-center gap-3 pt-4 border-t" style={{ borderColor: 'var(--rule)' }}>
-                {isLive && !isActive && (
-                  <button 
-                    onClick={() => setActiveClassId(classItem.id)}
-                    className="flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-white transition-all hover:shadow-lg hover:scale-[1.02] animate-pulse"
-                    style={{ backgroundColor: '#DC2626' }}
-                  >
-                    <Play className="w-5 h-5" />
-                    Join Live Class Now
-                  </button>
-                )}
-
-                {timeUntil && !isLive && (
-                  <button 
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl border font-medium transition-all hover:shadow-md"
-                    style={{ borderColor: 'var(--navy)', color: 'var(--navy)', backgroundColor: 'var(--surface)' }}
-                  >
-                    <Calendar className="w-4 h-4" />
-                    Add to Calendar
-                  </button>
-                )}
-
-                {classItem.recordingUrl && !isLive && (
-                  <button 
-                    className="flex items-center gap-2 px-4 py-3 rounded-xl font-semibold text-white transition-all hover:shadow-md"
-                    style={{ backgroundColor: 'var(--navy)' }}
-                  >
-                    <PlayCircle className="w-4 h-4" />
-                    Watch Recording
-                  </button>
-                )}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      {sortedClasses.length === 0 && (
-        <div className="text-center py-12">
-          <Video className="w-16 h-16 mx-auto mb-4" style={{ color: 'var(--ink-faint)' }} />
-          <p className="text-lg font-medium mb-2" style={{ color: 'var(--ink-muted)' }}>
-            No classes found
-          </p>
-          <p className="text-sm" style={{ color: 'var(--ink-faint)' }}>
-            Check back later for upcoming classes and recordings
-          </p>
+            </article>
+          ))}
+        </div>
+      ) : (
+        <div className="text-center py-12 rounded-2xl border" style={{ backgroundColor: "var(--surface)", borderColor: "var(--rule)" }}>
+          <AlertCircle className="w-12 h-12 mx-auto mb-3" style={{ color: "var(--ink-faint)" }} />
+          <p className="text-lg font-medium mb-2" style={{ color: "var(--ink-muted)" }}>{classes.length ? "No classes match this filter" : "No classes available"}</p>
+          <p className="text-sm" style={{ color: "var(--ink-faint)" }}>{classes.length ? "Choose another filter to see your sessions." : "Scheduled classes for your paid programmes will appear here."}</p>
         </div>
       )}
+
     </div>
   );
 }

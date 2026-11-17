@@ -21,9 +21,9 @@ const serviceSlides = [
       secondary: { text: "Explore Courses", href: "/#programs" }
     },
     background: {
-      src: "https://res.cloudinary.com/yaovkmpi/image/upload/v1784488319/pexels-rdne-7821702_1_1_xq4cuh.jpg",
+      src: "https://res.cloudinary.com/yaovkmpi/image/upload/v1793970460/PIN_Associates_Courtyard_Team_Portrait_d0f9ez.png",
       alt: "Professional examination preparation"
-    }
+    } 
   },
   {
     id: 2,
@@ -39,9 +39,9 @@ const serviceSlides = [
     },
     background: {
       // TODO: Needs business/consulting-appropriate image (office setting, financial documents, professional meeting)
-      src: "https://res.cloudinary.com/yaovkmpi/image/upload/v1784822717/media/blog/covers/building_business-compressed_xhrtaf.jpg", // Placeholder
+      src: "https://res.cloudinary.com/yaovkmpi/image/upload/v1784488319/pexels-rdne-7821702_1_1_xq4cuh.jpg", // Placeholder
       alt: "Business and financial consulting"
-    }
+    }  
   },
   {
     id: 3,
@@ -57,7 +57,7 @@ const serviceSlides = [
     },
     background: {
       // TODO: Needs training/workshop-appropriate image
-      src: "https://res.cloudinary.com/yaovkmpi/image/upload/v1784822273/media/blog/covers/vision-to-reality-comp_pqn71i.jpg", // Placeholder
+      src: "https://res.cloudinary.com/yaovkmpi/image/upload/v1793970782/Young_Team_Smiling_at_PIN_Associates_usxxwl.png", // Placeholder
       alt: "Corporate training programmes"
     }
   }
@@ -186,21 +186,24 @@ export default function HeroSection() {
               />
             </div>
 
-            {/* Navy brand overlay for text readability */}
+            {/* Black overlay for text readability */}
+            {/* 🎨 ADJUST OVERLAY DARKNESS HERE: Change the last number (0.65) */}
+            {/* Values: 0.0 = No overlay, 1.0 = Completely dark */}
+            {/* Recommended range: 0.50 - 0.75 */}
             <div
               className="absolute inset-0"
               style={{ 
-                background: "rgba(30, 58, 138, 0.45)",
+                background: "rgba(30, 58, 138, 0.75)", /* ← (30, 58, 138, 0.80)  CHANGE THIS NUMBER to adjust darkness */
                 willChange: 'transform',
                 backfaceVisibility: 'hidden',
                 WebkitBackfaceVisibility: 'hidden'
               }}
             />
-            {/* Bottom vignette - navy fade */}
+            {/* Bottom vignette - black fade */}
             <div
               className="absolute bottom-0 left-0 right-0 h-40 pointer-events-none"
               style={{ 
-                background: "linear-gradient(to top, rgba(30,58,138,0.3), transparent)",
+                background: "linear-gradient(to top, rgba(0, 0, 0, 0.3), transparent)",
                 willChange: 'transform',
                 backfaceVisibility: 'hidden',
                 WebkitBackfaceVisibility: 'hidden'

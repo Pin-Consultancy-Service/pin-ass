@@ -106,7 +106,7 @@ export default function AdminCoursesContent() {
                           <td className="p-4">
                             <span 
                               className="inline-block px-2 py-1 rounded text-xs font-mono font-bold"
-                              style={{ backgroundColor: 'var(--navy-50)', color: 'var(--navy)' }}
+                              style={{ backgroundColor: 'rgba(30, 64, 175, 0.15)', color: 'var(--ink)' }}
                             >
                               {course.code}
                             </span>
@@ -121,8 +121,8 @@ export default function AdminCoursesContent() {
                             <span 
                               className="inline-block px-3 py-1 rounded-full text-xs font-medium capitalize"
                               style={{
-                                backgroundColor: course.status === 'active' ? '#DCFCE7' : '#FEE2E2',
-                                color: course.status === 'active' ? '#16A34A' : '#DC2626',
+                                backgroundColor: course.status === 'active' ? 'var(--success-bg)' : 'var(--error-bg)',
+                                color: course.status === 'active' ? 'var(--success-text)' : 'var(--error-text)',
                               }}
                             >
                               {course.status}

@@ -23,7 +23,6 @@ export default function AddStudentModal({ isOpen, onClose, onSuccess }: AddStude
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // In a real app, make API call here
-    console.log("Adding student:", formData);
     onSuccess();
     onClose();
   };

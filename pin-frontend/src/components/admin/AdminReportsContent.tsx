@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 import { Users, DollarSign, Calendar, TrendingUp, BarChart3, FileDown, Printer } from "lucide-react";
+import LineChart from "./charts/LineChart";
+import AreaChart from "./charts/AreaChart";
+import BarChart from "./charts/BarChart";
 
 export default function AdminReportsContent() {
   const [selectedReport, setSelectedReport] = useState<string | null>(null);
@@ -197,25 +200,212 @@ export default function AdminReportsContent() {
         </div>
       )}
 
-      {/* Analytics Dashboard Placeholder */}
+      {/* Analytics Dashboard */}
       <div 
         className="p-6 rounded-xl border"
         style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--rule)' }}
       >
-        <h3 className="text-xl font-bold mb-4" style={{ color: 'var(--ink)', fontFamily: 'var(--font-display)' }}>
+        <h3 className="text-xl font-bold mb-6" style={{ color: 'var(--ink)', fontFamily: 'var(--font-display)' }}>
           Analytics Dashboard
         </h3>
-        <div 
-          className="flex flex-col items-center justify-center py-16"
-          style={{ borderRadius: '12px', backgroundColor: 'var(--bg)' }}
-        >
-          <BarChart3 className="w-20 h-20 mb-4" style={{ color: 'var(--ink-faint)' }} />
-          <p className="text-lg font-semibold mb-2" style={{ color: 'var(--ink-muted)' }}>
-            Advanced Analytics Coming Soon
-          </p>
-          <p className="text-sm" style={{ color: 'var(--ink-faint)' }}>
-            Charts, graphs, and visual analytics will be available here
-          </p>
+
+        {/* Key Metrics Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <div className="p-4 rounded-xl" style={{ backgroundColor: 'var(--bg)', border: '1px solid var(--rule)' }}>
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'var(--navy)' }}>
+                <Users className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <p className="text-xs" style={{ color: 'var(--ink-muted)' }}>Total Users</p>
+                <p className="text-2xl font-bold" style={{ color: 'var(--ink)' }}>20</p>
+              </div>
+            </div>
+            <p className="text-xs" style={{ color: '#10B981' }}>↑ 12% from last month</p>
+          </div>
+
+          <div className="p-4 rounded-xl" style={{ backgroundColor: 'var(--bg)', border: '1px solid var(--rule)' }}>
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#10B981' }}>
+                <DollarSign className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <p className="text-xs" style={{ color: 'var(--ink-muted)' }}>Revenue (July)</p>
+                <p className="text-2xl font-bold" style={{ color: 'var(--ink)' }}>₦360K</p>
+              </div>
+            </div>
+            <p className="text-xs" style={{ color: '#10B981' }}>↑ 8% from June</p>
+          </div>
+
+          <div className="p-4 rounded-xl" style={{ backgroundColor: 'var(--bg)', border: '1px solid var(--rule)' }}>
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'var(--gold-dark)' }}>
+                <Calendar className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <p className="text-xs" style={{ color: 'var(--ink-muted)' }}>Classes (July)</p>
+                <p className="text-2xl font-bold" style={{ color: 'var(--ink)' }}>15</p>
+              </div>
+            </div>
+            <p className="text-xs" style={{ color: '#10B981' }}>87% avg attendance</p>
+          </div>
+
+          <div className="p-4 rounded-xl" style={{ backgroundColor: 'var(--bg)', border: '1px solid var(--rule)' }}>
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#2563EB' }}>
+                <TrendingUp className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <p className="text-xs" style={{ color: 'var(--ink-muted)' }}>Enrollments</p>
+                <p className="text-2xl font-bold" style={{ color: 'var(--ink)' }}>20</p>
+              </div>
+            </div>
+            <p className="text-xs" style={{ color: '#EF4444' }}>↓ 2 pending payment</p>
+          </div>
+        </div>
+
+        {/* Charts Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          {/* Revenue Trends */}
+          <div className="p-5 rounded-xl" style={{ backgroundColor: 'var(--bg)', border: '1px solid var(--rule)' }}>
+            <h4 className="text-lg font-bold mb-4" style={{ color: 'var(--ink)', fontFamily: 'var(--font-display)' }}>
+              Monthly Revenue (2024)
+            </h4>
+            <AreaChart
+              data={[
+                { label: 'Jan', value: 285000 },
+                { label: 'Feb', value: 345000 },
+                { label: 'Mar', value: 420000 },
+                { label: 'Apr', value: 395000 },
+                { label: 'May', value: 450000 },
+                { label: 'Jun', value: 335000 },
+                { label: 'Jul', value: 360000 },
+              ]}
+              height={240}
+              color="#10B981"
+            />
+          </div>
+
+          {/* Enrollment Trends */}
+          <div className="p-5 rounded-xl" style={{ backgroundColor: 'var(--bg)', border: '1px solid var(--rule)' }}>
+            <h4 className="text-lg font-bold mb-4" style={{ color: 'var(--ink)', fontFamily: 'var(--font-display)' }}>
+              New Enrollments (2024)
+            </h4>
+            <LineChart
+              data={[
+                { label: 'Jan', value: 2 },
+                { label: 'Feb', value: 4 },
+                { label: 'Mar', value: 3 },
+                { label: 'Apr', value: 3 },
+                { label: 'May', value: 2 },
+                { label: 'Jun', value: 6 },
+                { label: 'Jul', value: 0 },
+              ]}
+              height={240}
+              color="#2563EB"
+              gradientFill={true}
+            />
+          </div>
+        </div>
+
+        {/* Second Row Charts */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Programme Distribution */}
+          <div className="p-5 rounded-xl" style={{ backgroundColor: 'var(--bg)', border: '1px solid var(--rule)' }}>
+            <h4 className="text-lg font-bold mb-4" style={{ color: 'var(--ink)', fontFamily: 'var(--font-display)' }}>
+              Enrollments by Programme
+            </h4>
+            <BarChart
+              data={[
+                { label: 'ICAN Foundation', value: 7 },
+                { label: 'ICAN Professional', value: 7 },
+                { label: 'Corporate Training', value: 6 },
+              ]}
+              height={240}
+              horizontal={false}
+            />
+          </div>
+
+          {/* Class Status Distribution */}
+          <div className="p-5 rounded-xl" style={{ backgroundColor: 'var(--bg)', border: '1px solid var(--rule)' }}>
+            <h4 className="text-lg font-bold mb-4" style={{ color: 'var(--ink)', fontFamily: 'var(--font-display)' }}>
+              Class Status Overview
+            </h4>
+            <div className="space-y-4 pt-4">
+              {/* Upcoming */}
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm font-medium" style={{ color: 'var(--ink)' }}>Upcoming</span>
+                  <span className="text-sm font-bold" style={{ color: 'var(--ink)' }}>6 classes</span>
+                </div>
+                <div className="w-full h-3 rounded-full" style={{ backgroundColor: 'var(--rule)' }}>
+                  <div className="h-3 rounded-full" style={{ width: '40%', backgroundColor: '#2563EB' }}></div>
+                </div>
+              </div>
+
+              {/* Completed */}
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm font-medium" style={{ color: 'var(--ink)' }}>Completed</span>
+                  <span className="text-sm font-bold" style={{ color: 'var(--ink)' }}>6 classes</span>
+                </div>
+                <div className="w-full h-3 rounded-full" style={{ backgroundColor: 'var(--rule)' }}>
+                  <div className="h-3 rounded-full" style={{ width: '40%', backgroundColor: '#10B981' }}></div>
+                </div>
+              </div>
+
+              {/* Ongoing */}
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm font-medium" style={{ color: 'var(--ink)' }}>Ongoing</span>
+                  <span className="text-sm font-bold" style={{ color: 'var(--ink)' }}>1 class</span>
+                </div>
+                <div className="w-full h-3 rounded-full" style={{ backgroundColor: 'var(--rule)' }}>
+                  <div className="h-3 rounded-full" style={{ width: '6.7%', backgroundColor: 'var(--gold-dark)' }}></div>
+                </div>
+              </div>
+
+              {/* In-Person vs Online */}
+              <div className="pt-4 mt-4" style={{ borderTop: '1px solid var(--rule)' }}>
+                <h5 className="text-sm font-bold mb-3" style={{ color: 'var(--ink)' }}>Delivery Mode</h5>
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs" style={{ color: 'var(--ink-muted)' }}>In-Person</span>
+                    <span className="text-sm font-bold" style={{ color: 'var(--navy)' }}>9 (60%)</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs" style={{ color: 'var(--ink-muted)' }}>Online</span>
+                    <span className="text-sm font-bold" style={{ color: 'var(--navy)' }}>4 (27%)</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs" style={{ color: 'var(--ink-muted)' }}>Hybrid</span>
+                    <span className="text-sm font-bold" style={{ color: 'var(--navy)' }}>2 (13%)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Additional Insights */}
+        <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="p-4 rounded-xl" style={{ backgroundColor: 'rgba(30, 64, 175, 0.1)', border: '1px solid var(--navy)' }}>
+            <h5 className="text-sm font-bold mb-2" style={{ color: 'var(--ink)' }}>Top Programme</h5>
+            <p className="text-lg font-bold" style={{ color: 'var(--ink)' }}>ICAN Professional</p>
+            <p className="text-xs mt-1" style={{ color: 'var(--ink-muted)' }}>7 active enrollments</p>
+          </div>
+
+          <div className="p-4 rounded-xl" style={{ backgroundColor: 'rgba(16, 185, 129, 0.1)', border: '1px solid #10B981' }}>
+            <h5 className="text-sm font-bold mb-2" style={{ color: 'var(--ink)' }}>Avg. Completion Rate</h5>
+            <p className="text-lg font-bold" style={{ color: 'var(--ink)' }}>54%</p>
+            <p className="text-xs mt-1" style={{ color: 'var(--ink-muted)' }}>Across all programmes</p>
+          </div>
+
+          <div className="p-4 rounded-xl" style={{ backgroundColor: 'rgba(234, 179, 8, 0.1)', border: '1px solid var(--gold-dark)' }}>
+            <h5 className="text-sm font-bold mb-2" style={{ color: 'var(--ink)' }}>Outstanding Balance</h5>
+            <p className="text-lg font-bold" style={{ color: 'var(--ink)' }}>₦1,310,000</p>
+            <p className="text-xs mt-1" style={{ color: 'var(--ink-muted)' }}>From 7 students</p>
+          </div>
         </div>
       </div>
     </div>

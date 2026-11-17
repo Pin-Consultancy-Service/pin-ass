@@ -17,10 +17,16 @@ import AreaChart from "@/components/admin/charts/AreaChart";
 import BarChart from "@/components/admin/charts/BarChart";
 import CalendarWidget from "./CalendarWidget";
 import TopPerformers from "./TopPerformers";
+import CreateClassModal from "./modals/CreateClassModal";
+import AddStudentModal from "./modals/AddStudentModal";
+import GenerateReportModal from "./modals/GenerateReportModal";
 
 export default function AdminDashboardContent() {
   const stats = getSystemStats();
   const [dateRange, setDateRange] = useState<'7d' | '30d' | '3m' | 'all'>('30d');
+  const [showCreateClass, setShowCreateClass] = useState(false);
+  const [showAddStudent, setShowAddStudent] = useState(false);
+  const [showGenerateReport, setShowGenerateReport] = useState(false);
   const recentEnrollments = mockEnrollments.slice(0, 5);
   const recentActivity = getRecentActivity(6);
   const revenueData = getRevenueChartData();
@@ -67,6 +73,7 @@ export default function AdminDashboardContent() {
           </p>
           <div className="flex flex-wrap gap-3">
             <button 
+              onClick={() => setShowCreateClass(true)}
               className="px-5 py-2.5 rounded-xl font-semibold text-sm flex items-center gap-2 transition-all hover:scale-105"
               style={{ backgroundColor: 'var(--gold)', color: 'var(--navy-dark)' }}
             >
@@ -74,6 +81,7 @@ export default function AdminDashboardContent() {
               Create Class
             </button>
             <button 
+              onClick={() => setShowAddStudent(true)}
               className="px-5 py-2.5 rounded-xl font-semibold text-sm flex items-center gap-2 transition-all hover:bg-white/20"
               style={{ backgroundColor: 'rgba(255,255,255,0.1)', color: 'white', border: '1px solid rgba(255,255,255,0.2)' }}
             >
@@ -81,6 +89,7 @@ export default function AdminDashboardContent() {
               Add Student
             </button>
             <button 
+              onClick={() => setShowGenerateReport(true)}
               className="px-5 py-2.5 rounded-xl font-semibold text-sm flex items-center gap-2 transition-all hover:bg-white/20"
               style={{ backgroundColor: 'rgba(255,255,255,0.1)', color: 'white', border: '1px solid rgba(255,255,255,0.2)' }}
             >
@@ -376,6 +385,28 @@ export default function AdminDashboardContent() {
           ))}
         </div>
       </div>
+
+      {/* Modals */}
+      <CreateClassModal 
+        isOpen={showCreateClass}
+        onClose={() => setShowCreateClass(false)}
+        onSuccess={() => {
+          setShowCreateClass(false);
+          // Could refresh data here in real app
+        }}
+      />
+      <AddStudentModal 
+        isOpen={showAddStudent}
+        onClose={() => setShowAddStudent(false)}
+        onSuccess={() => {
+          setShowAddStudent(false);
+          // Could refresh data here in real app
+        }}
+      />
+      <GenerateReportModal 
+        isOpen={showGenerateReport}
+        onClose={() => setShowGenerateReport(false)}
+      />
     </div>
   );
 }

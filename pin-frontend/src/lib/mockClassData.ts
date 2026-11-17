@@ -28,9 +28,9 @@ export const mockClasses: ClassData[] = [
   // ✅ CLASS ENDED - Showing completed state with recording
   {
     id: 4,
-    cohort: "ICAN Professional Level - Diet 1 2024",
+    cohort: "ICAN Professional Level - Diet 1 2026",
     subject: "Financial Accounting",
-    topic: "Introduction to Financial Statements - LIVE TEST",
+    topic: "ICAN Revision Class - LIVE TEST",
     instructor: "Anthony Babatunde",
     scheduledDate: "2026-10-16", // Friday, October 16, 2026
     scheduledTime: "14:30", // 2:30 PM WAT
@@ -38,7 +38,7 @@ export const mockClasses: ClassData[] = [
     googleMeetLink: "https://meet.google.com/twb-cavz-wsm", // 🎥 REAL MEETING LINK
     status: "completed", // ✅ CLASS ENDED
     attendance: "absent", // Student missed it - will show recording
-    recordingUrl: "https://drive.google.com/file/d/1rql2StA9ewhda7csHk98aKyl5vvtjiiK/preview", // Auto-uploaded recording
+    recordingUrl: "https://www.youtube.com/embed/07Nu1B2spwk", // ICAN video - embed format
     materials: [
       { name: "Financial_Statements_Intro.pdf", url: "#", size: "2.1MB" },
       { name: "Class_Notes.pdf", url: "#", size: "890KB" }
@@ -47,9 +47,9 @@ export const mockClasses: ClassData[] = [
   },
   {
     id: 1,
-    cohort: "ICAN Professional Level - Diet 1 2024",
+    cohort: "ICAN Professional Level - Diet 1 2026",
     subject: "Financial Accounting",
-    topic: "Introduction to Financial Statements - TEST WITH YOUR VIDEO",
+    topic: "ICAN Revision Class - TEST WITH YOUR VIDEO",
     instructor: "Dr. Adebayo Johnson",
     scheduledDate: "2026-10-10", // Past date - shows as completed with recording
     scheduledTime: "14:30",
@@ -57,7 +57,7 @@ export const mockClasses: ClassData[] = [
     googleMeetLink: "https://meet.google.com/abc-defg-hij",
     status: "completed",
     attendance: "absent",
-    recordingUrl: "https://drive.google.com/file/d/1rql2StA9ewhda7csHk98aKyl5vvtjiiK/preview",
+    recordingUrl: "https://www.youtube.com/embed/XoOCfbTh4bQ", // ICAN video - embed format
     materials: [
       { name: "Lesson_1_Slides.pdf", url: "#", size: "2.4MB" },
       { name: "Practice_Exercises.pdf", url: "#", size: "1.1MB" }
@@ -66,7 +66,7 @@ export const mockClasses: ClassData[] = [
   },
   {
     id: 2,
-    cohort: "ICAN Professional Level - Diet 1 2024",
+    cohort: "ICAN Professional Level - Diet 1 2026",
     subject: "Taxation",
     topic: "Personal Income Tax - PAYE System",
     instructor: "Prof. Fatima Bello",
@@ -76,7 +76,7 @@ export const mockClasses: ClassData[] = [
     googleMeetLink: "https://meet.google.com/xyz-uvwx-yz",
     status: "completed",
     attendance: "absent",
-    recordingUrl: "https://drive.google.com/file/d/RECORDING_ID_2/preview",
+    recordingUrl: "https://www.youtube.com/embed/XoOCfbTh4bQ", // ICAN video - embed format
     materials: [
       { name: "PAYE_Calculation_Examples.xlsx", url: "#", size: "850KB" },
       { name: "Tax_Tables_2024.pdf", url: "#", size: "450KB" }
@@ -85,7 +85,7 @@ export const mockClasses: ClassData[] = [
   },
   {
     id: 3,
-    cohort: "ACCA DIPIFR - January 2024",
+    cohort: "ACCA DIPIFR - January 2026",
     subject: "Corporate Reporting",
     topic: "Consolidation of Financial Statements",
     instructor: "Dr. Aisha Mohammed",
@@ -95,13 +95,15 @@ export const mockClasses: ClassData[] = [
     googleMeetLink: "https://meet.google.com/lmn-opqr-stu",
     status: "completed",
     attendance: "present",
-    recordingUrl: "https://drive.google.com/file/d/RECORDING_ID_3/preview",
+    recordingUrl: "https://www.youtube.com/embed/XoOCfbTh4bQ", // ICAN video - embed format
     materials: [
       { name: "Consolidation_Guide.pdf", url: "#", size: "3.2MB" }
+      
     ],
     description: "Step-by-step approach to consolidating parent and subsidiary financial statements."
   }
 ];
+
 
 // Utility functions for class timing
 export function getTimeUntilClass(scheduledDate: string, scheduledTime: string) {

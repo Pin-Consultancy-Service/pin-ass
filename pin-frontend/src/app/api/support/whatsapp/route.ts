@@ -65,7 +65,6 @@ async function sendWhatsAppMessage(message: string): Promise<boolean> {
       }
 
       const result = await response.json();
-      console.log('Message sent successfully:', result);
       return true;
     }
 
@@ -73,10 +72,6 @@ async function sendWhatsAppMessage(message: string): Promise<boolean> {
     // You can integrate services like Twilio, WhatsApp Business Solution providers, etc.
     
     // For now, we'll log the message (replace with actual implementation)
-    console.log('WhatsApp Message to send:', {
-      to: ADMIN_PHONE_NUMBER,
-      message: message
-    });
 
     // Simulate successful sending
     return true;
@@ -126,12 +121,6 @@ export async function POST(request: NextRequest) {
     await sendWhatsAppMessage(formattedMessage);
 
     // Log the interaction for analytics
-    console.log('Support request processed:', {
-      studentId: whatsappData.studentId,
-      studentEmail: whatsappData.studentEmail,
-      messageLength: message.length,
-      timestamp: whatsappData.timestamp
-    });
 
     return NextResponse.json({
       success: true,

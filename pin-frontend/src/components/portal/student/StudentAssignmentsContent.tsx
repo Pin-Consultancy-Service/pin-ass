@@ -260,18 +260,18 @@ export default function StudentAssignmentsContent() {
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                {assignment.grade !== undefined && assignment.grade !== null && (
+                {assignment.score !== undefined && assignment.score !== null && (
                   <div className="text-right">
                     <div 
                       className="text-2xl font-bold"
                       style={{ 
-                        color: assignment.grade >= 80 ? 'var(--navy)' : 
-                               assignment.grade >= 60 ? 'var(--gold-dark)' : 
+                        color: assignment.score >= 80 ? 'var(--navy)' : 
+                               assignment.score >= 60 ? 'var(--gold-dark)' : 
                                '#DC2626',
                         fontFamily: 'var(--font-display)' 
                       }}
                     >
-                      {assignment.grade}%
+                      {assignment.score}%
                     </div>
                     <div className="flex items-center gap-1 justify-end">
                       {[...Array(5)].map((_, i) => (
@@ -279,8 +279,8 @@ export default function StudentAssignmentsContent() {
                           key={i}
                           className="w-3 h-3"
                           style={{ 
-                            color: i < Math.round((assignment.grade / 100) * 5) ? 'var(--gold)' : 'var(--rule)',
-                            fill: i < Math.round((assignment.grade / 100) * 5) ? 'var(--gold)' : 'none'
+                            color: i < Math.round(((assignment.score ?? 0) / 100) * 5) ? 'var(--gold)' : 'var(--rule)',
+                            fill: i < Math.round(((assignment.score ?? 0) / 100) * 5) ? 'var(--gold)' : 'none'
                           }}
                         />
                       ))}

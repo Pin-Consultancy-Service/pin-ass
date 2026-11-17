@@ -189,7 +189,7 @@ export default function AdminInstructorsContent() {
                     <td className="p-4">
                       <span 
                         className="inline-block px-3 py-1 rounded-full text-sm font-bold"
-                        style={{ backgroundColor: 'var(--navy-50)', color: 'var(--navy)' }}
+                        style={{ backgroundColor: 'rgba(30, 64, 175, 0.15)', color: 'var(--ink)' }}
                       >
                         {activeClassCount}
                       </span>
@@ -295,7 +295,7 @@ export default function AdminInstructorsContent() {
                   <div className="flex gap-2">
                     <span 
                       className="inline-block px-2 py-1 rounded-full text-xs font-medium"
-                      style={{ backgroundColor: 'var(--navy-50)', color: 'var(--navy)' }}
+                      style={{ backgroundColor: 'rgba(30, 64, 175, 0.15)', color: 'var(--ink)' }}
                     >
                       {activeClassCount} classes
                     </span>
@@ -322,7 +322,6 @@ export default function AdminInstructorsContent() {
         onClose={() => setIsAddModalOpen(false)}
         onSuccess={() => {
           // In a real app, refresh the instructor list
-          console.log('Instructor added successfully');
         }}
       />
     </div>

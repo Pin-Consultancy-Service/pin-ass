@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { apiFetch, getStoredUser } from "@/lib/auth";
 
-interface Balance { total_fees_due: string; total_paid: string; balance_due: string; updated_at: string; }
+interface FeeBalance { total_minor: number; paid_minor: number; balance_minor: number; }
 interface Profile { registration_number: string; programme_display: string; diet: string; study_mode_display: string; date_enrolled: string; }
 
 // Mock data for the demo - replace with real data later
@@ -53,7 +53,7 @@ const mockClassmates = [
 export default function ModernStudentDashboard() {
   const router = useRouter();
   const user = getStoredUser();
-  const [balance, setBalance] = useState<Balance | null>(null);
+  const [feeBalances, setFeeBalances] = useState<FeeBalance[]>([]);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -71,10 +71,10 @@ export default function ModernStudentDashboard() {
     }
     
     Promise.all([
-      apiFetch<Balance>("/api/students/me/balance/").catch(() => null),
+      apiFetch<FeeBalance[]>("/api/v1/students/me/fee-balances").catch(() => []),
       apiFetch<Profile>("/api/students/me/profile/").catch(() => null),
-    ]).then(([b, p]) => { 
-      setBalance(b); 
+    ]).then(([balances, p]) => { 
+      setFeeBalances(Array.isArray(balances) ? balances : []); 
       setProfile(p); 
     }).finally(() => setLoading(false));
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -91,8 +91,8 @@ export default function ModernStudentDashboard() {
     }
   };
 
-  const fmt = (v: string | undefined) =>
-    v ? `₦${Number(v).toLocaleString()}` : "—";
+  const outstandingNaira = feeBalances.reduce((sum, item) => sum + item.balance_minor, 0) / 100;
+  const paidNaira = feeBalances.reduce((sum, item) => sum + item.paid_minor, 0) / 100;
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'var(--bg)' }}>
@@ -302,7 +302,7 @@ export default function ModernStudentDashboard() {
                 className="text-3xl font-bold mb-2"
                 style={{ color: 'var(--ink)', fontFamily: 'var(--font-display)' }}
               >
-                {fmt(balance?.balance_due) || '₦150.00'}
+                {loading ? "…" : `₦${outstandingNaira.toLocaleString("en-NG")}`}
               </div>
               <p className="text-xs mb-6" style={{ color: 'var(--ink-muted)' }}>
                 CURRENT BALANCE
@@ -313,12 +313,10 @@ export default function ModernStudentDashboard() {
                   className="p-4 rounded-xl"
                   style={{ backgroundColor: 'var(--navy)' }}
                 >
-                  <div className="text-white text-sm font-bold mb-1">
-                    NEXT
-                  </div>
-                  <div className="text-white text-xs mb-1">PAYMENT</div>
-                  <div className="text-white font-bold">₦150.00</div>
-                  <div className="text-white/70 text-xs">August 30,2021</div>
+                  <div className="text-white text-sm font-bold mb-1">BALANCE</div>
+                  <div className="text-white text-xs mb-1">REMAINING</div>
+                  <div className="text-white font-bold">{loading ? "…" : `₦${outstandingNaira.toLocaleString("en-NG")}`}</div>
+                  <div className="text-white/70 text-xs">Across active fee plans</div>
                 </div>
                 
                 <div 
@@ -326,11 +324,11 @@ export default function ModernStudentDashboard() {
                   style={{ backgroundColor: 'var(--ink-faint)' }}
                 >
                   <div className="text-white text-sm font-bold mb-1">
-                    LAST
+                    TOTAL
                   </div>
-                  <div className="text-white text-xs mb-1">PAYMENT</div>
-                  <div className="text-white font-bold">₂00.00</div>
-                  <div className="text-white/70 text-xs">July 20,2021</div>
+                  <div className="text-white text-xs mb-1">PAID</div>
+                  <div className="text-white font-bold">{loading ? "…" : `₦${paidNaira.toLocaleString("en-NG")}`}</div>
+                  <div className="text-white/70 text-xs">Confirmed transactions</div>
                 </div>
               </div>
               

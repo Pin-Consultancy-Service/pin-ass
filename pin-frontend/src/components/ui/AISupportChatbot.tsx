@@ -200,7 +200,6 @@ export default function AISupportChatbot() {
       }
 
       const result = await response.json();
-      console.log('Message sent successfully:', result);
       return true;
 
     } catch (error) {

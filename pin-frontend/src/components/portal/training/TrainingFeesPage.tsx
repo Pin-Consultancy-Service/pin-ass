@@ -23,7 +23,6 @@ const statusStyle: Record<string, { bg: string; text: string }> = {
   CONFIRMED: { bg: "#DCFCE7", text: "#16A34A" },
   PENDING:   { bg: "#FEF3C7", text: "#92600A" },
   FAILED:    { bg: "#FEF2F2", text: "#DC2626" },
-  REFUNDED:  { bg: "var(--navy-50)", text: "var(--navy)" },
 };
 
 export default function TrainingFeesPage() {
@@ -59,7 +58,7 @@ export default function TrainingFeesPage() {
     iso ? new Date(iso).toLocaleDateString("en-NG", { day: "numeric", month: "short", year: "numeric" }) : "—";
 
   // Calculate totals from mock data
-  const totalFees = mockEnrollments.reduce((sum, e) => sum + e.trainingFee, 0);
+  const totalFees = mockEnrollments.reduce((sum, e) => sum + e.totalFees, 0);
   const totalPaid = mockEnrollments.reduce((sum, e) => sum + e.amountPaid, 0);
   const totalBalance = totalFees - totalPaid;
 

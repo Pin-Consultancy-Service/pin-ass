@@ -27,7 +27,7 @@ export const SITE_CONFIG = {
   },
 
   /** Portal/auth paths where floating widgets are hidden */
-  hiddenWidgetPaths: ["/portal", "/admin-portal"],
+  hiddenWidgetPaths: ["/portal", "/admin-portal", "/admin", "/instructor"],
 
   /**
    * Paystack public key.

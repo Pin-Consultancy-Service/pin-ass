@@ -7,7 +7,7 @@ import {
   BarChart3, BookOpen, User, CreditCard, Settings, BookOpenCheck, Target,
   Sun, Moon, Bell, Search, Home, LogOut, ChevronDown, Users, FileQuestion, ClipboardList, Menu, X
 } from "lucide-react";
-import { getStoredUser, clearTokens } from "@/lib/auth";
+import { apiFetch, clearTokens, getStoredUser, logout } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 import AISupportChatbot from "@/components/ui/AISupportChatbot";
 import ClassNotifications from "@/components/portal/ClassNotifications";
@@ -35,9 +35,20 @@ export default function DashboardLayout({ children, activeTab = 'dashboard' }: D
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [accessAllowed, setAccessAllowed] = useState<boolean | null>(null);
 
   useEffect(() => {
     setMounted(true);
+    if (!user) {
+      router.replace("/portal/login");
+      return;
+    }
+    apiFetch<{ can_access_dashboard: boolean }>("/api/v1/students/me/access")
+      .then((access) => setAccessAllowed(access.can_access_dashboard))
+      .catch(() => {
+        clearTokens();
+        router.replace("/portal/login");
+      });
     // Check for saved theme
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
@@ -59,9 +70,26 @@ export default function DashboardLayout({ children, activeTab = 'dashboard' }: D
   };
 
   const handleLogout = () => {
-    clearTokens();
-    router.push('/');
+    void logout().finally(() => router.push('/'));
   };
+
+  if (!mounted || accessAllowed === null) {
+    return <div className="min-h-screen flex items-center justify-center" style={{ color: "var(--ink-muted)" }}>Loading your portal…</div>;
+  }
+
+  if (!accessAllowed && activeTab !== "finances") {
+    return (
+      <main className="min-h-screen flex items-center justify-center px-6" style={{ backgroundColor: "var(--bg)" }}>
+        <section className="max-w-lg text-center p-8 rounded-2xl border" style={{ backgroundColor: "var(--surface)", borderColor: "var(--rule)" }}>
+          <CreditCard className="w-12 h-12 mx-auto mb-5" style={{ color: "var(--navy)" }} />
+          <h1 className="text-2xl font-bold mb-3" style={{ color: "var(--ink)", fontFamily: "var(--font-display)" }}>Complete your first payment</h1>
+          <p className="mb-6" style={{ color: "var(--ink-muted)" }}>Your account is ready. Dashboard resources will unlock after a student fee payment is confirmed.</p>
+          <Link href="/portal/student/fees" className="btn btn-primary inline-flex items-center gap-2">View fees and pay</Link>
+          <button onClick={handleLogout} className="block mx-auto mt-5 text-sm" style={{ color: "var(--ink-muted)" }}>Sign out</button>
+        </section>
+      </main>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col lg:flex-row" style={{ backgroundColor: 'var(--bg)' }}>
@@ -91,7 +119,7 @@ export default function DashboardLayout({ children, activeTab = 'dashboard' }: D
             />
             <span 
               className="font-bold text-sm"
-              style={{ color: 'var(--navy)', fontFamily: 'var(--font-display)' }}
+              style={{ color: 'var(--ink)', fontFamily: 'var(--font-display)' }}
             >
               PIN Associate
             </span>
@@ -188,7 +216,7 @@ export default function DashboardLayout({ children, activeTab = 'dashboard' }: D
               />
               <span 
                 className="font-bold text-lg"
-                style={{ color: 'var(--navy)', fontFamily: 'var(--font-display)' }}
+                style={{ color: 'var(--ink)', fontFamily: 'var(--font-display)' }}
               >
                 PIN Associate
               </span>

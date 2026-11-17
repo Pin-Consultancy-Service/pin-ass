@@ -72,6 +72,10 @@ export default function RegisterPageContent() {
         setError("Passwords do not match."); 
         return; 
       }
+      if (password.length < 8 || !/[a-z]/.test(password) || !/[A-Z]/.test(password) || !/[0-9]/.test(password) || !/[^A-Za-z0-9]/.test(password)) {
+        setError("Use at least 8 characters with upper-case and lower-case letters, a number, and a symbol.");
+        return;
+      }
     }
     
     setLoading(true);
@@ -127,15 +131,21 @@ export default function RegisterPageContent() {
       });
       setDone(true);
     } catch (err) {
-      const apiErr = err as { body?: Record<string, string[]> | { detail?: string } };
+      const apiErr = err as { body?: Record<string, unknown> };
       const body = apiErr?.body;
       if (!body) {
         setError("Registration failed. Please check your details and try again.");
-      } else if ("detail" in body) {
-        setError((body as { detail?: string }).detail ?? "An error occurred.");
       } else {
-        const msgs = Object.entries(body as Record<string, string[]>)
-          .flatMap(([k, v]) => v.map((m) => `${k}: ${m}`));
+        const detail = body.detail;
+        if (typeof detail === "string") {
+          setError(detail);
+          return;
+        }
+        const validationErrors = Array.isArray(detail)
+          ? detail.map((item) => typeof item === "object" && item && "msg" in item ? String(item.msg) : String(item))
+          : [];
+        const msgs = validationErrors.length ? validationErrors : Object.entries(body)
+          .flatMap(([k, v]) => Array.isArray(v) ? v.map((m) => `${k}: ${String(m)}`) : []);
         setError(msgs.join(" · "));
       }
     } finally {
@@ -432,7 +442,7 @@ export default function RegisterPageContent() {
           )}
 
           {/* Account Type Selection */}
-          <div className="mb-6">
+          {/* <div className="mb-6">
             <div className="grid grid-cols-2 gap-3">
               {roleOptions.map(({ id, label, desc }) => (
                 <button
@@ -470,7 +480,7 @@ export default function RegisterPageContent() {
                 </button>
               ))}
             </div>
-          </div>
+          </div> */}
 
           {/* Registration Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -561,6 +571,8 @@ export default function RegisterPageContent() {
               <input 
                 type={showPw ? "text" : "password"} 
                 required
+                minLength={8}
+                maxLength={128}
                 value={password} 
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter your password"
@@ -593,6 +605,41 @@ export default function RegisterPageContent() {
                 {showPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
             </div>
+
+            {/* Confirm Password */}
+            <input
+              type={showPw ? "text" : "password"}
+              required
+              minLength={8}
+              maxLength={128}
+              value={password2}
+              onChange={(e) => setPassword2(e.target.value)}
+              placeholder="Confirm your password"
+              className="w-full px-4 py-4 transition-all duration-200"
+              autoComplete="new-password"
+              aria-label="Confirm your password"
+              aria-invalid={Boolean(password2 && password !== password2)}
+              style={{
+                backgroundColor: "rgba(30, 58, 138, 0.1)",
+                border: "1px solid rgba(30, 58, 138, 0.2)",
+                borderRadius: "12px",
+                fontSize: "0.9375rem",
+                color: "var(--ink)",
+              }}
+              onFocus={(e) => {
+                e.target.style.backgroundColor = "rgba(30, 58, 138, 0.15)";
+                e.target.style.borderColor = "var(--gold)";
+                e.target.style.boxShadow = "0 0 0 3px rgba(244, 196, 48, 0.15)";
+              }}
+              onBlur={(e) => {
+                e.target.style.backgroundColor = "rgba(30, 58, 138, 0.1)";
+                e.target.style.borderColor = "rgba(30, 58, 138, 0.2)";
+                e.target.style.boxShadow = "none";
+              }}
+            />
+            {password2 && password !== password2 && (
+              <p className="text-sm text-red-600" role="status">Passwords do not match yet.</p>
+            )}
 
             {/* Terms Checkbox */}
             <label className="flex items-start gap-3 text-sm" style={{ color: "var(--ink-muted)" }}>

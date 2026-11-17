@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY || 'sk_test_xxxxxxxxxxxxx';
+// Paystack Configuration - MUST be set in environment variables
+const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
 
 interface PaystackVerifyResponse {
   status: boolean;
@@ -97,24 +98,12 @@ export async function GET(request: NextRequest) {
 
     // Check if payment was successful
     if (paymentData.status !== 'success') {
-      console.log('Payment not successful:', {
-        reference,
-        status: paymentData.status,
-        message: paymentData.message
-      });
-
       return NextResponse.redirect(
         new URL(`/portal/student/fees?error=payment_failed&reference=${reference}`, request.url)
       );
     }
 
     // Payment was successful
-    console.log('Payment successful:', {
-      reference,
-      amount: `₦${paymentData.amount / 100}`,
-      customer: paymentData.customer.email,
-      plan_id: paymentData.metadata.plan_id
-    });
 
     // TODO: Update database with payment record
     const paymentRecord = {
@@ -167,12 +156,6 @@ export async function POST(request: NextRequest) {
 
     if (body.event === 'charge.success') {
       const { data } = body;
-      
-      console.log('Webhook: Payment successful', {
-        reference: data.reference,
-        amount: `₦${data.amount / 100}`,
-        customer: data.customer.email
-      });
 
       // TODO: Update database with confirmed payment
       // This is the authoritative confirmation of payment

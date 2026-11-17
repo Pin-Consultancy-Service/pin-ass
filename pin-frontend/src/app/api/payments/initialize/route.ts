@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-// TODO: Configure these environment variables
-const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY || 'sk_test_xxxxxxxxxxxxx';
-const PAYSTACK_PUBLIC_KEY = process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY || 'pk_test_xxxxxxxxxxxxx';
+// Paystack Configuration - MUST be set in environment variables
+const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
+const PAYSTACK_PUBLIC_KEY = process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY;
 
 interface PaystackInitializeRequest {
   email: string;
@@ -66,11 +66,6 @@ export async function POST(request: NextRequest) {
       }
     };
 
-    console.log('Initializing Paystack payment:', {
-      ...paystackPayload,
-      amount: `₦${amount / 100}` // Log in readable format
-    });
-
     const paystackResponse = await fetch('https://api.paystack.co/transaction/initialize', {
       method: 'POST',
       headers: {
@@ -93,10 +88,6 @@ export async function POST(request: NextRequest) {
     }
 
     // TODO: Store payment record in database
-    console.log('Payment initialized successfully:', {
-      reference: paystackData.data.reference,
-      authorization_url: paystackData.data.authorization_url
-    });
 
     // Return the authorization URL for redirect
     return NextResponse.json({

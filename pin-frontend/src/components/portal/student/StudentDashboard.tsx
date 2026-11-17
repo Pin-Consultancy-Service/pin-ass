@@ -6,26 +6,29 @@ import { useRouter } from "next/navigation";
 import { CreditCard, BookOpen, User, ArrowRight, TrendingDown, CheckCircle2, Clock } from "lucide-react";
 import { apiFetch, getStoredUser } from "@/lib/auth";
 
-interface Balance { total_fees_due: string; total_paid: string; balance_due: string; updated_at: string; }
+interface FeeBalance { total_minor: number; paid_minor: number; balance_minor: number; }
 interface Profile { registration_number: string; programme_display: string; diet: string; study_mode_display: string; date_enrolled: string; }
 
 export default function StudentDashboard() {
   const router  = useRouter();
   const user    = getStoredUser();
-  const [balance, setBalance] = useState<Balance | null>(null);
+  const [feeBalances, setFeeBalances] = useState<FeeBalance[]>([]);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!user) { router.replace("/portal/login?redirect=/portal/student"); return; }
     Promise.all([
-      apiFetch<Balance>("/api/students/me/balance/").catch(() => null),
+      apiFetch<FeeBalance[]>("/api/v1/students/me/fee-balances").catch(() => []),
       apiFetch<Profile>("/api/students/me/profile/").catch(() => null),
-    ]).then(([b, p]) => { setBalance(b); setProfile(p); }).finally(() => setLoading(false));
+    ]).then(([balances, p]) => { setFeeBalances(Array.isArray(balances) ? balances : []); setProfile(p); }).finally(() => setLoading(false));
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fmt = (v: string | undefined) =>
     v ? `₦${Number(v).toLocaleString()}` : "—";
+  const totalFees = feeBalances.reduce((sum, item) => sum + item.total_minor, 0) / 100;
+  const totalPaid = feeBalances.reduce((sum, item) => sum + item.paid_minor, 0) / 100;
+  const balanceDue = feeBalances.reduce((sum, item) => sum + item.balance_minor, 0) / 100;
 
   return (
     <div className="max-w-4xl">
@@ -46,24 +49,24 @@ export default function StudentDashboard() {
         {[
           {
             label: "Total Fees Due",
-            value: loading ? "…" : fmt(balance?.total_fees_due),
+            value: loading ? "…" : fmt(String(totalFees)),
             icon: TrendingDown,
             color: "var(--navy)",
             bg: "var(--navy-50)",
           },
           {
             label: "Total Paid",
-            value: loading ? "…" : fmt(balance?.total_paid),
+            value: loading ? "…" : fmt(String(totalPaid)),
             icon: CheckCircle2,
             color: "var(--navy)",
             bg: "var(--surface)",
           },
           {
             label: "Balance Due",
-            value: loading ? "…" : fmt(balance?.balance_due),
+            value: loading ? "…" : fmt(String(balanceDue)),
             icon: CreditCard,
-            color: Number(balance?.balance_due ?? 0) > 0 ? "#DC2626" : "var(--navy)",
-            bg:    Number(balance?.balance_due ?? 0) > 0 ? "#FEF2F2" : "var(--surface)",
+            color: balanceDue > 0 ? "#DC2626" : "var(--navy)",
+            bg:    balanceDue > 0 ? "#FEF2F2" : "var(--surface)",
           },
         ].map(({ label, value, icon: Icon, color, bg }) => (
           <div key={label} className="bg-white rounded-2xl border border-[var(--rule)] p-5 flex items-center gap-4">
@@ -128,12 +131,12 @@ export default function StudentDashboard() {
       )}
 
       {/* Make payment CTA */}
-      {Number(balance?.balance_due ?? 0) > 0 && (
+      {balanceDue > 0 && (
         <div className="mt-6 flex items-center justify-between p-5 bg-[#FFFBEB] rounded-2xl border border-[#FDE68A]">
           <div className="flex items-center gap-3">
             <Clock className="w-5 h-5 text-[#92600A]" />
             <div>
-              <p className="text-sm font-bold text-[#92600A]">Outstanding balance: {fmt(balance?.balance_due)}</p>
+              <p className="text-sm font-bold text-[#92600A]">Outstanding balance: {fmt(String(balanceDue))}</p>
               <p className="text-xs text-[#92600A]/70 mt-0.5">Pay online or by bank transfer.</p>
             </div>
           </div>

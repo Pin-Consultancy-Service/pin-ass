@@ -23,7 +23,6 @@ export default function AddInstructorModal({ isOpen, onClose, onSuccess }: AddIn
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // In a real app, make API call here
-    console.log("Adding instructor:", formData);
     onSuccess();
     onClose();
   };

@@ -9,9 +9,9 @@ import { useState } from "react";
 
 /* ─── Hero slides — unchanged ────────────────────────── */
 const heroSlides = [
-  { id: 1, src: "https://res.cloudinary.com/yaovkmpi/image/upload/v1784484978/wmremove-transformed_1_1_el1lye.jpg",  alt: "PIN Associate team in session" },
-  { id: 2, src: "https://res.cloudinary.com/yaovkmpi/image/upload/v1784488319/pexels-rdne-7821702_1_1_xq4cuh.jpg", alt: "Professional training environment" },
-  { id: 3, src: "https://res.cloudinary.com/yaovkmpi/image/upload/v1784481889/wmremove-transformed_3_ujyrty.jpg",  alt: "PIN Associate consultation" },
+  { id: 1, src: "https://res.cloudinary.com/yaovkmpi/image/upload/v1793970460/PIN_Associates_Courtyard_Team_Portrait_d0f9ez.png",  alt: "PIN Associate team in session" },
+  { id: 2, src: "https://res.cloudinary.com/yaovkmpi/image/upload/v1793970782/Young_Team_Smiling_at_PIN_Associates_usxxwl.png", alt: "Professional training environment" },
+  // { id: 3, src: "https://res.cloudinary.com/yaovkmpi/image/upload/v1784481889/wmremove-transformed_3_ujyrty.jpg",  alt: "PIN Associate consultation" },
 ];
 
 /* ─── Timeline — unchanged ───────────────────────────── */
@@ -113,13 +113,13 @@ export default function AboutPageContent() {
               <span className="brand-rule" />
               <span className="eyebrow" style={{ marginBottom: "1rem" }}>Our Story</span>
               <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 500, fontSize: "clamp(1.875rem, 3vw, 2.75rem)", lineHeight: 1.15, color: "var(--ink)", marginBottom: "1.25rem" }}>
-                Pass It Now — A Name That
+                Pass It Now A Name That
                 <br /><em style={{ fontStyle: "italic", color: "var(--ink-muted)" }}>Carries a Promise</em>
               </h2>
               <div className="space-y-4" style={{ fontSize: "0.9375rem", lineHeight: 1.65, color: "var(--ink-muted)" }}>
-                <p>PIN stands for <strong style={{ color: "var(--ink)", fontWeight: 500 }}>Pass It Now</strong> — a name that captures exactly what we commit to every student and client. Founded in 2009 by Olalekan Olorunsogo, the firm began with a single conviction: that the right preparation, delivered by the right people, produces results.</p>
+                <p>PIN stands for <strong style={{ color: "var(--ink)", fontWeight: 500 }}>Pass It Now</strong> a name that captures exactly what we commit to every student and client. Founded in 2009 by Olalekan Olorunsogo, the firm began with a single conviction: that the right preparation, delivered by the right people, produces results.</p>
                 <p>Sixteen years later, that conviction has produced over 5,000 qualified professionals, an 87% first-attempt pass rate across nine programmes, and a consultancy practice serving organisations from SMEs to some of Nigeria's most recognised corporations.</p>
-                <p>Our teaching philosophy has never changed — we prepare students for how examiners award marks, not just how the syllabus reads.</p>
+                <p>Our teaching philosophy has never changed we prepare students for how examiners award marks, not just how the syllabus reads.</p>
               </div>
               <div className="flex flex-wrap gap-3 mt-8">
                 <Link href="/apply" className="btn btn-primary">Register for Tutoring <ArrowRight className="w-4 h-4" /></Link>
@@ -136,7 +136,7 @@ export default function AboutPageContent() {
             >
               <div className="img-wrap mb-8" style={{ aspectRatio: "16/10" }}>
                 <img
-                  src="https://res.cloudinary.com/yaovkmpi/image/upload/v1784423630/IMG-20260716-WA0007_r0isob.jpg"
+                  src="https://res.cloudinary.com/yaovkmpi/image/upload/v1793970460/PIN_Associates_Courtyard_Team_Portrait_d0f9ez.png"
                   alt="PIN Associate founding story"
                   style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 30%" }}
                 />
@@ -280,9 +280,6 @@ export default function AboutPageContent() {
               </motion.div>
             ))}
           </div>
-          <p className="mt-8 text-center" style={{ fontSize: "0.75rem", color: "var(--ink-faint)" }}>
-            * Team photos and full credentials are placeholders pending supply by PIN Associate.
-          </p>
         </div>
       </section>
 

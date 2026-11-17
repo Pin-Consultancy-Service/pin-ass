@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import AdminDashboardLayout from '@/components/admin/AdminDashboardLayout';
-import AdminFinancesContent from '@/components/admin/AdminFinancesContent';
+import AdminOperationsOverview from '@/components/admin/AdminOperationsOverview';
 
 export const metadata: Metadata = { 
   title: 'Finances | Admin Portal' 
@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 export default function AdminFinancesPage() {
   return (
     <AdminDashboardLayout activeTab="finances">
-      <AdminFinancesContent />
+      <AdminOperationsOverview />
     </AdminDashboardLayout>
   );
 }
