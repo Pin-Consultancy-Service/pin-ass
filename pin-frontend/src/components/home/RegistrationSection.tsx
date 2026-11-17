@@ -6,10 +6,10 @@ import { ArrowRight } from "lucide-react";
 
 /* ─── Data — unchanged ───────────────────────────────── */
 const dietInfo = {
-  diet: "November / December 2026",
-  registrationDeadline: "31 October 2026",
-  lecturesStart: "1 September 2026",
-  examDates: "November – December 2026",
+  diet: "May / June 2027",
+  registrationDeadline: "14 February 2027",
+  lecturesStart: "9 January 2027",
+  examDates: "May – June 2027",
 };
 
 const programmes = [
