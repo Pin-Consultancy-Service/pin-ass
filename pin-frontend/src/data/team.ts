@@ -37,13 +37,13 @@ export const teamMembers: TeamMember[] = [
   },
   {
     id: "motiu",
-    name: "Motiu", // [PLACEHOLDER — full name to be supplied]
-    role: "Head of Consultancy", // [PLACEHOLDER — confirm full title]
-    quals: "ACA, ICAN, MSc Finance", // [PLACEHOLDER — confirm credentials]
-    bio: "Motiu heads PIN's business and financial consultancy practice, advising SMEs, corporations, and government agencies on financial reporting, taxation, and strategic planning. He brings boardroom-level insight into every client engagement.",
-    initials: "MT",
+    name: "Mutiu Babajide Amao",
+    role: "Senior Finance Analyst & Professional Tutor",
+    quals: "ACA (ICAN), Executive MBA",
+    bio: "Mutiu is a Chartered Accountant with extensive experience in financial reporting, treasury management, statutory tax compliance, and regulatory reporting. Currently Senior Finance Analyst at Nobleserve Finance Company Limited, he has progressed from Treasury Analyst since 2021, contributing to financial management, CBN regulatory returns, and strategic finance initiatives. He played a key role in the organization's Excel-to-BankOne ERP migration and was honored with Employee of the Year Award 2024. Since 2017, Mutiu has served as a professional accountancy tutor with PIN Associates for 9+ years, mentoring students in Management Accounting, Public Sector Accounting and Finance (PSAF), Taxation, and Advanced Taxation. He holds an Executive MBA from Obafemi Awolowo University and a B.Sc. in Accounting from University of Ilorin.",
+    initials: "MB",
     color: "var(--navy)",
-    image: undefined, // [PLACEHOLDER — photo to be supplied]
+    image: "https://res.cloudinary.com/yaovkmpi/image/upload/v1795269203/mutiu-babajide_nfc4cl.jpg",
   },
   {
     id: "priscilla",

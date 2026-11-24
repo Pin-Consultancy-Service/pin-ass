@@ -193,7 +193,7 @@ export default function HeroSection() {
             <div
               className="absolute inset-0"
               style={{ 
-                background: "rgba(30, 58, 138, 0.75)", /* ← (30, 58, 138, 0.80)  CHANGE THIS NUMBER to adjust darkness */
+                background: "rgba(2, 4, 8, 0.55)", /* ← (30, 58, 138, 0.80)  CHANGE THIS NUMBER to adjust darkness */
                 willChange: 'transform',
                 backfaceVisibility: 'hidden',
                 WebkitBackfaceVisibility: 'hidden'
@@ -203,7 +203,7 @@ export default function HeroSection() {
             <div
               className="absolute bottom-0 left-0 right-0 h-40 pointer-events-none"
               style={{ 
-                background: "linear-gradient(to top, rgba(0, 0, 0, 0.3), transparent)",
+                background: "linear-gradient(to top, rgba(0, 0, 0, 0.06), transparent)",
                 willChange: 'transform',
                 backfaceVisibility: 'hidden',
                 WebkitBackfaceVisibility: 'hidden'
