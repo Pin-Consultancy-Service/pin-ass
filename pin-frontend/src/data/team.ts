@@ -16,10 +16,10 @@ export interface TeamMember {
 
 export const teamMembers: TeamMember[] = [
   {
-    id: "olalekan-olorunsogo",
-    name: "Olalekan Olorunsogo",
-    role: "Founder & Managing Director",
-    quals: "ACA, ICAN, ACCA", // [PLACEHOLDER — confirm full credentials]
+    id: "saheed-olalekan",
+    name: "Saheed Olalekan Olorunnisola ",
+    role: "Founder|Consulting|Financial Modelling|IFRS coaching",
+    quals: "FCA, MBA, DipIFR, CISA, AFM, ACMA, CGMA",
     bio: "Olalekan founded PIN Associate with a single conviction: that every determined professional deserves a clear, structured path to qualification. With over 16 years building Nigeria's exam-prep landscape, he has personally overseen the training of more than 5,000 chartered accountants and finance professionals.",
     initials: "OO",
     color: "var(--navy)",
@@ -39,7 +39,7 @@ export const teamMembers: TeamMember[] = [
     id: "motiu",
     name: "Mutiu Babajide Amao",
     role: "Senior Finance Analyst & Professional Tutor",
-    quals: "ACA (ICAN), Executive MBA",
+    quals: "Bsc, AAT, ACA (ICAN), Executive MBA",
     bio: "Mutiu is a Chartered Accountant with extensive experience in financial reporting, treasury management, statutory tax compliance, and regulatory reporting. Currently Senior Finance Analyst at Nobleserve Finance Company Limited, he has progressed from Treasury Analyst since 2021, contributing to financial management, CBN regulatory returns, and strategic finance initiatives. He played a key role in the organization's Excel-to-BankOne ERP migration and was honored with Employee of the Year Award 2024. Since 2017, Mutiu has served as a professional accountancy tutor with PIN Associates for 9+ years, mentoring students in Management Accounting, Public Sector Accounting and Finance (PSAF), Taxation, and Advanced Taxation. He holds an Executive MBA from Obafemi Awolowo University and a B.Sc. in Accounting from University of Ilorin.",
     initials: "MB",
     color: "var(--navy)",
