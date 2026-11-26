@@ -60,11 +60,11 @@ export const metadata: Metadata = {
       "Nigeria's most trusted professional exam preparation center since 2009. 5,000+ graduates, 87% first-attempt pass rate. Expert tutoring for ICAN, ACCA, CITN, CISA, ATS, IFRS. Business consultancy & corporate training.",
     images: [
       { 
-        url: "https://pinconsultancyservices.com/og-image.jpg", 
+        url: "/og-image.png",
         width: 1200, 
         height: 630, 
         alt: "PIN Consultancy Services - Professional Exam Tutoring Nigeria",
-        type: "image/jpeg",
+        type: "image/png",
       }
     ],
   },
@@ -72,7 +72,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "PIN Consultancy Services | Professional Exam Tutoring Nigeria",
     description: "5,000+ graduates. 87% pass rate. Expert ICAN, ACCA, CITN tutoring. Business consultancy & corporate training across Nigeria.",
-    images: ["https://pinconsultancyservices.com/og-image.jpg"],
+    images: ["/og-image.png"],
     creator: "@PINConsultancy",
     site: "@PINConsultancy",
   },

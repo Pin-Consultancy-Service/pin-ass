@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PIN Consultancy Services - OG Image Generator</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f0f0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: #1a365d;
+        }
+        .og-image {
+            width: 1200px;
+            height: 630px;
+            background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 80px;
+            box-sizing: border-box;
+            position: relative;
+            margin: 20px auto;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+        .logo-box {
+            width: 120px;
+            height: 120px;
+            background: white;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: bold;
+            color: #1a365d;
+            margin-right: 30px;
+        }
+        .title-section {
+            text-align: left;
+        }
+        .main-title {
+            font-size: 72px;
+            font-weight: bold;
+            line-height: 1;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            font-size: 32px;
+            opacity: 0.9;
+        }
+        .stats {
+            display: flex;
+            gap: 60px;
+            margin-top: 40px;
+        }
+        .stat-box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px 40px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 48px;
+            font-weight: bold;
+        }
+        .stat-label {
+            font-size: 28px;
+            opacity: 0.9;
+        }
+        .courses {
+            margin-top: 50px;
+            font-size: 26px;
+            opacity: 0.95;
+        }
+        .badge {
+            position: absolute;
+            bottom: 40px;
+            right: 40px;
+            background: #D4AF37;
+            color: #1a365d;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .instructions {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+        .instructions h2 {
+            color: #1a365d;
+            margin-top: 0;
+        }
+        .instructions ol {
+            line-height: 1.8;
+        }
+        button {
+            background: #1a365d;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        button:hover {
+            background: #2c5282;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>PIN Consultancy Services - Open Graph Image</h1>
+        
+        <div class="og-image" id="ogImage">
+            <div class="header">
+                <div class="logo-box">PIN</div>
+                <div class="title-section">
+                    <div class="main-title">PIN Consultancy Services</div>
+                    <div class="subtitle">Professional Exam Tutoring Nigeria</div>
+                </div>
+            </div>
+            
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="stat-number">5,000+</div>
+                    <div class="stat-label">Graduates</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">87%</div>
+                    <div class="stat-label">Pass Rate</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">2009</div>
+                    <div class="stat-label">Established</div>
+                </div>
+            </div>
+            
+            <div class="courses">ICAN • ACCA • CITN • CISA • ATS • IFRS</div>
+            
+            <div class="badge">Nigeria's #1 Exam Prep Center</div>
+        </div>
+        
+        <div class="instructions">
+            <h2>📸 How to Create Your OG Image</h2>
+            <ol>
+                <li><strong>Take a screenshot</strong> of the blue image above (use Windows Snipping Tool or Snip & Sketch)</li>
+                <li><strong>Crop</strong> to exactly 1200x630 pixels (the blue box)</li>
+                <li><strong>Save as</strong> <code>og-image.png</code></li>
+                <li><strong>Move to</strong> <code>pin-frontend/public/og-image.png</code></li>
+                <li><strong>Build and deploy</strong> your site</li>
+                <li><strong>Test</strong> by sharing your link on WhatsApp/Twitter</li>
+            </ol>
+            
+            <h2>🎨 Better Option: Use Canva</h2>
+            <ol>
+                <li>Go to <a href="https://www.canva.com" target="_blank">Canva.com</a></li>
+                <li>Search for "Facebook Post" template (1200x630px)</li>
+                <li>Use this design as reference</li>
+                <li>Upload your actual PIN logo</li>
+                <li>Match the colors and layout</li>
+                <li>Download as PNG and save to <code>public/og-image.png</code></li>
+            </ol>
+            
+            <h2>✅ After Adding the Image</h2>
+            <p>Test your link preview:</p>
+            <ul>
+                <li><strong>WhatsApp:</strong> Just share the link and wait 2-3 seconds</li>
+                <li><strong>Facebook:</strong> <a href="https://developers.facebook.com/tools/debug/" target="_blank">Facebook Debugger</a></li>
+                <li><strong>Twitter:</strong> <a href="https://cards-dev.twitter.com/validator" target="_blank">Twitter Card Validator</a></li>
+                <li><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/post-inspector/" target="_blank">LinkedIn Inspector</a></li>
+            </ul>
+        </div>
+    </div>
+    
+    <script>
+        // Instructions for taking the screenshot
+        alert('Instructions:\n\n1. This page shows your OG image preview\n2. Take a screenshot of the blue image box\n3. Save as og-image.png\n4. Place in pin-frontend/public/\n5. Deploy your site\n\nFor best results, use Canva to create a professional version with your actual logo!');
+    </script>
+</body>
+</html>
