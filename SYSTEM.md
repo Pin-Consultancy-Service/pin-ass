@@ -113,13 +113,7 @@ pin-ass/
 ### Backend
 | Tool | Version | Role |
 |---|---|---|
-| Django | 6.0 | Web framework |
-| Django REST Framework | 3.18 | API layer |
-| Simple JWT | 5.5 | JWT authentication |
-| django-cors-headers | — | CORS |
-| SQLite (dev) / PostgreSQL (prod) | — | Database |
-| Cloudinary | — | Media file hosting |
-| python-decouple | — | Environment variable management |
+| FastAPI |  | Web framework |
 
 ---
 
@@ -133,21 +127,10 @@ pin-ass/
 ### Backend
 
 ```bash
-cd pinbackend
+cd pin-backend
 
-# Install dependencies
-pip install django djangorestframework djangorestframework-simplejwt \
-            django-cors-headers python-decouple requests
 
-# Run migrations
-python manage.py migrate
 
-# Create default accounts
-python manage.py seed_defaults
-
-# Start backend (runs on port 8000)
-python manage.py runserver
-```
 
 ### Frontend
 
@@ -164,8 +147,6 @@ cp .env.local.example .env.local   # or create manually
 npm run dev
 ```
 
-The site will be at **http://localhost:3000**  
-The API will be at **http://localhost:8000**
 
 ---
 
@@ -746,7 +727,7 @@ Search the codebase for `[PLACEHOLDER]` to find all items pending confirmation f
 | `pinbackend/.env` | `PAYSTACK_SECRET_KEY`, `GOOGLE_OAUTH_CLIENT_ID`, `CLOUDINARY_URL` |
 | `src/components/portal/LoginPageContent.tsx` | Remove the yellow default credentials notice panel |
 | `pinbackend/pinbackend/settings.py` | Replace SQLite with PostgreSQL for production |
-| All contact info | Replace `+234 800 000 0000` and `info@pinassociates.com.ng` with real values |
+| All contact info | Replace `+234 9099861253` and `info@pinassociates.com.ng` with real values |
 
 ---
 

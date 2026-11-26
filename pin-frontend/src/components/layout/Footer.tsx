@@ -6,6 +6,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { SITE_CONFIG } from "@/lib/config";
+import { fadeSlideUp, viewportOptions } from "@/lib/animations";
 
 /* ─── Background carousel slides ──────────────────────── */
 const bgSlides = [
@@ -161,7 +162,13 @@ export default function Footer() {
       </div>
 
       {/* ── Content (positioned over background) ──── */}
-      <div className="relative z-10">
+      <motion.div 
+        className="relative z-10"
+        initial="hidden"
+        whileInView="visible"
+        viewport={viewportOptions}
+        variants={fadeSlideUp}
+      >
 
       {/* ── CTA band ──────────────────────────── */}
       <div style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
@@ -331,7 +338,7 @@ export default function Footer() {
         </div>
       </div>
       
-      </div> {/* End content wrapper */}
+      </motion.div> {/* End content wrapper */}
     </footer>
   );
 }

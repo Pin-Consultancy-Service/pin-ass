@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
@@ -18,7 +18,7 @@ const serviceSlides = [
     description: "PIN Associate helps students and professionals pass ICAN, ACCA, CITN, CISA, and ATS exams on their first attempt with expert tutors and structured programmes.",
     cta: {
       primary: { text: "Sign Up", href: "/portal/register" },
-      secondary: { text: "Explore Courses", href: "/#programs" }
+      secondary: { text: "Explore Courses", href: "/courses" }
     },
     background: {
       src: "https://res.cloudinary.com/yaovkmpi/image/upload/v1793970460/PIN_Associates_Courtyard_Team_Portrait_d0f9ez.png",
@@ -66,57 +66,54 @@ const serviceSlides = [
 export default function HeroSection() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [paused, setPaused] = useState(false);
-  const [direction, setDirection] = useState(1); // 1 = forward, -1 = backward
-  const timer = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [imagesReady, setImagesReady] = useState(false);
 
-  // Preload all images to prevent transition jank
   useEffect(() => {
-    serviceSlides.forEach((slide) => {
-      // Use Next.js Image component preloading
-      const link = document.createElement('link');
-      link.rel = 'preload';
-      link.as = 'image';
-      link.href = slide.background.src;
-      document.head.appendChild(link);
+    let cancelled = false;
+
+    Promise.all(
+      serviceSlides.map(
+        (slide) =>
+          new Promise<void>((resolve) => {
+            const image = new window.Image();
+            image.src = slide.background.src;
+
+            const finish = () => {
+              image.decode?.().catch(() => {}).finally(resolve);
+            };
+
+            if (image.complete) {
+              finish();
+            } else {
+              image.onload = finish;
+              image.onerror = () => resolve();
+            }
+          })
+      )
+    ).then(() => {
+      if (!cancelled) setImagesReady(true);
     });
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  const goToSlide = useCallback((index: number, slideDirection: number = 1) => {
+  const goToSlide = useCallback((index: number) => {
     const newIndex = ((index % serviceSlides.length) + serviceSlides.length) % serviceSlides.length;
-    setDirection(slideDirection);
     setCurrentSlide(newIndex);
-    
-    // Reset auto-advance timer when manually navigating
-    if (timer.current) {
-      clearInterval(timer.current);
-    }
-    if (!paused) {
-      timer.current = setInterval(() => {
-        setDirection(1); // Auto-advance always goes forward
-        setCurrentSlide(prev => (prev + 1) % serviceSlides.length);
-      }, 4000);
-    }
-  }, [paused]);
-
-  const nextSlide = useCallback(() => goToSlide(currentSlide + 1, 1), [currentSlide, goToSlide]);
-  const prevSlide = useCallback(() => goToSlide(currentSlide - 1, -1), [currentSlide, goToSlide]);
+  }, []);
 
   // Auto-advance functionality
   useEffect(() => {
-    if (paused) {
-      if (timer.current) clearInterval(timer.current);
-      return;
-    }
+    if (paused || !imagesReady) return;
 
-    timer.current = setInterval(() => {
-      setDirection(1); // Auto-advance always goes forward
+    const timer = setInterval(() => {
       setCurrentSlide(prev => (prev + 1) % serviceSlides.length);
     }, 4000); // 4 seconds for smooth experience
 
-    return () => {
-      if (timer.current) clearInterval(timer.current);
-    };
-  }, [paused]);
+    return () => clearInterval(timer);
+  }, [paused, imagesReady]);
 
   // Pause/resume on hover
   const handleMouseEnter = useCallback(() => setPaused(true), []);
@@ -135,87 +132,43 @@ export default function HeroSection() {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      {/* ── Horizontal sliding carousel ──────────────────── */}
-      <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
-        <AnimatePresence initial={false}>
+      {/* Fixed background stack: images crossfade without moving the viewport */}
+      <div className="absolute inset-0 overflow-hidden bg-[#020408]" aria-hidden="true">
+        {serviceSlides.map((slide, index) => (
           <motion.div
-            key={currentSlide}
-            className="absolute inset-0 flex"
-            initial={{
-              transform: direction > 0 ? "translate3d(100%, 0, 0)" : "translate3d(-100%, 0, 0)"
-            }}
-            animate={{
-              transform: "translate3d(0%, 0, 0)"
-            }}
-            exit={{
-              transform: direction > 0 ? "translate3d(-100%, 0, 0)" : "translate3d(100%, 0, 0)"
-            }}
-            transition={{ 
-              type: "tween",
-              ease: [0.4, 0, 0.2, 1],
-              duration: 0.65
-            }}
-            style={{
-              willChange: 'transform',
-              backfaceVisibility: 'hidden',
-              WebkitBackfaceVisibility: 'hidden',
-              height: '100%',
-              width: '100%'
-            }}
+            key={slide.id}
+            className="absolute inset-0"
+            initial={false}
+            animate={{ opacity: index === currentSlide ? 1 : 0 }}
+            transition={{ duration: 0.8, ease: "easeInOut" }}
+            style={{ zIndex: index === currentSlide ? 1 : 0 }}
           >
-            {/* Background Image */}
-            <div 
-              className="absolute inset-0"
-              style={{
-                willChange: 'transform',
-                backfaceVisibility: 'hidden',
-                WebkitBackfaceVisibility: 'hidden'
-              }}
-            >
-              <Image
-                src={serviceSlides[currentSlide].background.src}
-                alt={serviceSlides[currentSlide].background.alt}
-                fill
-                priority
-                quality={85}
-                sizes="100vw"
-                style={{
-                  objectFit: "cover",
-                  objectPosition: "center",
-                }}
-              />
-            </div>
-
-            {/* Black overlay for text readability */}
-            {/* 🎨 ADJUST OVERLAY DARKNESS HERE: Change the last number (0.65) */}
-            {/* Values: 0.0 = No overlay, 1.0 = Completely dark */}
-            {/* Recommended range: 0.50 - 0.75 */}
+            <Image
+              src={slide.background.src}
+              alt=""
+              fill
+              priority={index === 0}
+              loading="eager"
+              quality={85}
+              sizes="100vw"
+              style={{ objectFit: "cover", objectPosition: "center" }}
+            />
             <div
               className="absolute inset-0"
-              style={{ 
-                background: "rgba(2, 4, 8, 0.55)", /* ← (30, 58, 138, 0.80)  CHANGE THIS NUMBER to adjust darkness */
-                willChange: 'transform',
-                backfaceVisibility: 'hidden',
-                WebkitBackfaceVisibility: 'hidden'
-              }}
+              style={{ background: "rgba(2, 4, 8, 0.55)" }}
             />
-            {/* Bottom vignette - black fade */}
             <div
               className="absolute bottom-0 left-0 right-0 h-40 pointer-events-none"
-              style={{ 
+              style={{
                 background: "linear-gradient(to top, rgba(0, 0, 0, 0.06), transparent)",
-                willChange: 'transform',
-                backfaceVisibility: 'hidden',
-                WebkitBackfaceVisibility: 'hidden'
               }}
             />
           </motion.div>
-        </AnimatePresence>
+        ))}
       </div>
-
       {/* ── Carousel arrows — desktop only ───────── */}
       <button
-        onClick={prevSlide}
+        onClick={() => goToSlide(currentSlide - 1)}
         aria-label="Previous slide"
         className="absolute hidden lg:flex left-8 top-1/2 -translate-y-1/2 z-20
                    w-9 h-9 items-center justify-center
@@ -225,7 +178,7 @@ export default function HeroSection() {
         <ChevronLeft className="w-4 h-4" />
       </button>
       <button
-        onClick={nextSlide}
+        onClick={() => goToSlide(currentSlide + 1)}
         aria-label="Next slide"
         className="absolute hidden lg:flex right-8 top-1/2 -translate-y-1/2 z-20
                    w-9 h-9 items-center justify-center
@@ -357,7 +310,7 @@ export default function HeroSection() {
         {serviceSlides.map((slide, i) => (
           <button
             key={slide.id}
-            onClick={() => goToSlide(i, i > currentSlide ? 1 : -1)}
+            onClick={() => goToSlide(i)}
             aria-label={`Go to slide ${i + 1}`}
             className="transition-all duration-300"
             style={{

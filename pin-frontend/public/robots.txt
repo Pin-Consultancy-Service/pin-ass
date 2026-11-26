@@ -1,0 +1,42 @@
+# robots.txt for pinconsultancyservices.com
+# Allow all search engines to crawl the site
+
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /instructor/
+Disallow: /portal/
+Disallow: /api/
+Disallow: /admin-portal/
+
+# Crawl-delay (optional, for politeness)
+Crawl-delay: 1
+
+# Sitemap location
+Sitemap: https://pinconsultancyservices.com/sitemap.xml
+Sitemap: https://pinconsultancyservices.com/sitemap-0.xml
+
+# Allow search engines to crawl main content
+User-agent: Googlebot
+Allow: /
+Disallow: /admin/
+Disallow: /instructor/
+Disallow: /portal/
+Disallow: /api/
+
+User-agent: Bingbot
+Allow: /
+Disallow: /admin/
+Disallow: /instructor/
+Disallow: /portal/
+Disallow: /api/
+
+# Block access to private portals and admin areas
+User-agent: *
+Disallow: /admin/
+Disallow: /instructor/
+Disallow: /portal/student/
+Disallow: /portal/training/
+Disallow: /portal/client/
+Disallow: /api/payments/
+Disallow: /api/support/

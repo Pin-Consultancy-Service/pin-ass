@@ -3,8 +3,10 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 import { ArrowRight, CalendarDays, CheckCircle2, Clock3, Users } from "lucide-react";
 import { apiFetch, getStoredUser } from "@/lib/auth";
+import { staggerContainer, staggerItem, viewportOptions } from "@/lib/animations";
 
 interface FeeBalance {
   fee_plan_id: string;
@@ -87,8 +89,18 @@ export default function StudentDashboardContent() {
         </p>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6">
-        <section className="p-4 md:p-6 rounded-2xl md:rounded-3xl border" style={{ backgroundColor: "var(--surface)", borderColor: "var(--rule)" }}>
+      <motion.div 
+        className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6"
+        variants={staggerContainer}
+        initial="hidden"
+        whileInView="visible"
+        viewport={viewportOptions}
+      >
+        <motion.section 
+          variants={staggerItem}
+          className="p-4 md:p-6 rounded-2xl md:rounded-3xl border" 
+          style={{ backgroundColor: "var(--surface)", borderColor: "var(--rule)" }}
+        >
           <div className="flex items-start justify-between gap-3 mb-5">
             <div>
               <h2 className="font-bold text-lg" style={{ color: "var(--ink)" }}>Your Enrollments</h2>
@@ -116,9 +128,13 @@ export default function StudentDashboardContent() {
           <Link href="/portal/student/fees" className="mt-5 inline-flex items-center gap-2 text-sm font-semibold" style={{ color: "var(--navy)" }}>
             View Fees &amp; Payments <ArrowRight className="w-4 h-4" />
           </Link>
-        </section>
+        </motion.section>
 
-        <section className="p-4 md:p-6 rounded-2xl border" style={{ backgroundColor: "var(--surface)", borderColor: "var(--rule)" }}>
+        <motion.section 
+          variants={staggerItem}
+          className="p-4 md:p-6 rounded-2xl border" 
+          style={{ backgroundColor: "var(--surface)", borderColor: "var(--rule)" }}
+        >
           <h2 className="font-semibold mb-2" style={{ color: "var(--ink)" }}>Your Finances</h2>
           <p className="text-sm mb-5" style={{ color: "var(--ink-muted)" }}>Confirmed payments and remaining fees</p>
           <p className="text-3xl font-bold mb-1" style={{ color: "var(--ink)", fontFamily: "var(--font-display)" }}>{financeValue(outstandingMinor)}</p>
@@ -134,9 +150,13 @@ export default function StudentDashboardContent() {
           <Link href="/portal/student/fees" className="block rounded-xl py-3 px-4 text-center font-semibold text-white" style={{ backgroundColor: "var(--navy)" }}>
             View Full Financial Details
           </Link>
-        </section>
+        </motion.section>
 
-        <section className="p-4 md:p-6 rounded-2xl border" style={{ backgroundColor: "var(--surface)", borderColor: "var(--rule)" }}>
+        <motion.section 
+          variants={staggerItem}
+          className="p-4 md:p-6 rounded-2xl border" 
+          style={{ backgroundColor: "var(--surface)", borderColor: "var(--rule)" }}
+        >
           <div className="flex items-center gap-2 mb-2"><CalendarDays className="w-5 h-5" style={{ color: "var(--navy)" }} /><h2 className="font-semibold" style={{ color: "var(--ink)" }}>Weekly Schedule</h2></div>
           {loading ? <p className="text-sm" style={{ color: "var(--ink-muted)" }}>Loading schedule…</p> : classesError ? <p role="alert" className="text-sm" style={{ color: "#B91C1C" }}>Schedule is unavailable.</p> : schedule.length ? (
             <ul className="mt-4 space-y-3">{schedule.map(session => <li key={session.id} className="rounded-xl p-3" style={{ backgroundColor: "var(--navy-50)" }}><p className="text-xs font-bold mb-1" style={{ color: "var(--gold-dark)" }}>{session.exam_body} · {session.course_name} · {session.cohort}</p><p className="font-semibold text-sm" style={{ color: "var(--ink)" }}>{session.topic}</p><p className="mt-1 text-xs" style={{ color: "var(--ink-muted)" }}>{session.subject} · {classTime(session.scheduled_at)} · {session.duration_minutes} min</p><p className="mt-1 text-xs font-semibold" style={{ color: session.status === "LIVE" ? "#B91C1C" : "var(--navy)" }}>{session.status === "LIVE" ? "Live now" : session.status === "COMPLETED" ? "Recently completed" : "Upcoming"}</p></li>)}</ul>
@@ -144,26 +164,38 @@ export default function StudentDashboardContent() {
           <Link href="/portal/student/classes" className="mt-4 inline-flex items-center gap-2 text-sm font-semibold" style={{ color: "var(--navy)" }}>
             Go to Classes <ArrowRight className="w-4 h-4" />
           </Link>
-        </section>
+        </motion.section>
 
-        <section className="md:col-span-2 p-4 md:p-6 rounded-2xl border" style={{ backgroundColor: "var(--surface)", borderColor: "var(--rule)" }}>
+        <motion.section 
+          variants={staggerItem}
+          className="md:col-span-2 p-4 md:p-6 rounded-2xl border" 
+          style={{ backgroundColor: "var(--surface)", borderColor: "var(--rule)" }}
+        >
           <div className="flex items-center gap-2 mb-2"><Clock3 className="w-5 h-5" style={{ color: "var(--navy)" }} /><h2 className="font-semibold" style={{ color: "var(--ink)" }}>Learning Activity</h2></div>
           <p className="text-sm" style={{ color: "var(--ink-muted)" }}>{unavailable}</p>
-        </section>
+        </motion.section>
 
-        <section className="p-4 md:p-6 rounded-2xl border" style={{ backgroundColor: "var(--surface)", borderColor: "var(--rule)" }}>
+        <motion.section 
+          variants={staggerItem}
+          className="p-4 md:p-6 rounded-2xl border" 
+          style={{ backgroundColor: "var(--surface)", borderColor: "var(--rule)" }}
+        >
           <h2 className="font-semibold mb-2" style={{ color: "var(--ink)" }}>Today's Workplan</h2>
           <p className="text-sm" style={{ color: "var(--ink-muted)" }}>Assignments will appear here when assignment data is available.</p>
           <Link href="/portal/student/assignments" className="mt-4 inline-flex items-center gap-2 text-sm font-semibold" style={{ color: "var(--navy)" }}>
             View Assignments <ArrowRight className="w-4 h-4" />
           </Link>
-        </section>
+        </motion.section>
 
-        <section className="md:col-span-3 p-4 md:p-6 rounded-2xl border" style={{ backgroundColor: "var(--surface)", borderColor: "var(--rule)" }}>
+        <motion.section 
+          variants={staggerItem}
+          className="md:col-span-3 p-4 md:p-6 rounded-2xl border" 
+          style={{ backgroundColor: "var(--surface)", borderColor: "var(--rule)" }}
+        >
           <div className="flex items-center gap-2 mb-2"><Users className="w-5 h-5" style={{ color: "var(--navy)" }} /><h2 className="font-semibold" style={{ color: "var(--ink)" }}>Your Coursemates</h2></div>
           <p className="text-sm" style={{ color: "var(--ink-muted)" }}>Classmate information will appear when student class enrollments are available.</p>
-        </section>
-      </div>
+        </motion.section>
+      </motion.div>
     </div>
   );
 }

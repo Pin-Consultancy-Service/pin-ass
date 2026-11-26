@@ -17,10 +17,10 @@ const heroSlides = [
 /* ─── Timeline — unchanged ───────────────────────────── */
 const timeline = [
   { year: "2009", title: "Founded",                  body: "PIN Associate was established with a clear mission: to give every determined professional a structured, expert path to qualification. The first cohort of ICAN students sat their exams that same year." },
-  { year: "2012", title: "Expanded to ACCA",          body: "Recognising the growing demand for internationally recognised credentials, PIN launched its ACCA programme — the first step towards becoming a multi-qualification practice." },
+  { year: "2012", title: "Expanded to ACCA",          body: "Recognising the growing demand for internationally recognised credentials, PIN launched its ACCA programme the first step towards becoming a multi-qualification practice." },
   { year: "2015", title: "Corporate Division Launched",body: "PIN's business and financial consultancy arm was established, extending our expertise from individual exam prep to organisational advisory, tax planning, and financial reporting for corporate clients." },
   { year: "2018", title: "Online Learning Platform",  body: "To serve working professionals across Nigeria, PIN launched its live online classes and recorded session library, making expert tuition accessible regardless of location." },
-  { year: "2021", title: "5,000 Graduates",           body: "A defining milestone — the 5,000th student qualifies under PIN's guidance. Alumni now work at EY, KPMG, Deloitte, GTBank, First Bank, NNPC and leading Nigerian organisations." },
+  { year: "2021", title: "5,000 Graduates",           body: "A defining milestone the 5,000th student qualifies under PIN's guidance. Alumni now work at EY, KPMG, Deloitte, GTBank, First Bank, NNPC and leading Nigerian organisations." },
   { year: "2024", title: "Three Service Lines",       body: "Today PIN Associate operates three distinct but complementary practices: professional examination tutoring, business and financial consultancy, and corporate training — one firm, three paths to professional excellence." },
 ];
 
@@ -62,7 +62,8 @@ function TeamPortrait({ member }: { member: (typeof teamMembers)[0] }) {
           </div>
         )}
       </div>
-      <div style={{ borderLeft: "2px solid var(--navy)", paddingLeft: "0.875rem" }}>
+      {/* Hide name/role/quals on mobile to avoid duplication - they appear in the main content */}
+      <div className="hidden lg:block" style={{ borderLeft: "2px solid var(--navy)", paddingLeft: "0.875rem" }}>
         <p style={{ fontFamily: "var(--font-display)", fontWeight: 500, fontSize: "1.125rem", color: "var(--ink)", lineHeight: 1.2, marginBottom: "0.2rem" }}>{member.name}</p>
         <p style={{ fontSize: "0.6875rem", fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--ink-muted)", marginBottom: "0.3rem" }}>{member.role}</p>
         <p style={{ fontSize: "0.6875rem", fontWeight: 500, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--navy)" }}>{member.quals}</p>
@@ -267,7 +268,8 @@ export default function AboutPageContent() {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+          {/* Grid of team members with full bios */}
+          <div className="space-y-16">
             {teamMembers.map((member, i) => (
               <motion.div
                 key={member.id}
@@ -275,8 +277,90 @@ export default function AboutPageContent() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-40px" }}
                 transition={{ duration: 0.55, delay: i * 0.08 }}
+                className="grid lg:grid-cols-[300px_1fr] gap-6 lg:gap-10 items-start"
+                style={{ 
+                  borderBottom: i < teamMembers.length - 1 ? "1px solid var(--rule)" : "none",
+                  paddingBottom: i < teamMembers.length - 1 ? "4rem" : "0"
+                }}
               >
-                <TeamPortrait member={member} />
+                {/* Left — Portrait */}
+                <div>
+                  <TeamPortrait member={member} />
+                  {member.linkedin && (
+                    <a
+                      href={member.linkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn btn-outline mt-4 w-full flex items-center justify-center gap-2"
+                      style={{ fontSize: "0.875rem" }}
+                    >
+                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                      </svg>
+                      Connect on LinkedIn
+                    </a>
+                  )}
+                </div>
+
+                {/* Right — Full Bio */}
+                <div>
+                  <h3 
+                    style={{ 
+                      fontFamily: "var(--font-display)", 
+                      fontWeight: 500, 
+                      fontSize: "clamp(1.375rem, 3vw, 1.75rem)", 
+                      color: "var(--ink)", 
+                      lineHeight: 1.2, 
+                      marginBottom: "0.5rem" 
+                    }}
+                  >
+                    {member.name}
+                  </h3>
+                  <p 
+                    style={{ 
+                      fontSize: "0.8125rem", 
+                      fontWeight: 500, 
+                      letterSpacing: "0.08em", 
+                      textTransform: "uppercase", 
+                      color: "var(--navy)", 
+                      marginBottom: "1rem" 
+                    }}
+                  >
+                    {member.role}
+                  </p>
+                  <div 
+                    className="inline-flex flex-wrap gap-2 mb-6 pb-6 w-full"
+                    style={{ borderBottom: "1px solid var(--rule)" }}
+                  >
+                    {member.quals.split(',').map((qual, idx) => (
+                      <span
+                        key={idx}
+                        style={{
+                          display: "inline-block",
+                          padding: "0.35rem 0.75rem",
+                          fontSize: "0.6875rem",
+                          fontWeight: 500,
+                          letterSpacing: "0.05em",
+                          backgroundColor: "var(--bg)",
+                          color: "var(--navy)",
+                          borderRadius: "2px",
+                          border: "1px solid var(--rule)"
+                        }}
+                      >
+                        {qual.trim()}
+                      </span>
+                    ))}
+                  </div>
+                  <p 
+                    style={{ 
+                      fontSize: "0.9375rem", 
+                      lineHeight: 1.75, 
+                      color: "var(--ink-muted)" 
+                    }}
+                  >
+                    {member.bio}
+                  </p>
+                </div>
               </motion.div>
             ))}
           </div>

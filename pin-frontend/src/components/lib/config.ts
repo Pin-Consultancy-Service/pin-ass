@@ -37,11 +37,10 @@ export const SITE_CONFIG = {
    */
   paystackPublicKey: process.env.NEXT_PUBLIC_PAYSTACK_KEY ?? "",
 
-  /** Site contact details — update when confirmed by PIN Associate */
   contact: {
-    phone: "+234 800 000 0000",          // [PLACEHOLDER]
-    email: "info@pinassociates.com.ng",  // [PLACEHOLDER]
-    address: "Lagos, Nigeria",           // [PLACEHOLDER — full address to be supplied]
+    phone: "+2349099861253",         
+    email: "info@pinassociates.com.ng", 
+    address: "Lagos, Nigeria",        
     hours: "Mon–Fri: 8am–6pm · Sat: 9am–3pm",
   },
 

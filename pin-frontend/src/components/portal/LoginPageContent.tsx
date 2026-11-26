@@ -9,6 +9,7 @@ import { Eye, EyeOff, LogIn, AlertCircle, ArrowLeft, CheckCircle2 } from "lucide
 import { motion, AnimatePresence } from "framer-motion";
 import { login, getStoredUser, portalHomeForRole, DEMO_MODE, TEST_MODE } from "@/lib/auth";
 import GoogleAuthButton from "@/components/ui/GoogleAuthButton";
+import { fadeIn } from "@/lib/animations";
 
 /* ── Background slide data from hero section ──────────────────────────── */
 const bgSlides = [
@@ -87,7 +88,7 @@ export default function LoginPageContent() {
           email: email || "test@pinassociate.com",
           first_name: email.split('@')[0] || "Test",
           last_name: "User",
-          phone_number: "+234 800 000 0000",
+          phone_number: "+2349099861253",
           role: "STUDENT" as const,
           date_joined: new Date().toISOString(),
         };
@@ -273,9 +274,12 @@ export default function LoginPageContent() {
       </div>
 
       {/* Right Side - Form */}
-      <div 
+      <motion.div 
         className="flex-1 lg:w-1/2 flex items-center justify-center p-8"
         style={{ backgroundColor: "var(--bg)" }}
+        initial="hidden"
+        animate="visible"
+        variants={fadeIn}
       >
         <div className="w-full max-w-md">
           
@@ -480,7 +484,7 @@ export default function LoginPageContent() {
             <GoogleAuthButton action="signin" />
           </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

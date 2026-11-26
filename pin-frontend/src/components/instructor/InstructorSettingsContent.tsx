@@ -160,7 +160,7 @@ export default function InstructorSettingsContent() {
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 className="form-input"
-                placeholder="+234 800 000 0000"
+                placeholder="+2349099861253"
               />
             </div>
 

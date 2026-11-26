@@ -29,8 +29,8 @@ const navLinks = [
 
 const portalLinks = [
   { label: "Student Portal",  href: "/portal/student" },
-  { label: "Client Portal",   href: "/portal/client" },
-  { label: "Training Portal", href: "/portal/training" },
+  // { label: "Client Portal",   href: "/portal/client" },
+  // { label: "Training Portal", href: "/portal/training" },
 ];
 
 /* Scroll threshold before nav solidifies */

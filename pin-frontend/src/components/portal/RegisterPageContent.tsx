@@ -8,6 +8,7 @@ import { Eye, EyeOff, UserPlus, AlertCircle, ArrowLeft } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { register, DEMO_MODE, TEST_MODE } from "@/lib/auth";
 import GoogleAuthButton from "@/components/ui/GoogleAuthButton";
+import { fadeIn } from "@/lib/animations";
 
 /* ── Background slide data from hero section ──────────────────────────── */
 const bgSlides = [
@@ -287,9 +288,12 @@ export default function RegisterPageContent() {
       </div>
 
       {/* Right Side - Form */}
-      <div 
+      <motion.div 
         className="flex-1 lg:w-1/2 flex items-center justify-center p-8"
         style={{ backgroundColor: "var(--bg)" }}
+        initial="hidden"
+        animate="visible"
+        variants={fadeIn}
       >
         <div className="w-full max-w-md">
           
@@ -618,7 +622,7 @@ export default function RegisterPageContent() {
             <GoogleAuthButton action="signup" />
           </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

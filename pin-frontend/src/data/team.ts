@@ -12,6 +12,7 @@ export interface TeamMember {
   initials: string;
   color: string;
   image?: string; // Cloudinary URL — leave undefined until supplied
+  linkedin?: string; // LinkedIn profile URL (optional)
 }
 
 export const teamMembers: TeamMember[] = [
@@ -23,7 +24,8 @@ export const teamMembers: TeamMember[] = [
     bio: "Olalekan founded PIN Associate with a single conviction: that every determined professional deserves a clear, structured path to qualification. With over 16 years building Nigeria's exam-prep landscape, he has personally overseen the training of more than 5,000 chartered accountants and finance professionals.",
     initials: "OO",
     color: "var(--navy)",
-    image: "https://res.cloudinary.com/yaovkmpi/image/upload/v1784402552/Olalekan_j80keu.jpg", // [PLACEHOLDER — founder photo to be supplied]
+    image: "https://res.cloudinary.com/yaovkmpi/image/upload/v1784402552/Olalekan_j80keu.jpg",
+    linkedin: undefined, // Add LinkedIn URL when available
   },
   {
     id: "babatunde",
@@ -34,6 +36,7 @@ export const teamMembers: TeamMember[] = [
     initials: "AB",
     color: "var(--navy-dark)",
     image: "https://res.cloudinary.com/yaovkmpi/image/upload/v1784402566/Anthony_Tunde_bq4utq.jpg",
+    linkedin: undefined, // Add LinkedIn URL when available
   },
   {
     id: "motiu",
@@ -44,15 +47,17 @@ export const teamMembers: TeamMember[] = [
     initials: "MB",
     color: "var(--navy)",
     image: "https://res.cloudinary.com/yaovkmpi/image/upload/v1795269203/mutiu-babajide_nfc4cl.jpg",
+    linkedin: undefined, // Add LinkedIn URL when available
   },
   {
     id: "priscilla",
-    name: "Priscilla", // [PLACEHOLDER — full name to be supplied]
+    name: "Priscilla Olowu",
     role: "General Secretary",
-    quals: "B.Sc Accounting, ICAN, ACA", // [PLACEHOLDER — confirm credentials]
+    quals: "B.Sc Accounting, ICAN, ACA",
     bio: "Priscilla is the operational backbone of PIN Associate, managing student registrations, client relationships, and day-to-day administration. Her attention to detail ensures every student's journey from enquiry to qualification is seamless.",
     initials: "PR",
     color: "#92600A",
     image: "https://res.cloudinary.com/yaovkmpi/image/upload/v1794950689/Pricilla_pjuk4s.jpg",
+    linkedin: undefined, // Add LinkedIn URL when available
   },
 ];

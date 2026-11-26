@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { motion } from "framer-motion";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { CheckCircle2, ArrowRight } from "lucide-react";
 import PageHero from "@/components/layout/PageHero";
+import { fadeSlideUp, slideInLeft, slideInRight, staggerContainer, staggerItem, viewportOptions } from "@/lib/animations";
 
 const programmes = [
   "ICAN — Foundation Level",
@@ -131,7 +133,13 @@ export default function ApplyPage() {
             <div className="grid lg:grid-cols-[1fr_1.8fr] gap-10 lg:gap-14">
 
               {/* ── Left — process steps ── */}
-              <div className="lg:sticky lg:top-28 self-start">
+              <motion.div 
+                className="lg:sticky lg:top-28 self-start"
+                initial="hidden"
+                whileInView="visible"
+                viewport={viewportOptions}
+                variants={slideInLeft}
+              >
                 <h2 className="font-heading font-bold text-[#222222] text-xl mb-7">
                   What Happens Next
                 </h2>
@@ -164,10 +172,15 @@ export default function ApplyPage() {
                     recommend the right programme and entry point for you.
                   </p>
                 </div>
-              </div>
+              </motion.div>
 
               {/* ── Right — form ── */}
-              <div>
+              <motion.div
+                initial="hidden"
+                whileInView="visible"
+                viewport={viewportOptions}
+                variants={slideInRight}
+              >
                 {!sent ? (
                   <form
                     onSubmit={(e) => {
@@ -228,7 +241,7 @@ export default function ApplyPage() {
                           autoComplete="tel"
                           value={form.phone}
                           onChange={handleChange}
-                          placeholder="+234 800 000 0000"
+                          placeholder="+2349099861253"
                           className={inputCls}
                         />
                       </Field>
@@ -299,10 +312,7 @@ export default function ApplyPage() {
                     {/* Submit */}
                     <button
                       type="submit"
-                      className="w-full inline-flex items-center justify-center gap-2
-                                 bg-[#1E3A8A] text-white font-semibold text-sm
-                                 px-8 py-4 rounded-xl hover:bg-[#152D6E]
-                                 transition-colors shadow-sm"
+                      className="btn btn-primary w-full flex items-center justify-center gap-2"
                     >
                       Submit Application
                       <ArrowRight className="w-4 h-4" />
@@ -345,13 +355,13 @@ export default function ApplyPage() {
                           message: "",
                         });
                       }}
-                      className="text-sm font-semibold text-[#1E3A8A] hover:text-[#152D6E] transition-colors"
+                      className="btn-ghost"
                     >
                       Submit Another Application
                     </button>
                   </div>
                 )}
-              </div>
+              </motion.div>
 
             </div>
           </div>

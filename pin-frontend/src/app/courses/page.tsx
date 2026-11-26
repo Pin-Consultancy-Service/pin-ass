@@ -2,12 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import { Clock, Monitor, BookOpen, ArrowRight, CheckCircle2 } from "lucide-react";
-import Badge from "@/components/ui/Badge";
+import { ArrowRight } from "lucide-react";
 import SectionHeader from "@/components/ui/SectionHeader";
 import NewsletterSection from "@/components/home/NewsletterSection";
 import PageHero from "@/components/layout/PageHero";
-import ProgramIcon from "@/components/ui/ProgramIcon";
+import ProgrammesList from "@/components/courses/ProgrammesList";
 
 export const metadata: Metadata = {
   title: "Programmes & Courses",
@@ -134,70 +133,14 @@ export default function CoursesPage() {
           />
 
         {/* Programmes list */}
-        <section className="section-py bg-white">
+        <section className="py-16 md:py-20" style={{ backgroundColor: "var(--bg)" }}>
           <div className="container-pin">
-            <div className="space-y-6">
-              {programmes.map((prog, i) => (
-                <div
-                  key={prog.id}
-                  className="group bg-white rounded-3xl border border-[#E9ECEF] hover:shadow-lg hover:border-[#DBEAFE] transition-all duration-300 overflow-hidden"
-                >
-                  <div className="grid md:grid-cols-[auto_1fr_auto] gap-6 p-7 items-start">
-                    {/* Icon */}
-                    <div className="w-14 h-14 bg-white rounded-2xl border border-[#E9ECEF] shadow-sm flex items-center justify-center flex-shrink-0 overflow-hidden p-1">
-                      <ProgramIcon icon={prog.icon} title={prog.title} />
-                    </div>
-
-                    {/* Main content */}
-                    <div>
-                      <div className="flex flex-wrap items-center gap-3 mb-3">
-                        <h2 className="font-heading font-bold text-[#1E3A8A] text-xl">{prog.title}</h2>
-                        <Badge variant={prog.badgeVariant} size="sm">{prog.badge}</Badge>
-                      </div>
-                      <p className="text-xs font-semibold text-[#ADB5BD] uppercase tracking-wide mb-2">{prog.fullName}</p>
-                      <p className="text-[#495057] text-sm leading-relaxed mb-4 max-w-2xl">{prog.overview}</p>
-
-                      <div className="flex flex-wrap gap-4 text-xs text-[#6C757D] mb-4">
-                        <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5 text-[#ADB5BD]" />{prog.duration}</span>
-                        <span className="flex items-center gap-1.5"><Monitor className="w-3.5 h-3.5 text-[#ADB5BD]" />{prog.mode}</span>
-                        <span className="flex items-center gap-1.5"><BookOpen className="w-3.5 h-3.5 text-[#ADB5BD]" />{prog.levels.join(" · ")}</span>
-                      </div>
-
-                      <div className="flex flex-wrap gap-2">
-                        {prog.outcomes.map((o) => (
-                          <span key={o} className="inline-flex items-center gap-1.5 text-xs text-[#16A34A] bg-[#DCFCE7] border border-[#BBF7D0] px-3 py-1 rounded-full font-medium">
-                            <CheckCircle2 className="w-3 h-3" />
-                            {o}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* CTA */}
-                    <div className="flex flex-col gap-3 flex-shrink-0">
-                      <Link
-                        href={prog.href}
-                        className="inline-flex items-center gap-2 bg-[#1E3A8A] text-white font-semibold text-sm px-6 py-3 rounded-xl hover:bg-[#152D6E] transition-colors whitespace-nowrap"
-                      >
-                        Learn More
-                        <ArrowRight className="w-4 h-4" />
-                      </Link>
-                      <Link
-                        href="/portal/student/signup"
-                        className="inline-flex items-center justify-center text-sm font-semibold text-[#1E3A8A] px-6 py-3 rounded-xl border border-[#1E3A8A]/20 hover:bg-[#EFF4FF] transition-all whitespace-nowrap"
-                      >
-                        Apply Now
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <ProgrammesList programmes={programmes} />
           </div>
         </section>
 
         {/* Comparison CTA */}
-        <section className="py-14 bg-[#F8F9FA]">
+        <section className="py-16" style={{ backgroundColor: "var(--surface)" }}>
           <div className="container-pin text-center">
             <SectionHeader
               label="Not sure which programme?"
@@ -206,17 +149,11 @@ export default function CoursesPage() {
               align="center"
             />
             <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-              <Link
-                href="/contact"
-                className="inline-flex items-center gap-2 bg-[#1E3A8A] text-white font-semibold text-sm px-8 py-4 rounded-xl hover:bg-[#152D6E] transition-colors shadow-sm"
-              >
+              <Link href="/contact" className="btn btn-outline">
                 Speak to an Advisor
                 <ArrowRight className="w-4 h-4" />
               </Link>
-              <Link
-                href="/portal/student/signup"
-                className="inline-flex items-center gap-2 bg-[#F4C430] text-[#152D6E] font-bold text-sm px-8 py-4 rounded-xl hover:bg-[#D4A820] transition-colors shadow-sm"
-              >
+              <Link href="/apply" className="btn btn-primary">
                 Apply Now
               </Link>
             </div>

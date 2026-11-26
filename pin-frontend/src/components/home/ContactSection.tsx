@@ -181,7 +181,7 @@ export default function ContactSection() {
                     <input
                       id="phone" name="phone" type="tel"
                       value={form.phone} onChange={handleChange}
-                      placeholder="+234 800 000 0000"
+                      placeholder="+234"
                       className="form-input"
                     />
                   </div>

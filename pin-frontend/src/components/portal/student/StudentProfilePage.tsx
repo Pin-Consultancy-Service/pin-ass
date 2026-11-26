@@ -61,7 +61,7 @@ export default function StudentProfilePage() {
         id: "demo-student-123",
         full_name: "Demo Student",
         email: "demo@pinassociate.com",
-        phone: "+234 800 000 0000",
+        phone: "+2349099861253",
         registration_number: "PIN/DEMO/2024/001",
         programme: "ICAN_PRO",
         programme_display: "ICAN Professional",
