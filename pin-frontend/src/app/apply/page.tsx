@@ -136,8 +136,7 @@ export default function ApplyPage() {
               <motion.div 
                 className="lg:sticky lg:top-28 self-start"
                 initial="hidden"
-                whileInView="visible"
-                viewport={viewportOptions}
+                animate="visible"
                 variants={slideInLeft}
               >
                 <h2 className="font-heading font-bold text-[#222222] text-xl mb-7">
@@ -177,8 +176,7 @@ export default function ApplyPage() {
               {/* ── Right — form ── */}
               <motion.div
                 initial="hidden"
-                whileInView="visible"
-                viewport={viewportOptions}
+                animate="visible"
                 variants={slideInRight}
               >
                 {!sent ? (

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { fadeSlideUp, staggerContainer, staggerItem, viewportOptions } from "@/lib/animations";
+import { fadeSlideUp, staggerContainer, staggerItem, viewportOptions as defaultViewportOptions } from "@/lib/animations";
 import { ReactNode } from "react";
 
 interface AnimatedSectionProps {
@@ -9,9 +9,10 @@ interface AnimatedSectionProps {
   className?: string;
   style?: React.CSSProperties;
   variant?: "fadeSlideUp" | "staggerContainer";
+  viewport?: { once?: boolean; margin?: string; amount?: number | "some" | "all" };
 }
 
-export function AnimatedSection({ children, className, style, variant = "fadeSlideUp" }: AnimatedSectionProps) {
+export function AnimatedSection({ children, className, style, variant = "fadeSlideUp", viewport }: AnimatedSectionProps) {
   const variants = variant === "staggerContainer" ? staggerContainer : fadeSlideUp;
   
   return (
@@ -20,7 +21,7 @@ export function AnimatedSection({ children, className, style, variant = "fadeSli
       style={style}
       initial="hidden"
       whileInView="visible"
-      viewport={viewportOptions}
+      viewport={viewport ?? defaultViewportOptions}
       variants={variants}
     >
       {children}

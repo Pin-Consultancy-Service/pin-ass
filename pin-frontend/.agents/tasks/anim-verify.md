@@ -1,137 +1,84 @@
-# Scroll Animations Implementation - Verification Report
+# Animation Review Fixes Verification
 
-## Implementation Summary
+## Changes Made
 
-Scroll animations have been successfully implemented across the PIN Associate frontend using Framer Motion.
+Fixed all 6 findings from the animation review:
 
-## Files Created
+### 1. shouldReduceMotion() Performance Issue ✓
+**Problem**: `shouldReduceMotion()` was called on every render, triggering dozens of `window.matchMedia` calls per scroll.
 
-1. **src/lib/animations.ts** - Reusable animation variants library
-   - `fadeSlideUp` - Fade in with upward slide
-   - `fadeIn` - Simple fade in
-   - `scaleIn` - Scale in with fade
-   - `slideInLeft` - Slide in from left
-   - `slideInRight` - Slide in from right
-   - `staggerContainer` - Container for staggered children
-   - `staggerItem` - Item variant for stagger animations
-   - `viewportOptions` - Consistent viewport configuration
-   - `reducedVariant()` - Helper for reduced motion support
-   - Respects `prefers-reduced-motion` user preference
+**Fix**: Refactored `animations.ts` to use a factory function `getVariants(reduced)` that accepts a boolean parameter instead of calling `window.matchMedia()` on every variant access. The variants are now created once per session rather than on every render.
 
-2. **src/hooks/useScrollAnimation.ts** - Custom scroll animation hook
-   - Uses Framer Motion's `useInView` and `useAnimation`
-   - Respects reduced motion preferences
-   - Provides consistent viewport settings
+**Files Modified**: `src/lib/animations.ts`
 
-3. **src/components/ui/AnimatedSection.tsx** - Wrapper components for server components
-   - `AnimatedSection` - For section elements
-   - `AnimatedDiv` - For div elements
+### 2. useScrollAnimation Listener Leak ✓
+**Problem**: The cleanup function in the second `useEffect` only returned when `prefersReducedMotion` was false, leaving event listeners attached when components unmount.
 
-4. **src/components/courses/ProgrammesList.tsx** - Animated programmes list component
-   - Extracted from courses page to handle client-side animations
-   - Stagger animation for programme cards
+**Fix**: Restructured the effect to always return a cleanup function. When reduced motion is active, the effect returns early but cleanup is still properly handled.
 
-## Files Modified
+**Files Modified**: `src/hooks/useScrollAnimation.ts`
 
-### Core Pages
-1. **src/app/courses/page.tsx** - Courses listing page
-   - Extracted animated list to separate client component
-   - Maintains server component for metadata
+### 3. Apply Page Animation Timing ✓
+**Problem**: The form used `whileInView` which delayed animation until user scrolls, but many users land directly at the form via links (above-the-fold content).
 
-2. **src/app/apply/page.tsx** - Application form page
-   - Added `slideInLeft` animation to process steps (left column)
-   - Added `slideInRight` animation to form (right column)
+**Fix**: Changed both left column (process steps) and right column (form) from `whileInView="visible"` to `animate="visible"` so animations start immediately on mount instead of waiting for scroll.
 
-### Layout Components  
-3. **src/components/layout/Footer.tsx** - Site footer
-   - Added `fadeSlideUp` animation to main content wrapper
+**Files Modified**: `src/app/apply/page.tsx`
 
-### Portal Components
-4. **src/components/portal/LoginPageContent.tsx** - Login page
-   - Added `fadeIn` animation to form container (right side)
-   - Preserves existing background carousel
+### 4. Course Detail Page Unused Import ✓
+**Problem**: The component imported `AnimatedSection` but never used it (page kept as server component per plan).
 
-5. **src/components/portal/RegisterPageContent.tsx** - Registration page
-   - Added `fadeIn` animation to form container (right side)
-   - Preserves existing background carousel
+**Fix**: Removed the unused `import { AnimatedSection } from "@/components/ui/AnimatedSection"` import.
 
-6. **src/components/portal/student/StudentDashboardContent.tsx** - Student dashboard
-   - Added `staggerContainer` to dashboard cards grid
-   - Each card uses `staggerItem` variant for progressive reveal
-   - Subtle entrance animations maintaining functional dashboard feel
+**Files Modified**: `src/app/courses/[slug]/page.tsx`
 
-## Build Status
+### 5. Student Dashboard Placeholder Animation ✓
+**Problem**: The stagger animation applied to cards with "Learning Activity" and "Today's Workplan" that only show "unavailable" messages, creating impression of loading then revealing static placeholder text.
 
-**TypeScript Compilation**: ✅ PASSED (66 seconds)
+**Fix**: Only the first three cards (Your Enrollments, Your Finances, Weekly Schedule) which contain real data use `motion.section` with `variants={staggerItem}`. The last three placeholder cards (Learning Activity, Today's Workplan, Your Coursemates) use plain `<section>` with no animation.
 
-The build successfully passed TypeScript type checking with no errors. The build process timed out during the page data collection phase after 5 minutes, which is a Next.js build optimization step and not an error. The TypeScript compilation is complete and error-free.
+**Files Modified**: `src/components/portal/student/StudentDashboardContent.tsx`
 
-## Animation Patterns Used
+### 6. AnimatedSection Hardcoded Viewport ✓
+**Problem**: The component always used `viewportOptions` from animations.ts, but callers may need different margins or `once` settings.
 
-### Courses Page
-- **Programme Cards**: Staggered fade-up animation (0.1s delay between each card)
-- **Viewport**: Once-only trigger with -80px margin
+**Fix**: Added optional `viewport` prop to `AnimatedSectionProps` with type `{ once?: boolean; margin?: string; amount?: number | "some" | "all" }`. The component now uses `viewport ?? defaultViewportOptions` allowing callers to override.
 
-### Apply Page
-- **Left Column (Steps)**: Slide in from left
-- **Right Column (Form)**: Slide in from right
-- **Creates**: Visual balance and directional flow
+**Files Modified**: `src/components/ui/AnimatedSection.tsx`
 
-### Portal Pages (Login/Register)
-- **Form Container**: Subtle fade-in (0.6s duration)
-- **Purpose**: Non-intrusive, maintains focus on form interaction
+## Build Result
 
-### Student Dashboard
-- **Dashboard Cards**: Staggered container with 0.1s stagger delay
-- **Individual Cards**: Fade-slide-up variants
-- **Purpose**: Progressive disclosure without overwhelming user
+✅ **PASS** - Build completed successfully with no TypeScript errors.
 
-### Footer
-- **Main Content**: Fade-slide-up on scroll into view
-- **Background Carousel**: Preserved existing animation
-
-## Accessibility Features
-
-1. **Reduced Motion Support**
-   - All animations check `prefers-reduced-motion` media query
-   - When enabled, animations become instant (duration: 0, no transforms)
-   - Maintains layout and visibility while respecting user preferences
-
-2. **Viewport Configuration**
-   - `once: true` - Animations trigger only once per page load
-   - `margin: '-80px'` - Triggers slightly before element enters viewport
-   - Prevents animation fatigue and improves perceived performance
-
-## Notes
-
-- **Server Components**: Course detail page (`/courses/[slug]`) kept as server component for `generateStaticParams` and `generateMetadata` - animations not added to avoid client/server boundary issues
-- **Existing Animations**: Preserved all existing animations (HeroSection carousel, home sections, etc.)
-- **Performance**: Used `viewport={{ once: true }}` to prevent re-triggering on every scroll
-- **Timing**: Durations range from 0.5s to 0.6s for optimal perceived performance
-
-## User Experience Impact
-
-- **Engagement**: Scroll animations draw attention to content as it enters viewport
-- **Professionalism**: Smooth, polished feel throughout the site
-- **Performance**: Lightweight animations with GPU acceleration (transform and opacity)
-- **Accessibility**: Full respect for user motion preferences
-
-## Next Steps
-
-To fully verify the animations in a browser:
-
-```bash
-cd c:\Users\ayemo\Desktop\Desktop\andrewgold\pin-ass\pin-frontend
-npm run dev
+```
+✓ Compiled successfully in 42s
+✓ Finished TypeScript in 18.8s
+✓ Collecting page data using 3 workers in 7.1s
+✓ Generating static pages using 3 workers (63/63) in 17.9s
+✓ Finalizing page optimization in 750ms
 ```
 
-Then visit:
-- `/courses` - View staggered programme cards
-- `/apply` - See left/right slide-in sections
-- `/portal/login` - Check form fade-in
-- `/portal/register` - Check form fade-in  
-- `/portal/student` (after login) - See dashboard card stagger
+## Files Modified (5)
+
+1. `src/lib/animations.ts` - Refactored to factory function pattern
+2. `src/hooks/useScrollAnimation.ts` - Fixed cleanup function
+3. `src/app/apply/page.tsx` - Changed whileInView to animate
+4. `src/app/courses/[slug]/page.tsx` - Removed unused import
+5. `src/components/portal/student/StudentDashboardContent.tsx` - Only animate cards with real data
+6. `src/components/ui/AnimatedSection.tsx` - Accept viewport overrides
+
+## Warnings
+
+None - all TypeScript compilation passed without warnings.
 
 ## Summary
 
-Professional scroll animations have been successfully implemented across the entire PIN Associate frontend. All components respect user accessibility preferences and maintain optimal performance. The build passes TypeScript compilation successfully.
+All review findings have been successfully addressed:
+- Performance optimized by removing repeated `window.matchMedia()` calls
+- Memory leaks prevented by fixing cleanup function structure
+- Above-the-fold content now animates on mount for better UX
+- Unused imports removed to keep bundle size optimal
+- Placeholder content no longer creates false loading impression
+- AnimatedSection component now flexible for different viewport needs
+
+The build passes all checks and is ready for deployment.

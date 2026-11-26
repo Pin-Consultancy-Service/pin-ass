@@ -38,18 +38,20 @@ export const useScrollAnimation = (options: ScrollAnimationOptions = {}) => {
 
   // Trigger animation when in view
   useEffect(() => {
-    if (isInView) {
-      if (prefersReducedMotion) {
-        // Instant animation for reduced motion
-        controls.start('visible');
-      } else {
-        // Delayed animation
-        const timer = setTimeout(() => {
-          controls.start('visible');
-        }, delay * 1000);
-        return () => clearTimeout(timer);
-      }
+    if (!isInView) return;
+
+    if (prefersReducedMotion) {
+      // Instant animation for reduced motion
+      controls.start('visible');
+      return;
     }
+
+    // Delayed animation
+    const timer = setTimeout(() => {
+      controls.start('visible');
+    }, delay * 1000);
+
+    return () => clearTimeout(timer);
   }, [isInView, controls, delay, prefersReducedMotion]);
 
   return { ref, controls, isInView, prefersReducedMotion };

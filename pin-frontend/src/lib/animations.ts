@@ -5,20 +5,6 @@
 
 import { Variants, Transition } from 'framer-motion';
 
-// Check if user prefers reduced motion
-const shouldReduceMotion = (): boolean => {
-  if (typeof window === 'undefined') return false;
-  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-};
-
-// Helper to create transition with reduced motion support
-const createTransition = (duration: number, ease: any = 'easeOut', delay: number = 0): Transition => {
-  if (shouldReduceMotion()) {
-    return { duration: 0, delay: 0 };
-  }
-  return { duration, ease, delay };
-};
-
 // Viewport options for consistent scroll animations
 export const viewportOptions = {
   once: true,
@@ -26,112 +12,126 @@ export const viewportOptions = {
 };
 
 /**
- * Fade in with upward slide
+ * Helper to create transition with reduced motion support
+ * @param reduced - Whether reduced motion is preferred
  */
-export const fadeSlideUp: Variants = {
-  hidden: { 
-    opacity: 0, 
-    y: shouldReduceMotion() ? 0 : 24 
-  },
-  visible: { 
-    opacity: 1, 
-    y: 0, 
-    transition: createTransition(0.6, 'easeOut') 
-  },
+const createTransition = (duration: number, ease: any = 'easeOut', delay: number = 0, reduced: boolean = false): Transition => {
+  if (reduced) {
+    return { duration: 0, delay: 0 };
+  }
+  return { duration, ease, delay };
 };
 
 /**
- * Simple fade in
+ * Factory function to create animation variants with reduced motion support
+ * @param reduced - Whether user prefers reduced motion
  */
-export const fadeIn: Variants = {
-  hidden: { opacity: 0 },
-  visible: { 
-    opacity: 1, 
-    transition: createTransition(0.6, 'easeOut') 
-  },
-};
-
-/**
- * Scale in with fade
- */
-export const scaleIn: Variants = {
-  hidden: { 
-    opacity: 0, 
-    scale: shouldReduceMotion() ? 1 : 0.95 
-  },
-  visible: { 
-    opacity: 1, 
-    scale: 1, 
-    transition: createTransition(0.5, 'easeOut') 
-  },
-};
-
-/**
- * Slide in from left with fade
- */
-export const slideInLeft: Variants = {
-  hidden: { 
-    opacity: 0, 
-    x: shouldReduceMotion() ? 0 : -30 
-  },
-  visible: { 
-    opacity: 1, 
-    x: 0, 
-    transition: createTransition(0.6, 'easeOut') 
-  },
-};
-
-/**
- * Slide in from right with fade
- */
-export const slideInRight: Variants = {
-  hidden: { 
-    opacity: 0, 
-    x: shouldReduceMotion() ? 0 : 30 
-  },
-  visible: { 
-    opacity: 1, 
-    x: 0, 
-    transition: createTransition(0.6, 'easeOut') 
-  },
-};
-
-/**
- * Container for staggered children animations
- */
-export const staggerContainer: Variants = {
-  hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: shouldReduceMotion() ? 0 : 0.1,
+export const getVariants = (reduced: boolean = false) => ({
+  /**
+   * Fade in with upward slide
+   */
+  fadeSlideUp: {
+    hidden: { 
+      opacity: 0, 
+      y: reduced ? 0 : 24 
     },
-  },
-};
+    visible: { 
+      opacity: 1, 
+      y: 0, 
+      transition: createTransition(0.6, 'easeOut', 0, reduced) 
+    },
+  } as Variants,
 
-/**
- * Item variant for staggered animations (used as child of staggerContainer)
- */
-export const staggerItem: Variants = {
-  hidden: { 
-    opacity: 0, 
-    y: shouldReduceMotion() ? 0 : 24 
-  },
-  visible: { 
-    opacity: 1, 
-    y: 0, 
-    transition: createTransition(0.6, 'easeOut') 
-  },
-};
-
-/**
- * Helper to modify any variant for reduced motion
- * Returns a copy with all durations set to 0 and transforms removed
- */
-export const reducedVariant = (variant: Variants): Variants => {
-  if (!shouldReduceMotion()) return variant;
-  
-  return {
+  /**
+   * Simple fade in
+   */
+  fadeIn: {
     hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { duration: 0 } },
-  };
-};
+    visible: { 
+      opacity: 1, 
+      transition: createTransition(0.6, 'easeOut', 0, reduced) 
+    },
+  } as Variants,
+
+  /**
+   * Scale in with fade
+   */
+  scaleIn: {
+    hidden: { 
+      opacity: 0, 
+      scale: reduced ? 1 : 0.95 
+    },
+    visible: { 
+      opacity: 1, 
+      scale: 1, 
+      transition: createTransition(0.5, 'easeOut', 0, reduced) 
+    },
+  } as Variants,
+
+  /**
+   * Slide in from left with fade
+   */
+  slideInLeft: {
+    hidden: { 
+      opacity: 0, 
+      x: reduced ? 0 : -30 
+    },
+    visible: { 
+      opacity: 1, 
+      x: 0, 
+      transition: createTransition(0.6, 'easeOut', 0, reduced) 
+    },
+  } as Variants,
+
+  /**
+   * Slide in from right with fade
+   */
+  slideInRight: {
+    hidden: { 
+      opacity: 0, 
+      x: reduced ? 0 : 30 
+    },
+    visible: { 
+      opacity: 1, 
+      x: 0, 
+      transition: createTransition(0.6, 'easeOut', 0, reduced) 
+    },
+  } as Variants,
+
+  /**
+   * Container for staggered children animations
+   */
+  staggerContainer: {
+    hidden: {},
+    visible: {
+      transition: {
+        staggerChildren: reduced ? 0 : 0.1,
+      },
+    },
+  } as Variants,
+
+  /**
+   * Item variant for staggered animations (used as child of staggerContainer)
+   */
+  staggerItem: {
+    hidden: { 
+      opacity: 0, 
+      y: reduced ? 0 : 24 
+    },
+    visible: { 
+      opacity: 1, 
+      y: 0, 
+      transition: createTransition(0.6, 'easeOut', 0, reduced) 
+    },
+  } as Variants,
+});
+
+// Export default variants for components that don't use the context
+const defaultVariants = getVariants(false);
+export const fadeSlideUp = defaultVariants.fadeSlideUp;
+export const fadeIn = defaultVariants.fadeIn;
+export const scaleIn = defaultVariants.scaleIn;
+export const slideInLeft = defaultVariants.slideInLeft;
+export const slideInRight = defaultVariants.slideInRight;
+export const staggerContainer = defaultVariants.staggerContainer;
+export const staggerItem = defaultVariants.staggerItem;

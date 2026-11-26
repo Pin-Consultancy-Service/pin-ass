@@ -7,7 +7,6 @@ import { courses } from "@/lib/courseData";
 import { CheckCircle2, Clock, Monitor, ArrowRight, BookOpen, Award, Users } from "lucide-react";
 import NewsletterSection from "@/components/home/NewsletterSection";
 import PageHero from "@/components/layout/PageHero";
-import { AnimatedSection } from "@/components/ui/AnimatedSection";
 
 interface Props {
   params: Promise<{ slug: string }>;

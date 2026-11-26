@@ -96,6 +96,7 @@ export default function StudentDashboardContent() {
         whileInView="visible"
         viewport={viewportOptions}
       >
+        {/* Animate only cards with real data */}
         <motion.section 
           variants={staggerItem}
           className="p-4 md:p-6 rounded-2xl md:rounded-3xl border" 
@@ -166,17 +167,16 @@ export default function StudentDashboardContent() {
           </Link>
         </motion.section>
 
-        <motion.section 
-          variants={staggerItem}
+        {/* Cards without real data - no animation */}
+        <section 
           className="md:col-span-2 p-4 md:p-6 rounded-2xl border" 
           style={{ backgroundColor: "var(--surface)", borderColor: "var(--rule)" }}
         >
           <div className="flex items-center gap-2 mb-2"><Clock3 className="w-5 h-5" style={{ color: "var(--navy)" }} /><h2 className="font-semibold" style={{ color: "var(--ink)" }}>Learning Activity</h2></div>
           <p className="text-sm" style={{ color: "var(--ink-muted)" }}>{unavailable}</p>
-        </motion.section>
+        </section>
 
-        <motion.section 
-          variants={staggerItem}
+        <section 
           className="p-4 md:p-6 rounded-2xl border" 
           style={{ backgroundColor: "var(--surface)", borderColor: "var(--rule)" }}
         >
@@ -185,16 +185,15 @@ export default function StudentDashboardContent() {
           <Link href="/portal/student/assignments" className="mt-4 inline-flex items-center gap-2 text-sm font-semibold" style={{ color: "var(--navy)" }}>
             View Assignments <ArrowRight className="w-4 h-4" />
           </Link>
-        </motion.section>
+        </section>
 
-        <motion.section 
-          variants={staggerItem}
+        <section 
           className="md:col-span-3 p-4 md:p-6 rounded-2xl border" 
           style={{ backgroundColor: "var(--surface)", borderColor: "var(--rule)" }}
         >
           <div className="flex items-center gap-2 mb-2"><Users className="w-5 h-5" style={{ color: "var(--navy)" }} /><h2 className="font-semibold" style={{ color: "var(--ink)" }}>Your Coursemates</h2></div>
           <p className="text-sm" style={{ color: "var(--ink-muted)" }}>Classmate information will appear when student class enrollments are available.</p>
-        </motion.section>
+        </section>
       </motion.div>
     </div>
   );
