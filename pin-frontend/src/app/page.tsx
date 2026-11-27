@@ -15,9 +15,9 @@ import FAQSection from "@/components/home/FAQSection";
 import ContactSection from "@/components/home/ContactSection";
 
 export const metadata: Metadata = {
-  title: "PIN Associate | ICAN/ACCA Tutoring · Business Consultancy · Corporate Training",
+  title: "PIN Associates | ICAN/ACCA Tutoring · Business Consultancy · Corporate Training",
   description:
-    "PIN Associate (Pass It Now) offers ICAN/ACCA professional exam tutoring, business and financial consultancy, and corporate training programmes across Nigeria. Expert practitioners. Proven results since 2009.",
+    "PIN Associates (Pass It Now) offers ICAN/ACCA professional exam tutoring, business and financial consultancy, and corporate training programmes across Nigeria. Expert practitioners. Proven results since 2009.",
 };
 
 export default function HomePage() {

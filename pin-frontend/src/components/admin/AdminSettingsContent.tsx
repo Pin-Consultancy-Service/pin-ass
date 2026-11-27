@@ -63,7 +63,7 @@ export default function AdminSettingsContent() {
               <input 
                 type="text" 
                 className="form-input"
-                defaultValue="PIN Associate"
+                defaultValue="PIN Associates"
               />
             </div>
 
@@ -129,7 +129,7 @@ export default function AdminSettingsContent() {
               <input 
                 type="text" 
                 className="form-input"
-                defaultValue="smtp.pinassociate.com"
+                defaultValue="smtp.pinassociates.com"
                 disabled
               />
             </div>
@@ -149,7 +149,7 @@ export default function AdminSettingsContent() {
               <input 
                 type="text" 
                 className="form-input"
-                defaultValue="noreply@pinassociate.com"
+                defaultValue="noreply@pinassociates.com"
                 disabled
               />
             </div>

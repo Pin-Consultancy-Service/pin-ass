@@ -83,7 +83,7 @@ export default function InstructorDashboardLayout({ children, activeTab = 'dashb
           <Link href="/instructor/dashboard" className="flex items-center gap-2">
             <Image 
               src="/images/pin-logo.png" 
-              alt="PIN Associate" 
+              alt="PIN Associates" 
               width={24} 
               height={24} 
               className="object-contain" 
@@ -159,7 +159,7 @@ export default function InstructorDashboardLayout({ children, activeTab = 'dashb
           <Link href="/instructor/dashboard" className="flex items-center gap-3">
             <Image 
               src="/images/pin-logo.png" 
-              alt="PIN Associate" 
+              alt="PIN Associates" 
               width={32} 
               height={32} 
               className="object-contain" 
@@ -256,7 +256,7 @@ export default function InstructorDashboardLayout({ children, activeTab = 'dashb
               <Link href="/instructor/dashboard" className="flex items-center gap-2">
                 <Image 
                   src="/images/pin-logo.png" 
-                  alt="PIN Associate" 
+                  alt="PIN Associates" 
                   width={24} 
                   height={24} 
                   className="object-contain" 

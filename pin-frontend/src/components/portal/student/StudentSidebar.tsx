@@ -116,7 +116,7 @@ export default function StudentSidebar({ activeTab = 'dashboard', user: propUser
           <div className="flex min-w-0 items-center gap-2">
             <Image
               src="/images/pin-logo.png"
-              alt="PIN Associate"
+              alt="PIN Associates"
               width={collapsed ? 22 : 30}
               height={collapsed ? 22 : 30}
               className="object-contain flex-shrink-0"
@@ -124,7 +124,7 @@ export default function StudentSidebar({ activeTab = 'dashboard', user: propUser
             {!collapsed && (
               <div className="min-w-0">
                 <p className="font-body text-xs font-semibold leading-tight" style={{ color: '#1E3A8A', fontSize: '0.75rem' }}>
-                  PIN Associate
+                  PIN Associates
                 </p>
                 <p className="font-body text-[10px] leading-tight" style={{ color: textMuted }}>
                   Student Portal
@@ -371,7 +371,7 @@ export default function StudentSidebar({ activeTab = 'dashboard', user: propUser
           <Link href="/" className="flex items-center gap-2">
             <Image
               src="/images/pin-logo.png"
-              alt="PIN Associate"
+              alt="PIN Associates"
               width={24}
               height={24}
               className="object-contain"

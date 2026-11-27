@@ -339,7 +339,7 @@ export default function AdminCommunicationsContent() {
                   />
                   <div className="flex justify-between items-center mt-2">
                     <p className="text-xs" style={{ color: 'var(--ink-muted)' }}>
-                      {channel === 'email' && '💡 Your message will be automatically formatted with PIN Associate branding'}
+                      {channel === 'email' && '💡 Your message will be automatically formatted with PIN Associates branding'}
                       {channel === 'sms' && '💡 SMS messages are limited to 160 characters'}
                       {channel === 'whatsapp' && '💡 WhatsApp messages support longer text and emojis'}
                     </p>
@@ -415,7 +415,7 @@ export default function AdminCommunicationsContent() {
                     }}
                   >
                     <h1 className="text-3xl font-bold text-white mb-2" style={{ fontFamily: 'var(--font-display)' }}>
-                      PIN Associate
+                      PIN Associates
                     </h1>
                     <p className="text-white opacity-90 text-sm">
                       Professional Institute of Nigeria
@@ -428,7 +428,7 @@ export default function AdminCommunicationsContent() {
                       {subject}
                     </h2>
                     <p className="text-sm" style={{ color: 'var(--ink-muted)' }}>
-                      From: PIN Associate &lt;admin@pinassociate.org&gt;
+                      From: PIN Associates &lt;admin@pinassociates.org&gt;
                     </p>
                   </div>
 
@@ -460,13 +460,13 @@ export default function AdminCommunicationsContent() {
                     }}
                   >
                     <p className="mb-2" style={{ color: 'var(--ink)' }}>
-                      PIN Associate - Professional Institute of Nigeria
+                      PIN Associates - Professional Institute of Nigeria
                     </p>
                     <p className="mb-2" style={{ color: 'var(--ink-muted)' }}>
-                      📧 admin@pinassociate.org | 📱 +234 123 456 7890
+                      📧 admin@pinassociates.org | 📱 +234 123 456 7890
                     </p>
                     <p className="text-xs" style={{ color: 'var(--ink-faint)' }}>
-                      © 2024 PIN Associate. All rights reserved.
+                      © 2024 PIN Associates. All rights reserved.
                     </p>
                   </div>
                 </div>

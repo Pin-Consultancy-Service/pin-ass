@@ -96,7 +96,7 @@ export default function CorporatePageContent() {
           <div className="grid lg:grid-cols-[1fr_auto] gap-10 items-start">
             <div style={{ maxWidth: "36rem" }}>
               <p style={{ fontSize: "0.9375rem", lineHeight: 1.65, color: "var(--ink-muted)", marginBottom: "0.75rem" }}>
-                PIN Associate works with Nigerian organisations from growing SMEs to listed corporations and government agencies to solve real financial challenges, meet regulatory obligations, and develop the professional capability of their teams.
+                PIN Associates works with Nigerian organisations from growing SMEs to listed corporations and government agencies to solve real financial challenges, meet regulatory obligations, and develop the professional capability of their teams.
               </p>
               <p style={{ fontSize: "0.9375rem", lineHeight: 1.65, color: "var(--ink-muted)" }}>
                 Our consultants are active practitioners. The people who advise your organisation today are the same people handling engagements across multiple sectors meaning our advice is current, practical, and tested.
@@ -262,7 +262,7 @@ export default function CorporatePageContent() {
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
             <div>
               <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 500, fontSize: "clamp(1.5rem, 2.5vw, 2.25rem)", color: "#fff", lineHeight: 1.2, marginBottom: "0.5rem" }}>
-                Ready to work with PIN Associate?
+                Ready to work with PIN Associates?
               </h2>
               <p style={{ fontSize: "0.9375rem", color: "rgba(255,255,255,0.65)" }}>
                 We provide tailored proposals within 48 hours.

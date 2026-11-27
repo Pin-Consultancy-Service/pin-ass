@@ -25,7 +25,7 @@ export const achievements: Achievement[] = [
     id: "5000-graduates",
     year: "2023",
     title: "5,000 Graduates Milestone",
-    body: "PIN Associate celebrated the graduation of its 5,000th student a testament to 14 years of consistent, exam-focused professional training across Nigeria.",
+    body: "PIN Associates celebrated the graduation of its 5,000th student a testament to 14 years of consistent, exam-focused professional training across Nigeria.",
     image: undefined, // [PLACEHOLDER]
     category: "milestone",
   },

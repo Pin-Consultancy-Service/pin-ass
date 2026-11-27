@@ -17,7 +17,7 @@ interface WhatsAppMessage {
 
 // Format message for WhatsApp
 function formatWhatsAppMessage(data: WhatsAppMessage): string {
-  return `🎓 *NEW SUPPORT REQUEST - PIN Associate*
+  return `🎓 *NEW SUPPORT REQUEST - PIN Associates*
 
 *Student:* ${data.studentName}
 *Email:* ${data.studentEmail}
@@ -144,7 +144,7 @@ export async function POST(request: NextRequest) {
 // GET endpoint to check service status
 export async function GET() {
   return NextResponse.json({
-    service: 'PIN Associate Support API',
+    service: 'PIN Associates Support API',
     status: 'operational',
     timestamp: new Date().toISOString(),
     whatsappConfigured: !!(WHATSAPP_ACCESS_TOKEN && WHATSAPP_BUSINESS_ID),

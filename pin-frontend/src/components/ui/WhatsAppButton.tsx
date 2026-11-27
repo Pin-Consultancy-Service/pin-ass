@@ -109,7 +109,7 @@ export default function WhatsAppButton() {
         href={SITE_CONFIG.whatsappUrl}
         target="_blank"
         rel="noopener noreferrer"
-        aria-label="Chat with PIN Associate on WhatsApp"
+        aria-label="Chat with PIN Associates on WhatsApp"
         initial={{ scale: 0, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ type: "spring", stiffness: 260, damping: 20, delay: 1.2 }}

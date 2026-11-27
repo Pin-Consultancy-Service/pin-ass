@@ -17,7 +17,7 @@ export default function ClientProfilePage() {
     <div className="max-w-2xl">
       <div className="mb-7">
         <h1 className="font-heading font-extrabold text-[var(--navy-dark)] text-2xl">My Profile</h1>
-        <p className="text-[var(--ink-muted)] text-sm mt-1">Your account details on file with PIN Associate.</p>
+        <p className="text-[var(--ink-muted)] text-sm mt-1">Your account details on file with PIN Associates.</p>
       </div>
 
       <div className="bg-white rounded-2xl border border-[var(--rule)] p-6">

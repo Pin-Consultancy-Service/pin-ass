@@ -214,7 +214,7 @@ export default function StudentSupportContent() {
                   Visit Our Office
                 </h3>
                 <p className="text-sm" style={{ color: 'var(--ink-muted)' }}>
-                  PIN Associate Training Centre<br />
+                  PIN Associates Training Centre<br />
                   123 Business District<br />
                   Lagos, Nigeria
                 </p>

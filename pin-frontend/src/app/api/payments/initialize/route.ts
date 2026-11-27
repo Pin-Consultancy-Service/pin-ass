@@ -113,7 +113,7 @@ export async function POST(request: NextRequest) {
 // GET endpoint to check service status
 export async function GET() {
   return NextResponse.json({
-    service: 'PIN Associate Payment API',
+    service: 'PIN Associates Payment API',
     status: 'operational',
     timestamp: new Date().toISOString(),
     paystack_configured: !!PAYSTACK_SECRET_KEY && !!PAYSTACK_PUBLIC_KEY,

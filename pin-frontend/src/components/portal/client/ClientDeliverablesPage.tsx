@@ -57,7 +57,7 @@ export default function ClientDeliverablesPage() {
       <div className="mb-7">
         <h1 className="font-heading font-extrabold text-[var(--navy-dark)] text-2xl">Deliverables</h1>
         <p className="text-[var(--ink-muted)] text-sm mt-1">
-          Documents and reports uploaded by PIN Associate for your engagements.
+          Documents and reports uploaded by PIN Associates for your engagements.
           These files are private to your account.
         </p>
       </div>
@@ -81,7 +81,7 @@ export default function ClientDeliverablesPage() {
           <FileText className="w-10 h-10 text-[var(--rule)] mx-auto mb-3" />
           <p className="text-sm font-medium text-[var(--ink-faint)]">No documents uploaded yet.</p>
           <p className="text-xs text-[var(--ink-faint)] mt-1">
-            Documents will appear here once uploaded by PIN Associate staff.
+            Documents will appear here once uploaded by PIN Associates staff.
           </p>
         </div>
       ) : (

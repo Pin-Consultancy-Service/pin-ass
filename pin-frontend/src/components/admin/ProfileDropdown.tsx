@@ -46,7 +46,7 @@ export default function ProfileDropdown({ admin, onLogout, isOpen, onClose }: Pr
                 {admin?.first_name || "Admin"} {admin?.last_name || ""}
               </p>
               <p className="text-xs truncate" style={{ color: "var(--ink-muted)" }}>
-                {admin?.email || "admin@pinassociate.com"}
+                {admin?.email || "admin@pinassociates.com"}
               </p>
             </div>
           </div>

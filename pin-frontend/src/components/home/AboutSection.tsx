@@ -53,7 +53,7 @@ export default function AboutSection() {
             transition={{ duration: 0.55 }}
           >
             <span className="brand-rule" />
-            <span className="eyebrow" style={{ marginBottom: "1rem" }}>About PIN Associate</span>
+            <span className="eyebrow" style={{ marginBottom: "1rem" }}>About PIN Associates</span>
 
             <h2
               style={{
@@ -75,7 +75,7 @@ export default function AboutSection() {
             </h2>
 
             <p style={{ fontSize: "0.9375rem", lineHeight: 1.65, color: "var(--ink-muted)", marginBottom: "0.85rem" }}>
-              Founded in 2009, PIN Associate known as Pass It Now Associates has
+              Founded in 2009, PIN Associates known as Pass It Now Associates has
               become one of Nigeria&rsquo;s most respected professional examination
               tuition organisations.
             </p>
@@ -129,7 +129,7 @@ export default function AboutSection() {
             >
               <img
                 src="https://res.cloudinary.com/yaovkmpi/image/upload/v1793970460/PIN_Associates_Courtyard_Team_Portrait_d0f9ez.png"
-                alt="PIN Associate professional class in session"
+                alt="PIN Associates professional class in session"
                 style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 30%" }}
               />
             </motion.div>

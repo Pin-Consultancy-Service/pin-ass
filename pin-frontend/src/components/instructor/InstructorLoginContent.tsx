@@ -51,7 +51,7 @@ export default function InstructorLoginContent() {
           <Link href="/" className="flex items-center gap-3 mb-8">
             <Image 
               src="/images/pin-logo.png" 
-              alt="PIN Associate" 
+              alt="PIN Associates" 
               width={40} 
               height={40} 
               className="object-contain" 
@@ -60,7 +60,7 @@ export default function InstructorLoginContent() {
               className="font-bold text-xl"
               style={{ color: 'var(--navy)', fontFamily: 'var(--font-display)' }}
             >
-              PIN Associate
+              PIN Associates
             </span>
           </Link>
 
@@ -100,7 +100,7 @@ export default function InstructorLoginContent() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="instructor@pinassociate.com"
+                  placeholder="instructor@pinassociates.com"
                   required
                   className="form-input pl-12"
                   disabled={loading}

@@ -6,7 +6,7 @@ import CorporatePageContent from "@/components/corporate/CorporatePageContent";
 export const metadata: Metadata = {
   title: "Corporate Services | Business Consultancy & Corporate Training",
   description:
-    "PIN Associate provides business and financial consultancy — advisory, taxation, financial statements, audits, and asset review — plus bespoke corporate training programmes for organisations across Nigeria.",
+    "PIN Associates provides business and financial consultancy — advisory, taxation, financial statements, audits, and asset review — plus bespoke corporate training programmes for organisations across Nigeria.",
 };
 
 export default function CorporatePage() {

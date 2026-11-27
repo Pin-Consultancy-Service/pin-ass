@@ -30,7 +30,7 @@ const initialMessages: Message[] = [
   {
     id: '1',
     type: 'bot',
-    content: "Hi there! 👋 I'm Sarah, your AI-powered support agent from PIN Associate. I'm here 24/7 to help you with questions about your studies, assignments, or account. My AI capabilities allow me to quickly understand your needs and connect you with the right resources. How can I assist you today?",
+    content: "Hi there! 👋 I'm Sarah, your AI-powered support agent from PIN Associates. I'm here 24/7 to help you with questions about your studies, assignments, or account. My AI capabilities allow me to quickly understand your needs and connect you with the right resources. How can I assist you today?",
     timestamp: new Date(),
   }
 ];
@@ -523,7 +523,7 @@ export default function AISupportChatbot() {
                 </div>
                 <p className="text-xs flex items-center gap-1" style={{ color: 'var(--ink-faint)' }}>
                   <Bot className="w-3 h-3" />
-                  AI-Powered by PIN Associate
+                  AI-Powered by PIN Associates
                 </p>
               </div>
             </div>

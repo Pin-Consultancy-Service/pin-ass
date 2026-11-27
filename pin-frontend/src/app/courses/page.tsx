@@ -49,7 +49,7 @@ const programmes = [
     badge: "Tax Specialist", badgeVariant: "green" as const,
     href: "/courses/citn",
     icon: "https://res.cloudinary.com/yaovkmpi/image/upload/v1784552741/CITN-logo_rqc5j5.jpg",
-    outcomes: ["Associate Tax Member", "FCTI Fellow", "Tax Manager & Consultant roles"],
+    outcomes: ["Associates Tax Member", "FCTI Fellow", "Tax Manager & Consultant roles"],
   },
   {
     id: "ats",

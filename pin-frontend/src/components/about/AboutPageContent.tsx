@@ -9,19 +9,19 @@ import { useState } from "react";
 
 /* ─── Hero slides — unchanged ────────────────────────── */
 const heroSlides = [
-  { id: 1, src: "https://res.cloudinary.com/yaovkmpi/image/upload/v1793970460/PIN_Associates_Courtyard_Team_Portrait_d0f9ez.png",  alt: "PIN Associate team in session" },
+  { id: 1, src: "https://res.cloudinary.com/yaovkmpi/image/upload/v1793970460/PIN_Associates_Courtyard_Team_Portrait_d0f9ez.png",  alt: "PIN Associates team in session" },
   { id: 2, src: "https://res.cloudinary.com/yaovkmpi/image/upload/v1793970782/Young_Team_Smiling_at_PIN_Associates_usxxwl.png", alt: "Professional training environment" },
-  // { id: 3, src: "https://res.cloudinary.com/yaovkmpi/image/upload/v1784481889/wmremove-transformed_3_ujyrty.jpg",  alt: "PIN Associate consultation" },
+  // { id: 3, src: "https://res.cloudinary.com/yaovkmpi/image/upload/v1784481889/wmremove-transformed_3_ujyrty.jpg",  alt: "PIN Associates consultation" },
 ];
 
 /* ─── Timeline — unchanged ───────────────────────────── */
 const timeline = [
-  { year: "2009", title: "Founded",                  body: "PIN Associate was established with a clear mission: to give every determined professional a structured, expert path to qualification. The first cohort of ICAN students sat their exams that same year." },
+  { year: "2009", title: "Founded",                  body: "PIN Associates was established with a clear mission: to give every determined professional a structured, expert path to qualification. The first cohort of ICAN students sat their exams that same year." },
   { year: "2012", title: "Expanded to ACCA",          body: "Recognising the growing demand for internationally recognised credentials, PIN launched its ACCA programme the first step towards becoming a multi-qualification practice." },
   { year: "2015", title: "Corporate Division Launched",body: "PIN's business and financial consultancy arm was established, extending our expertise from individual exam prep to organisational advisory, tax planning, and financial reporting for corporate clients." },
   { year: "2018", title: "Online Learning Platform",  body: "To serve working professionals across Nigeria, PIN launched its live online classes and recorded session library, making expert tuition accessible regardless of location." },
   { year: "2021", title: "5,000 Graduates",           body: "A defining milestone the 5,000th student qualifies under PIN's guidance. Alumni now work at EY, KPMG, Deloitte, GTBank, First Bank, NNPC and leading Nigerian organisations." },
-  { year: "2024", title: "Three Service Lines",       body: "Today PIN Associate operates three distinct but complementary practices: professional examination tutoring, business and financial consultancy, and corporate training — one firm, three paths to professional excellence." },
+  { year: "2024", title: "Three Service Lines",       body: "Today PIN Associates operates three distinct but complementary practices: professional examination tutoring, business and financial consultancy, and corporate training — one firm, three paths to professional excellence." },
 ];
 
 /* ─── Values — unchanged ─────────────────────────────── */
@@ -79,9 +79,9 @@ export default function AboutPageContent() {
   return (
     <>
       <PageHero
-        label="About PIN Associate"
+        label="About PIN Associates"
         title="Nigeria's Trusted Professional Development Firm"
-        description="Founded in 2009, PIN Associate has spent 16 years building the careers of Nigeria's most successful finance and accounting professionals."
+        description="Founded in 2009, PIN Associates has spent 16 years building the careers of Nigeria's most successful finance and accounting professionals."
         slides={heroSlides}
       >
         <div className="flex flex-wrap items-center justify-center gap-3 mt-4">
@@ -138,7 +138,7 @@ export default function AboutPageContent() {
               <div className="img-wrap mb-8" style={{ aspectRatio: "16/10" }}>
                 <img
                   src="https://res.cloudinary.com/yaovkmpi/image/upload/v1793970460/PIN_Associates_Courtyard_Team_Portrait_d0f9ez.png"
-                  alt="PIN Associate founding story"
+                  alt="PIN Associates founding story"
                   style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 30%" }}
                 />
               </div>
@@ -260,7 +260,7 @@ export default function AboutPageContent() {
             <div className="grid lg:grid-cols-[1fr_auto] gap-6 items-end">
               <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 500, fontSize: "clamp(1.875rem, 3.5vw, 3rem)", lineHeight: 1.15, color: "var(--ink)" }}>
                 The People Behind
-                <br /><em style={{ fontStyle: "italic", color: "var(--ink-muted)" }}>PIN Associate</em>
+                <br /><em style={{ fontStyle: "italic", color: "var(--ink-muted)" }}>PIN Associates</em>
               </h2>
             </div>
             <p className="mt-4" style={{ fontSize: "0.9375rem", lineHeight: 1.65, color: "var(--ink-muted)", maxWidth: "36rem" }}>
@@ -423,7 +423,7 @@ export default function AboutPageContent() {
                 Ready to start your journey with PIN?
               </h2>
               <p style={{ fontSize: "0.9375rem", color: "rgba(255,255,255,0.65)" }}>
-                Join 5,000+ professionals who qualified with PIN Associate.
+                Join 5,000+ professionals who qualified with PIN Associates.
               </p>
             </div>
             <div className="flex flex-wrap gap-3 flex-shrink-0">

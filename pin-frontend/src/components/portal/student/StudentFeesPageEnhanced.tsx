@@ -176,7 +176,7 @@ export default function StudentFeesPageEnhanced() {
     try {
       setPaymentError("");
       setReceiptLoading(recordId);
-      await apiDownload(`/api/v1/students/me/payments/${recordId}/receipt`, `PIN-Associate-Receipt-${recordId}.pdf`);
+      await apiDownload(`/api/v1/students/me/payments/${recordId}/receipt`, `PIN-Associates-Receipt-${recordId}.pdf`);
     } catch {
       setPaymentError("The receipt could not be downloaded. Only confirmed payments have receipts.");
     } finally {

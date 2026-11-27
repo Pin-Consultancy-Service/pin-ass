@@ -226,7 +226,7 @@ export default function AdminPortalContent() {
       <header className="bg-[var(--navy-dark)] px-6 py-4 flex items-center justify-between sticky top-0 z-30">
         <div>
           <h1 className="font-heading font-bold text-white text-lg leading-tight">Staff Admin Portal</h1>
-          <p className="text-white/40 text-[11px]">PIN Associate · Internal use only · Not linked from public site</p>
+          <p className="text-white/40 text-[11px]">PIN Associates · Internal use only · Not linked from public site</p>
         </div>
         <div className="flex items-center gap-4">
           <span className="text-white/60 text-xs hidden sm:block">{user.first_name} {user.last_name}</span>

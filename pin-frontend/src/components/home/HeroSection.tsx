@@ -15,7 +15,7 @@ const serviceSlides = [
       regular: "Pass Your Professional",
       emphasis: "Exams With Confidence."
     },
-    description: "PIN Associate helps students and professionals pass ICAN, ACCA, CITN, CISA, and ATS exams on their first attempt with expert tutors and structured programmes.",
+    description: "PIN Associates helps students and professionals pass ICAN, ACCA, CITN, CISA, and ATS exams on their first attempt with expert tutors and structured programmes.",
     cta: {
       primary: { text: "Sign Up", href: "/portal/register" },
       secondary: { text: "Explore Courses", href: "/courses" }
@@ -32,7 +32,7 @@ const serviceSlides = [
       regular: "Expert Guidance For Every",
       emphasis: "Business Decision."
     },
-    description: "PIN Associate provides businesses with expert advisory, taxation, financial statement preparation, audits, and asset review helping you make confident, well-informed decisions.", // TODO: Refine wording with client
+    description: "PIN Associates provides businesses with expert advisory, taxation, financial statement preparation, audits, and asset review helping you make confident, well-informed decisions.", // TODO: Refine wording with client
     cta: {
       primary: { text: "Get Started", href: "/contact?service=consultancy" },
       secondary: { text: "Explore Consulting", href: "/corporate" }

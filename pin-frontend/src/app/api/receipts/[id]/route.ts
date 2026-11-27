@@ -10,7 +10,7 @@ function generateSimpleReceipt(paymentData: any): string {
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Payment Receipt - PIN Associate</title>
+    <title>Payment Receipt - PIN Associates</title>
     <style>
         body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
         .header { text-align: center; border-bottom: 2px solid #1e3a8a; padding-bottom: 20px; margin-bottom: 30px; }
@@ -27,7 +27,7 @@ function generateSimpleReceipt(paymentData: any): string {
 </head>
 <body>
     <div class="header">
-        <div class="logo">PIN ASSOCIATE</div>
+        <div class="logo">PIN ASSOCIATES</div>
         <div>Professional Institute of Nigeria</div>
         <div class="receipt-title">PAYMENT RECEIPT</div>
     </div>
@@ -86,10 +86,10 @@ function generateSimpleReceipt(paymentData: any): string {
     </div>
 
     <div class="footer">
-        <p><strong>PIN Associate</strong></p>
+        <p><strong>PIN Associates</strong></p>
         <p>Professional Institute of Nigeria - Excellence in Professional Education</p>
         <p>This is a computer-generated receipt and does not require a signature.</p>
-        <p>For inquiries, contact: support@pinassociate.com | +234 (0) 123 456 7890</p>
+        <p>For inquiries, contact: support@pinassociates.com | +234 (0) 123 456 7890</p>
         <hr>
         <p>Receipt generated on ${currentDate}</p>
     </div>

@@ -3,7 +3,7 @@
 export const mockStudentProfile = {
   id: "demo-student-123",
   full_name: "Demo Student",
-  email: "demo@pinassociate.com",
+  email: "demo@pinassociates.com",
   phone: "+2349099861253",
   registration_number: "PIN/DEMO/2024/001",
   programme: "ICAN_PRO",

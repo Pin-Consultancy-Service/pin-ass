@@ -33,7 +33,7 @@ export const courses: Record<string, CourseData> = {
     tagline: "Become a Chartered Accountant. Nigeria's Most Respected Accounting Qualification.",
     icon: "https://res.cloudinary.com/yaovkmpi/image/upload/v1784552599/ican-logo_tg9meu.jpg",
     overview:
-      "The ICAN qualification is the gold standard of professional accountancy in Nigeria. Administered by the Institute of Chartered Accountants of Nigeria, it leads to the designatory letters ACA (Associate) and FCA (Fellow) upon full qualification. PIN has prepared ICAN students since 2009, achieving an 87% first-attempt pass rate across all levels.",
+      "The ICAN qualification is the gold standard of professional accountancy in Nigeria. Administered by the Institute of Chartered Accountants of Nigeria, it leads to the designatory letters ACA (Associates) and FCA (Fellow) upon full qualification. PIN has prepared ICAN students since 2009, achieving an 87% first-attempt pass rate across all levels.",
     who: [
       "University graduates with a minimum of five O'Level credits including Mathematics and English",
       "HND holders in Accounting, Finance, Business, or related disciplines",
@@ -76,7 +76,7 @@ export const courses: Record<string, CourseData> = {
       },
     ],
     outcomes: [
-      "Associate Chartered Accountant (ACA) designation",
+      "Associates Chartered Accountant (ACA) designation",
       "Eligibility for Senior Finance, Audit, and CFO roles",
       "International reciprocity with ICAEW and other IFAC bodies",
       "Gateway to ICAN Fellowship (FCA)",
@@ -201,7 +201,7 @@ export const courses: Record<string, CourseData> = {
       },
     ],
     outcomes: [
-      "Associate Taxation Member (ACTI) designation",
+      "Associates Taxation Member (ACTI) designation",
       "Eligibility for CITN Fellowship (FCTI)",
       "Recognition as a qualified tax professional in Nigeria",
       "Access to senior tax advisory and consulting roles",

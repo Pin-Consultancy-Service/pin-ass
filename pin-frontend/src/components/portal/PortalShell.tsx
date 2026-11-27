@@ -72,9 +72,9 @@ export default function PortalShell({
     <div className="flex flex-col h-full">
       {/* Brand */}
       <div className="px-5 py-5 border-b flex items-center gap-3" style={{ borderColor: 'var(--rule)' }}>
-        <Image src="/images/pin-logo.png" alt="PIN Associate" width={36} height={36} className="object-contain" />
+        <Image src="/images/pin-logo.png" alt="PIN Associates" width={36} height={36} className="object-contain" />
         <div className="leading-none">
-          <span className="block font-heading font-bold text-sm" style={{ color: 'var(--navy)', fontFamily: 'var(--font-display)' }}>PIN Associate</span>
+          <span className="block font-heading font-bold text-sm" style={{ color: 'var(--navy)', fontFamily: 'var(--font-display)' }}>PIN Associates</span>
           <span
             className="block text-[10px] font-bold uppercase tracking-widest mt-0.5"
             style={{ color: roleColor }}

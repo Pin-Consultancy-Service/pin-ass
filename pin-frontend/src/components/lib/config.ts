@@ -16,7 +16,7 @@ export const SITE_CONFIG = {
 
   /** Pre-filled WhatsApp greeting message (used for direct number link) */
   whatsappMessage:
-    "Hello PIN Associate! I found your website and would like to learn more about your services.",
+    "Hello PIN Associates! I found your website and would like to learn more about your services.",
 
   /** Resolved WhatsApp deep-link: group invite if available, else direct number */
   get whatsappUrl(): string {
@@ -51,19 +51,19 @@ export const SITE_CONFIG = {
   bankAccounts: {
     student: {
       bankName: "[BANK NAME — TO BE SUPPLIED]",
-      accountName: "PIN Associate",
+      accountName: "PIN Associates",
       accountNumber: "[ACCOUNT NUMBER — TO BE SUPPLIED]",
       sortCode: "",
     },
     client: {
       bankName: "[BANK NAME — TO BE SUPPLIED]",
-      accountName: "PIN Associate",
+      accountName: "PIN Associates",
       accountNumber: "[ACCOUNT NUMBER — TO BE SUPPLIED]",
       sortCode: "",
     },
     training: {
       bankName: "[BANK NAME — TO BE SUPPLIED]",
-      accountName: "PIN Associate",
+      accountName: "PIN Associates",
       accountNumber: "[ACCOUNT NUMBER — TO BE SUPPLIED]",
       sortCode: "",
     },

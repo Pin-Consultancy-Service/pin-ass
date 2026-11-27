@@ -85,7 +85,7 @@ export default function LoginPageContent() {
         // Create and save a mock user based on the email entered
         const mockUser = {
           id: `test-user-${Date.now()}`,
-          email: email || "test@pinassociate.com",
+          email: email || "test@pinassociates.com",
           first_name: email.split('@')[0] || "Test",
           last_name: "User",
           phone_number: "+2349099861253",
@@ -174,7 +174,7 @@ export default function LoginPageContent() {
                 fontSize: "1rem",
               }}
             >
-              PIN Associate
+              PIN Associates
             </span>
           </Link>
         </div>
@@ -217,7 +217,7 @@ export default function LoginPageContent() {
               className="text-white/85 text-lg leading-relaxed mb-8"
               style={{ fontFamily: "var(--font-body)" }}
             >
-              Join thousands of successful professionals who trust PIN Associate for their examination success and career advancement.
+              Join thousands of successful professionals who trust PIN Associates for their examination success and career advancement.
             </p>
             
             {/* Key stats/features */}
@@ -288,7 +288,7 @@ export default function LoginPageContent() {
             <Link href="/" className="inline-flex items-center gap-3 mb-4">
               <Image 
                 src="/images/pin-logo.png" 
-                alt="PIN Associate" 
+                alt="PIN s" 
                 width={36} 
                 height={36} 
                 className="object-contain" 

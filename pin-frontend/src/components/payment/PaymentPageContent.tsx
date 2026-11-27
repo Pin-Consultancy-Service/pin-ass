@@ -371,7 +371,7 @@ export default function PaymentPageContent() {
                 {/* Security */}
                 <div className="flex items-start gap-3" style={{ fontSize: "0.75rem", color: "var(--ink-faint)" }}>
                   <ShieldCheck className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "var(--navy)" }} />
-                  <p>All online payments are processed securely by <strong style={{ color: "var(--ink)", fontWeight: 500 }}>Paystack</strong>, a PCI-DSS Level 1 certified processor. PIN Associate does not store your card details.</p>
+                  <p>All online payments are processed securely by <strong style={{ color: "var(--ink)", fontWeight: 500 }}>Paystack</strong>, a PCI-DSS Level 1 certified processor. PIN Associates does not store your card details.</p>
                 </div>
               </div>
             </motion.div>

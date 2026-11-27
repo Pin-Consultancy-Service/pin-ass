@@ -45,7 +45,7 @@ export default function AdminLoginContent() {
           <Link href="/" className="flex items-center gap-3 mb-8">
             <Image 
               src="/images/pin-logo.png" 
-              alt="PIN Associate" 
+              alt="PIN Associates" 
               width={40} 
               height={40} 
               className="object-contain" 
@@ -54,7 +54,7 @@ export default function AdminLoginContent() {
               className="font-bold text-xl"
               style={{ color: 'var(--navy)', fontFamily: 'var(--font-display)' }}
             >
-              PIN Associate
+              PIN Associates
             </span>
           </Link>
 
@@ -66,7 +66,7 @@ export default function AdminLoginContent() {
               Admin Portal
             </h1>
             <p style={{ color: 'var(--ink-muted)' }}>
-              Manage the entire PIN Associate system
+              Manage the entire PIN Associates system
             </p>
           </div>
 
@@ -94,7 +94,7 @@ export default function AdminLoginContent() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="admin@pinassociate.com"
+                  placeholder="admin@pinassociates.com"
                   required
                   className="form-input pl-12"
                   disabled={loading}
@@ -189,7 +189,7 @@ export default function AdminLoginContent() {
             Admin Dashboard
           </h2>
           <p className="text-lg mb-8 text-white/80">
-            Comprehensive system management for PIN Associate education platform
+            Comprehensive system management for PIN Associates education platform
           </p>
 
           <div className="space-y-6">

@@ -51,7 +51,7 @@ const portals = [
 ];
 
 const company = [
-  { label: "About PIN Associate", href: "/about" },
+  { label: "About PIN Associates", href: "/about" },
   { label: "Leadership Team",     href: "/about#team" },
   { label: "Contact Us",          href: "/contact" },
   { label: "Apply for Tutoring",  href: "/apply" },
@@ -224,7 +224,7 @@ export default function Footer() {
             <Link href="/" className="flex items-center gap-3 mb-5 group">
               <Image
                 src="/images/pin-logo.png"
-                alt="PIN Associate"
+                alt="PIN Associates"
                 width={28}
                 height={28}
                 className="object-contain opacity-70 group-hover:opacity-100 transition-opacity"
@@ -238,7 +238,7 @@ export default function Footer() {
                   letterSpacing: "0.01em",
                 }}
               >
-                PIN Associate
+                PIN Associates
               </span>
             </Link>
             <p style={{ fontSize: "0.875rem", lineHeight: 1.65, color: "rgba(255,255,255,0.8)", marginBottom: "1.5rem" }}>
@@ -317,7 +317,7 @@ export default function Footer() {
       <div style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}>
         <div className="content-container py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.7)" }}>
-            © {new Date().getFullYear()} PIN Associate (Pass It Now Associates). All rights reserved.
+            © {new Date().getFullYear()} PIN Associates (Pass It Now Associates). All rights reserved.
           </p>
           <div className="flex items-center gap-5">
             {[

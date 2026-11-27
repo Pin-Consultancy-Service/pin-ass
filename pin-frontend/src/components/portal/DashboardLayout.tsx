@@ -148,7 +148,7 @@ export default function DashboardLayout({ children, activeTab = 'dashboard' }: D
           <Link href="/" className="flex items-center gap-2">
             <Image 
               src="/images/pin-logo.png" 
-              alt="PIN Associate" 
+              alt="PIN Associates" 
               width={24} 
               height={24} 
               className="object-contain" 
@@ -157,7 +157,7 @@ export default function DashboardLayout({ children, activeTab = 'dashboard' }: D
               className="font-bold text-sm"
               style={{ color: 'var(--ink)', fontFamily: 'var(--font-display)' }}
             >
-              PIN Associate
+              PIN Associates
             </span>
           </Link>
 
@@ -245,7 +245,7 @@ export default function DashboardLayout({ children, activeTab = 'dashboard' }: D
             <Link href="/" className="flex items-center gap-3">
               <Image 
                 src="/images/pin-logo.png" 
-                alt="PIN Associate" 
+                alt="PIN s" 
                 width={32} 
                 height={32} 
                 className="object-contain" 
@@ -376,7 +376,7 @@ export default function DashboardLayout({ children, activeTab = 'dashboard' }: D
               <Link href="/" className="flex items-center gap-2">
                 <Image 
                   src="/images/pin-logo.png" 
-                  alt="PIN Associate" 
+                  alt="PIN Associates" 
                   width={24} 
                   height={24} 
                   className="object-contain" 
@@ -385,7 +385,7 @@ export default function DashboardLayout({ children, activeTab = 'dashboard' }: D
                   className="font-bold text-sm"
                   style={{ color: 'var(--navy)', fontFamily: 'var(--font-display)' }}
                 >
-                  PIN Associate
+                  PIN Associates
                 </span>
               </Link>
               <button

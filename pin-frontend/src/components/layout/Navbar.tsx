@@ -102,7 +102,7 @@ export default function Navbar() {
           <Link href="/" className="flex items-center gap-3 flex-shrink-0 group">
             <Image
               src="/images/pin-logo.png"
-              alt="PIN Associate"
+              alt="PIN Associates"
               width={36}
               height={36}
               className="object-contain"
@@ -119,7 +119,7 @@ export default function Navbar() {
                   color: scrolled ? "var(--ink)" : "#fff",
                 }}
               >
-                PIN Associate
+                PIN Associates
               </span>
               <span
                 className="block transition-colors duration-200"
@@ -326,11 +326,11 @@ export default function Navbar() {
               style={{ borderBottom: "1px solid var(--rule)" }}
             >
               <div className="flex items-center gap-2.5">
-                <Image src="/images/pin-logo.png" alt="PIN Associate" width={30} height={30} className="object-contain" />
+                <Image src="/images/pin-logo.png" alt="PIN Associates" width={30} height={30} className="object-contain" />
                 <span
                   style={{ fontFamily: "var(--font-display)", fontWeight: 500, fontSize: "1rem", color: "var(--ink)" }}
                 >
-                  PIN Associate
+                  PIN Associates
                 </span>
               </div>
               <button onClick={() => setMobileOpen(false)} style={{ color: "var(--ink-muted)" }}>

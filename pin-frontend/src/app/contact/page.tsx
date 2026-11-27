@@ -5,9 +5,9 @@ import ContactPageContent from "@/components/contact/ContactPageContent";
 
 
 export const metadata: Metadata = {
-  title: "Contact PIN Associate | Get in Touch",
+  title: "Contact PIN Associates | Get in Touch",
   description:
-    "Contact PIN Associate for enquiries about professional examination tutoring, business consultancy, or corporate training. Our team responds within one business day.",
+    "Contact PIN Associates for enquiries about professional examination tutoring, business consultancy, or corporate training. Our team responds within one business day.",
 };
 
 export default function ContactPage() {

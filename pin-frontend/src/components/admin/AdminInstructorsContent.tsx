@@ -219,7 +219,7 @@ export default function AdminInstructorsContent() {
                             <p className="text-xs font-semibold mb-2" style={{ color: 'var(--ink-muted)' }}>Bio</p>
                             <p className="text-sm" style={{ color: 'var(--ink)' }}>
                               Experienced instructor with expertise in {getInstructorSpecialization(instructor.id)}. 
-                              Teaching at PIN Associate since {new Date(instructor.date_joined).getFullYear()}.
+                              Teaching at PIN Associates since {new Date(instructor.date_joined).getFullYear()}.
                             </p>
                           </div>
                           <div>

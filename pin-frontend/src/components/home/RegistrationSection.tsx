@@ -88,7 +88,7 @@ export default function RegistrationSection() {
                 color: "var(--ink)",
               }}
             >
-              How Can PIN Associate
+              How Can PIN Associates
               <br />
               <em style={{ fontStyle: "italic", color: "var(--ink-muted)" }}>Help You?</em>
             </h2>

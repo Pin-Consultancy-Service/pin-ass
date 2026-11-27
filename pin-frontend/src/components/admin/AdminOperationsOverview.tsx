@@ -142,7 +142,7 @@ export default function AdminOperationsOverview() {
     setExportingPayments(true);
     setError("");
     try {
-      await apiDownload("/api/v1/admin/payments/export.xlsx", "pin-associate-payment-ledger.xlsx");
+      await apiDownload("/api/v1/admin/payments/export.xlsx", "pin-associates-payment-ledger.xlsx");
     } catch {
       setError("Could not export the payment ledger. Check your admin session and try again.");
     } finally {

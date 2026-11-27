@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     template: "%s | PIN Consultancy Services",
   },
   description:
-    "PIN Consultancy Services (PIN Associate) is Nigeria's leading professional exam preparation center. Expert tutoring for ICAN, ACCA, CITN, CISA, ATS, IFRS with 87% first-attempt pass rate. Business consultancy, tax advisory, and corporate training services across Nigeria. Founded 2009, 5,000+ graduates.",
+    "PIN Consultancy Services (PIN Associates) is Nigeria's leading professional exam preparation center. Expert tutoring for ICAN, ACCA, CITN, CISA, ATS, IFRS with 87% first-attempt pass rate. Business consultancy, tax advisory, and corporate training services across Nigeria. Founded 2009, 5,000+ graduates.",
   keywords: [
     "ICAN tuition Nigeria",
     "ACCA classes Nigeria",
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     "professional exam preparation Nigeria",
     "accounting tuition Lagos",
     "PIN Consultancy Services",
-    "PIN Associate Nigeria",
+    "PIN Associates Nigeria",
     "Pass It Now Associates",
     "chartered accountant tutoring",
     "tax consultancy Nigeria",
@@ -110,7 +110,7 @@ export default function RootLayout({
     "@context": "https://schema.org",
     "@type": "EducationalOrganization",
     "name": "PIN Consultancy Services",
-    "alternateName": "PIN Associate",
+    "alternateName": "PIN Associates",
     "url": "https://pinconsultancyservices.com",
     "logo": "https://pinconsultancyservices.com/images/pin-logo.png",
     "description": "Professional exam tutoring and business consultancy services. Expert coaching for ICAN, ACCA, CITN, CISA, ATS, and IFRS certification exams in Nigeria.",

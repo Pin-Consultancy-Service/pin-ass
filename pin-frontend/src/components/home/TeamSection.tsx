@@ -139,7 +139,7 @@ export default function TeamSection() {
             >
               The People Behind
               <br />
-              <em style={{ fontStyle: "italic", color: "var(--ink-muted)" }}>PIN Associate</em>
+              <em style={{ fontStyle: "italic", color: "var(--ink-muted)" }}>PIN Associates</em>
             </h2>
           </motion.div>
 

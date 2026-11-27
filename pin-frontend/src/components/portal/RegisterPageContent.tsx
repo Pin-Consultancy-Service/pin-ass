@@ -176,7 +176,7 @@ export default function RegisterPageContent() {
           <Link href="/" className="flex items-center gap-3">
             <Image 
               src="/images/pin-logo.png" 
-              alt="PIN Associate" 
+              alt="PIN Associates" 
               width={32} 
               height={32} 
               className="object-contain" 
@@ -188,7 +188,7 @@ export default function RegisterPageContent() {
                 fontSize: "1rem",
               }}
             >
-              PIN Associate
+              PIN Associates
             </span>
           </Link>
         </div>
@@ -302,7 +302,7 @@ export default function RegisterPageContent() {
             <Link href="/" className="inline-flex items-center gap-3 mb-4">
               <Image 
                 src="/images/pin-logo.png" 
-                alt="PIN Associate" 
+                alt="PIN Associates" 
                 width={36} 
                 height={36} 
                 className="object-contain" 
@@ -315,7 +315,7 @@ export default function RegisterPageContent() {
                   color: "var(--ink)",
                 }}
               >
-                PIN Associate
+                PIN Associates
               </span>
             </Link>
           </div>
